@@ -7,12 +7,14 @@ import Frame from '../modules/Frame';
 /* 登录 */
 import Login from '../modules/login/component/login';
 import Home from "../modules/home/component/home";
+import User from "../modules/user/component";
+import UserList from "../modules/user/component/userList";
+import UserAdd from "../modules/user/component/userAdd";
 import ProductList from "../modules/product/component/productList";
 import EditProduct from "../modules/product/component/editProduct";
 import AddProduct from "../modules/product/component/addProduct";
 import Organize from "../modules/organize/component";
-import User from "../modules/user/component";
-import UserList from "../modules/user/component/userList";
+import OrderList from "../modules/order/component/orderList";
 
 const requireAuth = (nextState, replace) => {
     if (!sessionStorage.expireDate || new Date(sessionStorage.expireDate).getTime() <= new Date().getTime()) {
@@ -49,7 +51,9 @@ class PageRouter extends React.Component {
                             <Route path="product/productList/add" component={AddProduct} />
                             <Route path="organize" component={Organize} />
                             <Route path="user/count" component={User} />
+                            <Route path="user/add" component={UserAdd} />
                             <Route path="user/list" component={UserList} />
+                            <Route path="order/orderList" component={OrderList} />
                         </Route>
                     </Route>
                 </Router>

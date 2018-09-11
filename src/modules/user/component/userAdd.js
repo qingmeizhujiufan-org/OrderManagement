@@ -112,7 +112,7 @@ class Index extends React.Component {
   }
 
   addUser = () => {
-    return this.context.router.push('/frame/user/add');
+
   }
 
   render() {
@@ -129,30 +129,21 @@ class Index extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>首页</Breadcrumb.Item>
               <Breadcrumb.Item>用户管理</Breadcrumb.Item>
-              <Breadcrumb.Item>用户列表</Breadcrumb.Item>
+              <Breadcrumb.Item>新增用户</Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <h1 className='title'>用户列表</h1>
+          <h1 className='title'>新增用户</h1>
         </div>
         <div className='pageContent'>
           <ZZCard
-            title="用户列表"
+            title="用户信息"
           >
-            <Button type='primary' icon='plus' loading={delLoading} style={{marginBottom: 15, marginRight: 10}}
-                    onClick={() => this.addUser()}>新增用户</Button>
-            <Button type='danger' icon='close' loading={delLoading} style={{marginBottom: 15}}
-                    onClick={() => this.batchDel()}>批量删除</Button>
-
-            <Alert style={{marginBottom: 15}} message={<span>已选择 <a>{rowSelection.selectedRowKeys.length}</a> 项<a
-              style={{marginLeft: 20}}>清空</a></span>} type="info" showIcon/>
-            <Spin spinning={loading}>
               <ZZTable
                 dataSource={dataSource}
                 columns={columns}
                 rowKey={record => record.id}
                 rowSelection={rowSelection}
               />
-            </Spin>
           </ZZCard>
         </div>
       </div>

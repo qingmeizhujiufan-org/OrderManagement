@@ -35,49 +35,32 @@ class ProductList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.columns = [{
-      title: '仓库地址',
-      dataIndex: 'address',
-      width: 250,
-      key: 'address'
-    }, {
-      title: '产品名称',
-      width: 300,
-      dataIndex: 'productName',
-      key: 'productName'
-    }, {
-      title: '单位',
-      align: 'center',
-      dataIndex: 'unit',
-      key: 'unit',
-    }, {
-      title: '成本价格',
-      align: 'right',
-      dataIndex: 'price',
-      key: 'readNum',
-    }, {
-      title: '备注',
-      width: 120,
-      dataIndex: 'remark',
-      key: 'remark'
-    }, {
-      title: '产品条码',
-      align: 'center',
-      dataIndex: 'productCode',
-      key: 'productCode'
-    }, {
-      title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-      key: 'operation',
-      fixed: 'right',
-      width: 120,
-      render: (text, record) => (
-        <span>
-          <a href="javascript:;">编辑</a>
-          <Divider type="vertical"/>
-          <a href="javascript:;">删除</a>
-        </span>
-      ),
-    }];
+    this.columns = [
+      {title: '区域', dataIndex: 'address', key: 'address'},
+      {title: '业务员姓名', dataIndex: 'personName', key: 'personName'},
+      {title: '订单编号', align: 'center', dataIndex: 'orderCode', key: 'orderCode'},
+      {title: '所属仓库', align: 'center', dataIndex: 'warehouse', key: 'warehouse'},
+      {title: '订单性质', dataIndex: 'orderType', key: 'orderType'},
+      {title: '快递类别', align: 'center', dataIndex: 'expressType', key: 'expressType'},
+      {title: '寄件电话', dataIndex: 'fromTel', key: 'fromTel'},
+      {title: '寄件地址', align: 'center', dataIndex: 'fromAddress', key: 'fromAddress'},
+      {title: '成单微信号', align: 'center', dataIndex: 'successWXCode', key: 'successWXCode'},
+      {title: '成单日期', align: 'center', dataIndex: 'successDate', key: 'successDate'},
+      {title: '发货日期', align: 'center', dataIndex: 'sendDate', key: 'sendDate'},
+      {title: '收件人', align: 'center', dataIndex: 'receiver', key: 'receiver'},
+      {title: '收件人电话', align: 'center', dataIndex: 'receiverTel', key: 'receiverTel'},
+      {title: '收件人地址', align: 'center', dataIndex: 'receiverAddress', key: 'receiverAddress'},
+      {title: '定金', align: 'center', dataIndex: 'deposit', key: 'deposit'},
+      {title: '代收金额', align: 'center', dataIndex: 'collectMoney', key: 'collectMoney'},
+      {title: '总金额', align: 'center', dataIndex: 'totalMoney', key: 'totalMoney'},
+      {title: '国际件', align: 'center', dataIndex: 'internal', key: 'internal'},
+      {title: '成本', align: 'center', dataIndex: 'cost', key: 'cost'},
+      {title: '快递单号', align: 'center', dataIndex: 'expressCode', key: 'expressCode'},
+      {title: '快递状态', align: 'center', dataIndex: 'expressState', key: 'expressState'},
+      {title: '广告渠道', align: 'center', dataIndex: 'adsType', key: 'adsType'},
+      {title: '进线时间', align: 'center', dataIndex: 'inTime', key: 'inTime'},
+      {title: '备注', align: 'center', dataIndex: 'remark', key: 'remark'}
+    ];
 
     this.state = {
       loading: false,
@@ -95,31 +78,7 @@ class ProductList extends React.Component {
   }
 
   getList = () => {
-    // this.setState({
-    //     loading: true
-    // });
-    // let param = {};
-    // param.userId = sessionStorage.userId;
-    // ajax.getJSON(getLiveListUrl, param, data => {
-    //     if (data.success) {
-    //         let backData = data.backData;
-    //         backData.map(item => {
-    //             item.key = item.id;
-    //         });
-    //         this.setState({
-    //             dataSource: backData,
-    //             loading: false
-    //         });
-    //     }
-    // });
-  }
 
-  detailrouter = (id) => {
-    return `/frame/dish/dishDetailInfo/${id}`
-  }
-
-  editrouter = (id) => {
-    return `/frame/news/newsList/edit/${id}`
   }
 
   onReview = (record, index, state) => {
@@ -152,34 +111,6 @@ class ProductList extends React.Component {
     });
   }
 
-  onDelete = (key) => {
-    Modal.confirm({
-      title: '提示',
-      content: '确认要删除吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => {
-        let param = {};
-        param.id = key;
-        ajax.postJSON(delLiveUrl, JSON.stringify(param), data => {
-          if (data.success) {
-            notification.open({
-              message: '删除成功！',
-              icon: <Icon type="smile-circle" style={{color: '#108ee9'}}/>,
-            });
-
-            const dataSource = [...this.state.dataSource].filter(item => item.key !== id);
-
-            this.setState({
-              dataSource,
-            });
-          } else {
-            message.warning(data.backMsg);
-          }
-        });
-      }
-    });
-  }
 
   render() {
     const {loading, dataSource, searchText, state} = this.state;
@@ -187,23 +118,22 @@ class ProductList extends React.Component {
     if (state !== 999) {
       n_dataSource = n_dataSource.filter(item => item.state === state);
     }
-
     return (
       <div className="zui-content page-newsList">
         <div className='pageHeader'>
           <div className="breadcrumb-block">
             <Breadcrumb>
               <Breadcrumb.Item>首页</Breadcrumb.Item>
-              <Breadcrumb.Item>产品管理</Breadcrumb.Item>
-              <Breadcrumb.Item>产品列表</Breadcrumb.Item>
+              <Breadcrumb.Item>订单管理</Breadcrumb.Item>
+              <Breadcrumb.Item>订单列表</Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <h1 className='title'>产品列表</h1>
+          <h1 className='title'>订单列表</h1>
           <div className='search-area'>
             <Row type='flex' justify="space-around" align="middle">
               <Col span={8}>
                 <Search
-                  placeholder="搜索产品关键字"
+                  placeholder="搜索订单关键字"
                   enterButton
                   size="large"
                   onSearch={searchText => this.setState({searchText})}
@@ -214,11 +144,12 @@ class ProductList extends React.Component {
         </div>
         <div className='pageContent'>
           <ZZCard>
-            <Button type="primary" icon='plus' href='#/frame/product/productList/add' style={{marginBottom: 15}}>新增产品</Button>
+            <Button type="primary" icon='plus' href='#/frame/product/productList/add' style={{marginBottom: 15}}>新增订单</Button>
 
             <ZZTable
               dataSource={n_dataSource}
               columns={this.columns}
+              scroll={{x: 2500}}
             />
           </ZZCard>
         </div>
