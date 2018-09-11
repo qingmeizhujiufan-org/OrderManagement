@@ -1,0 +1,54 @@
+.login {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+
+	.login-bg {
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 10;
+	}
+
+	.backup {
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(61, 72, 100, .85);
+		z-index: 11;
+	}
+
+	.login-box {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 700px;
+		height: 400px;
+		margin: -200px 0 0 -350px;
+		z-index: 100;
+	}
+
+	.login-input input {
+		border: none;
+		border-bottom: 1px solid #d9d9d9;
+		border-radius: 0;
+
+		&:focus {
+			box-shadow: none;
+		}
+	}
+
+	.login-form-button {
+		width: 100%;
+    	border-radius: 50px;
+	}
+}

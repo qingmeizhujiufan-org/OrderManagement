@@ -1,0 +1,68 @@
+.left-side {
+    .logo {
+        height: 64px;
+        margin: 0;
+        padding: 0;
+        line-height: 64px;
+        background: #fc5a59;
+        text-align: center;
+        color: #fff;
+        overflow: hidden;
+
+        img {
+            width: 55px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        h1 {
+            display: inline-block;
+            vertical-align: middle;
+            color: #fff;
+            font-size: 20px;
+            font-family: "Myriad Pro", "Helvetica Neue", Arial, Helvetica, sans-serif;
+            font-weight: 600;
+        }
+    }
+
+    .ant-menu-dark, .ant-menu-dark .ant-menu-sub {
+        background: #373d47 !important;
+        box-shadow: none !important;
+    }
+
+    .ant-menu.ant-menu-dark .ant-menu-item-selected, .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+        background-color: #24272d;
+
+        &:after {
+        	position: absolute;
+        	left: 0;
+        	top: 0;
+        	width:3px;
+        	height: 100%;
+        	background-color: #fc5a59;
+        }
+    }
+
+    .ant-menu.ant-menu-dark > .ant-menu-item:first-child:after {
+        width: 0;
+    }
+
+    .ant-layout-sider-trigger {
+        background-color: #24272d;
+    }
+
+    .ant-menu-vertical .ant-menu-item, .ant-menu-vertical-left .ant-menu-item, .ant-menu-vertical-right .ant-menu-item, .ant-menu-inline .ant-menu-item, .ant-menu-vertical .ant-menu-submenu-title, .ant-menu-vertical-left .ant-menu-submenu-title, .ant-menu-vertical-right .ant-menu-submenu-title, .ant-menu-inline .ant-menu-submenu-title {
+        margin: 0 !important;
+    }
+
+    .ant-menu-vertical > .ant-menu-item, .ant-menu-vertical-left > .ant-menu-item, .ant-menu-vertical-right > .ant-menu-item, .ant-menu-inline > .ant-menu-item, .ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
+        height: 40px;
+        line-height: 40px;
+    }
+
+    &.ant-layout-sider {
+        position: relative;
+        z-index: 100;
+        background: #373d47;
+    }
+}
