@@ -37,14 +37,14 @@ class ProductList extends React.Component {
 
     this.columns = [{
       title: '仓库地址',
-      dataIndex: 'address',
+      dataIndex: 'warehouse',
       width: 250,
-      key: 'address'
+      key: 'warehouse'
     }, {
       title: '产品名称',
       width: 300,
-      dataIndex: 'productName',
-      key: 'productName'
+      dataIndex: 'name',
+      key: 'name'
     }, {
       title: '单位',
       align: 'center',
@@ -53,20 +53,20 @@ class ProductList extends React.Component {
     }, {
       title: '成本价格',
       align: 'right',
-      dataIndex: 'price',
-      key: 'readNum',
+      dataIndex: 'cost_price',
+      key: 'cost_price',
     }, {
       title: '备注',
       width: 120,
-      dataIndex: 'remark',
-      key: 'remark'
+      dataIndex: 'memo',
+      key: 'memo'
     }, {
       title: '产品条码',
       align: 'center',
-      dataIndex: 'productCode',
-      key: 'productCode'
+      dataIndex: 'bar_code',
+      key: 'bar_code'
     }, {
-      title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+      title: '操作',
       key: 'operation',
       fixed: 'right',
       width: 120,
@@ -114,42 +114,8 @@ class ProductList extends React.Component {
     // });
   }
 
-  detailrouter = (id) => {
-    return `/frame/dish/dishDetailInfo/${id}`
-  }
-
-  editrouter = (id) => {
-    return `/frame/news/newsList/edit/${id}`
-  }
-
-  onReview = (record, index, state) => {
-    Modal.confirm({
-      title: '审核新闻',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => {
-        let param = {};
-        param.id = record.id;
-        param.state = state;
-        param.creator = record.creator;
-        ajax.postJSON(reviewUrl, JSON.stringify(param), data => {
-          if (data.success) {
-            notification.open({
-              message: '审核成功！',
-              icon: <Icon type="smile-circle" style={{color: '#108ee9'}}/>,
-            });
-            const dataSource = [...this.state.dataSource];
-            dataSource[index].state = state;
-
-            this.setState({
-              dataSource,
-            });
-          } else {
-            message.warning(data.backMsg);
-          }
-        });
-      }
-    });
+  addProduct = () => {
+    return this.context.router.push('/frame/product/add');
   }
 
   onDelete = (key) => {
@@ -214,8 +180,7 @@ class ProductList extends React.Component {
         </div>
         <div className='pageContent'>
           <ZZCard>
-            <Button type="primary" icon='plus' href='#/frame/product/productList/add' style={{marginBottom: 15}}>新增产品</Button>
-
+            <Button type="primary" icon='plus' onClick={this.addProduct} style={{marginBottom: 15}}>新增产品</Button>
             <ZZTable
               dataSource={n_dataSource}
               columns={this.columns}

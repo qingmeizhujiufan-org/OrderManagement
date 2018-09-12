@@ -5,7 +5,6 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
-import {message} from "antd/lib/index";
 
 const queryListUrl = restUrl.ADDR + 'user/queryList';
 const delUrl = restUrl.ADDR + 'user/delete';
@@ -13,7 +12,6 @@ const delUrl = restUrl.ADDR + 'user/delete';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const AutoCompleteOption = AutoComplete.Option;
-const { TextArea } = Input;
 
 
 class Index extends React.Component {
@@ -27,25 +25,41 @@ class Index extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        ajax.getJSON(queryListUrl, null, data => {
-          if (data.success) {
-            data = data.backData;
-            data.map(function (item, index) {
-              item.key = index;
-            });
-            this.setState({
-              dataSource: data,
-              loading: false
-            });
-          } else {
-            message.error(data.backMsg);
-          }
-        });
       }
     });
   }
 
+  handleConfirmBlur = (e) => {
+    const value = e.target.value;
+    this.setState({confirmDirty: this.state.confirmDirty || !!value});
+  }
 
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Two passwords that you enter is inconsistent!');
+    } else {
+      callback();
+    }
+  }
+
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], {force: true});
+    }
+    callback();
+  }
+
+  handleWebsiteChange = (value) => {
+    let autoCompleteResult;
+    if (!value) {
+      autoCompleteResult = [];
+    } else {
+      autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
+    }
+    this.setState({autoCompleteResult});
+  }
 
   render() {
     const {getFieldDecorator} = this.props.form;
@@ -91,85 +105,92 @@ class Index extends React.Component {
           <div className="breadcrumb-block">
             <Breadcrumb>
               <Breadcrumb.Item>首页</Breadcrumb.Item>
-              <Breadcrumb.Item>产品管理</Breadcrumb.Item>
-              <Breadcrumb.Item>新增产品</Breadcrumb.Item>
+              <Breadcrumb.Item>订单管理</Breadcrumb.Item>
+              <Breadcrumb.Item>新增订单</Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <h1 className='title'>新增产品</h1>
+          <h1 className='title'>新增订单</h1>
         </div>
         <div className='pageContent'>
           <ZZCard
-            title="新增产品"
+            title="新增订单"
           >
             <Form onSubmit={this.handleSubmit}>
               <FormItem
                 {...formItemLayout}
-                label="所属仓库"
+                label="用户名"
               >
-                {getFieldDecorator('warehouse', {
+                {getFieldDecorator('user_code', {
                   rules: [{
-                    required: true, message: '请输入',
+                    required: true, message: '请输入用户名',
                   }],
                 })(
-                  <Input placeholder="请输入所属仓库"/>
+                  <Input/>
                 )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
-                label="产品名称"
+                label="密码"
               >
-                {getFieldDecorator('name', {
+                {getFieldDecorator('password', {
                   rules: [{
-                    required: true, message: '请输入产品名称',
+                    required: true, message: '请输入密码',
+                  }, {
+                    validator: this.validateToNextPassword,
                   }],
                 })(
-                  <Input placeholder="请输入产品名称"/>
+                  <Input type="password"/>
                 )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
-                label="单位"
+                label="确认密码"
               >
-                {getFieldDecorator('unit', {
-                  rules: [
-                    { required: true, message: '请选择产品单位'},
-                  ],
+                {getFieldDecorator('confirm', {
+                  rules: [{
+                    required: true, message: '请确认密码',
+                  }, {
+                    validator: this.compareToFirstPassword,
+                  }],
                 })(
-                  <Select placeholder="请选择">
-                    <Option value="red">Red</Option>
-                    <Option value="green">Green</Option>
-                    <Option value="blue">Blue</Option>
-                  </Select>
+                  <Input type="password" onBlur={this.handleConfirmBlur}/>
                 )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
-                label="产品价格"
+                label="真实姓名"
               >
-                {getFieldDecorator('cost_price', {
-                  rules: [{required: true, message: '请输入产品价格', whitespace: true}],
+                {getFieldDecorator('user_name', {
+                  rules: [{required: true, message: '请输入真实姓名', whitespace: true}],
                 })(
-                  <Input placeholder="请输入产品价格"/>
+                  <Input/>
                 )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
-                label="产品条码"
+                label="个人电话"
               >
-                {getFieldDecorator('bar_code', {
-                  rules: [{required: true, message: '请输入产品条码'}],
+                {getFieldDecorator('phone', {
+                  rules: [{required: true, message: '请输入个人电话'}],
                 })(
-                  <Input placeholder="请输入产品条码"/>
+                  <Input addonBefore={prefixSelector} style={{width: '100%'}}/>
                 )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
-                label="备注"
+                label="所属区域"
               >
-                {getFieldDecorator('memo', {
-                  initialValue: ''
+                {getFieldDecorator('region', {
+                  rules: [{required: true, message: '请输入所属区域'}],
                 })(
-                  <TextArea rows={4}/>
+                  <Input addonBefore={prefixSelector} style={{width: '100%'}}/>
+                )}
+              </FormItem>
+              <FormItem {...tailFormItemLayout}>
+                {getFieldDecorator('agreement', {
+                  valuePropName: 'checked',
+                })(
+                  <Checkbox>我已同意<a href="">协议</a></Checkbox>
                 )}
               </FormItem>
               <FormItem {...tailFormItemLayout}>
@@ -183,10 +204,10 @@ class Index extends React.Component {
   }
 }
 
-const productAdd = Form.create()(Index);
+const userAdd = Form.create()(Index);
 
 Index.contextTypes = {
   router: PropTypes.object
 }
 
-export default productAdd;
+export default userAdd;

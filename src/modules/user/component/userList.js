@@ -11,35 +11,45 @@ const delUrl = restUrl.ADDR + 'user/delete';
 
 const columns = [{
   title: '用户名',
-  dataIndex: 'username',
-  key: 'username',
+  dataIndex: 'user_code',
+  key: 'user_code',
 }, {
   title: '密码',
   dataIndex: 'password',
   key: 'password',
 }, {
   title: '姓名',
-  dataIndex: 'name',
-  key: 'name',
+  dataIndex: 'user_name',
+  key: 'user_name',
 }, {
   title: '个人手机号',
-  dataIndex: 'telphone',
-  key: 'telphone',
+  dataIndex: 'phone',
+  key: 'phone',
 }, {
   title: '区域',
-  dataIndex: 'area',
-  key: 'area',
+  dataIndex: 'region',
+  key: 'region',
 }, {
+  title: '用户角色',
+  dataIndex: 'role_id',
+  key: 'role_id',
+},{
+  title: '是否冻结',
+  dataIndex: 'is_frozen',
+  key: 'is_frozen',
+},{
   title: '备注',
-  dataIndex: 'remark',
-  key: 'remark',
+  dataIndex: 'memo',
+  key: 'memo',
 }, {
   title: '操作',
   key: 'action',
   align: 'center',
-  width: 150,
+  width: 200,
   render: (text, record) => (
     <span>
+      <a href="javascript:;">详情</a>
+      <Divider type="vertical"/>
       <a href="javascript:;">编辑</a>
       <Divider type="vertical"/>
       <a href="javascript:;">删除</a>
@@ -88,7 +98,7 @@ class Index extends React.Component {
     this.setState({selectedRowKeys});
   }
 
-  batchDel = () => {
+  delUser = () => {
     const param = {};
     param.ids = this.state.selectedRowKeys.join(',');
     console.log('ids === ', param);
@@ -141,7 +151,7 @@ class Index extends React.Component {
             <Button type='primary' icon='plus' loading={delLoading} style={{marginBottom: 15, marginRight: 10}}
                     onClick={() => this.addUser()}>新增用户</Button>
             <Button type='danger' icon='close' loading={delLoading} style={{marginBottom: 15}}
-                    onClick={() => this.batchDel()}>批量删除</Button>
+                    onClick={() => this.delUser()}>批量删除</Button>
 
             <Alert style={{marginBottom: 15}} message={<span>已选择 <a>{rowSelection.selectedRowKeys.length}</a> 项<a
               style={{marginLeft: 20}}>清空</a></span>} type="info" showIcon/>

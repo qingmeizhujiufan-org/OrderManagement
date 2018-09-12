@@ -36,30 +36,40 @@ class ProductList extends React.Component {
     super(props);
 
     this.columns = [
-      {title: '区域', dataIndex: 'address', key: 'address'},
-      {title: '业务员姓名', dataIndex: 'personName', key: 'personName'},
-      {title: '订单编号', align: 'center', dataIndex: 'orderCode', key: 'orderCode'},
+      {title: '区域', dataIndex: 'region', key: 'region',fixed: 'left'},
+      {title: '业务员姓名', dataIndex: 'user_name', key: 'user_name',fixed: 'left'},
+      {title: '订单编号', align: 'center', dataIndex: 'order_code', key: 'order_code',fixed: 'left'},
       {title: '所属仓库', align: 'center', dataIndex: 'warehouse', key: 'warehouse'},
-      {title: '订单性质', dataIndex: 'orderType', key: 'orderType'},
+      {title: '订单性质', dataIndex: 'order_nature', key: 'order_nature'},
       {title: '快递类别', align: 'center', dataIndex: 'expressType', key: 'expressType'},
-      {title: '寄件电话', dataIndex: 'fromTel', key: 'fromTel'},
-      {title: '寄件地址', align: 'center', dataIndex: 'fromAddress', key: 'fromAddress'},
-      {title: '成单微信号', align: 'center', dataIndex: 'successWXCode', key: 'successWXCode'},
-      {title: '成单日期', align: 'center', dataIndex: 'successDate', key: 'successDate'},
-      {title: '发货日期', align: 'center', dataIndex: 'sendDate', key: 'sendDate'},
-      {title: '收件人', align: 'center', dataIndex: 'receiver', key: 'receiver'},
-      {title: '收件人电话', align: 'center', dataIndex: 'receiverTel', key: 'receiverTel'},
-      {title: '收件人地址', align: 'center', dataIndex: 'receiverAddress', key: 'receiverAddress'},
-      {title: '定金', align: 'center', dataIndex: 'deposit', key: 'deposit'},
-      {title: '代收金额', align: 'center', dataIndex: 'collectMoney', key: 'collectMoney'},
-      {title: '总金额', align: 'center', dataIndex: 'totalMoney', key: 'totalMoney'},
-      {title: '国际件', align: 'center', dataIndex: 'internal', key: 'internal'},
-      {title: '成本', align: 'center', dataIndex: 'cost', key: 'cost'},
-      {title: '快递单号', align: 'center', dataIndex: 'expressCode', key: 'expressCode'},
-      {title: '快递状态', align: 'center', dataIndex: 'expressState', key: 'expressState'},
-      {title: '广告渠道', align: 'center', dataIndex: 'adsType', key: 'adsType'},
-      {title: '进线时间', align: 'center', dataIndex: 'inTime', key: 'inTime'},
-      {title: '备注', align: 'center', dataIndex: 'remark', key: 'remark'}
+      {title: '寄件电话', dataIndex: 'serder_phone', key: 'serder_phone'},
+      {title: '寄件地址', align: 'center', dataIndex: 'sender_addr', key: 'sender_addr'},
+      {title: '成单微信号', align: 'center', dataIndex: 'order_wechat_code', key: 'order_wechat_code'},
+      {title: '成单日期', align: 'center', dataIndex: 'order_date', key: 'order_date'},
+      {title: '发货日期', align: 'center', dataIndex: 'deliver_date', key: 'deliver_date'},
+      {title: '收件人', align: 'center', dataIndex: 'receiver_name', key: 'receiver_name'},
+      {title: '收件人电话', align: 'center', dataIndex: 'Receiver_phone', key: 'Receiver_phone'},
+      {title: '收件人地址', align: 'center', dataIndex: 'receiver_addr', key: 'receiver_addr'},
+      {title: '定金', align: 'center', dataIndex: 'deposit_amout', key: 'deposit_amout'},
+      {title: '代收金额', align: 'center', dataIndex: 'collection_amout', key: 'collection_amout'},
+      {title: '总金额', align: 'center', dataIndex: 'total_amount', key: 'total_amount'},
+      {title: '国际件', align: 'center', dataIndex: 'is_foreign_express', key: 'is_foreign_express'},
+      {title: '订单状态', align: 'center', dataIndex: 'order_state', key: 'order_state'},
+      {title: '是否超过成本', align: 'center', dataIndex: 'is_over_cost', key: 'is_over_cost'},
+      {title: '成本', align: 'center', dataIndex: 'cost_amount', key: 'cost_amount'},
+      {title: '快递单号', align: 'center', dataIndex: 'express_code', key: 'express_code'},
+      {title: '快递状态', align: 'center', dataIndex: 'express_state', key: 'express_state'},
+      {title: '广告渠道', align: 'center', dataIndex: 'advert_ channel', key: 'advert_ channel'},
+      {title: '进线时间', align: 'center', dataIndex: 'incomline_time', key: 'incomline_time'},
+      {title: '备注', align: 'center', dataIndex: 'remark', key: 'remark'},
+      {title: '操作', key: 'action', align: 'center', fixed:'right',
+        render: (text, record) => (
+          <span>
+            <a href="javascript:;">明细</a>
+            <Divider type="vertical"/>
+            <a href="javascript:;">确认</a>
+          </span>
+        )}
     ];
 
     this.state = {
@@ -78,6 +88,11 @@ class ProductList extends React.Component {
   }
 
   getList = () => {
+
+  }
+
+  addOrder =() => {
+    return this.context.router.push('/frame/order/add');
 
   }
 
@@ -144,7 +159,7 @@ class ProductList extends React.Component {
         </div>
         <div className='pageContent'>
           <ZZCard>
-            <Button type="primary" icon='plus' href='#/frame/product/productList/add' style={{marginBottom: 15}}>新增订单</Button>
+            <Button type="primary" icon='plus' onClick={this.addOrder} style={{marginBottom: 15}}>新增订单</Button>
 
             <ZZTable
               dataSource={n_dataSource}
