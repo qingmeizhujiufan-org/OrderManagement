@@ -21,7 +21,8 @@ class Index extends React.Component {
     this.state = {
       confirmDirty: false,
       autoCompleteResult: [],
-      userInfo: {}
+      userInfo: {},
+      visble: false
     };
   }
 
@@ -63,7 +64,16 @@ class Index extends React.Component {
   }
 
   resetPassword = () => {
+    this.setState({
+      visible: true
+    });
     console.log("reset")
+  }
+
+  handleCancel = () => {
+    this.setState({
+      visible: false
+    });
   }
 
 
@@ -79,8 +89,8 @@ class Index extends React.Component {
 
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
+    if (value && value !== form.getFieldValue('newPassword')) {
+      callback('两次输入的密码不一样!');
     } else {
       callback();
     }
@@ -101,12 +111,23 @@ class Index extends React.Component {
 
     const formItemLayout = {
       labelCol: {
+        xs: {span: 8},
+        sm: {span: 6},
+      },
+      wrapperCol: {
         xs: {span: 10},
         sm: {span: 8},
       },
+    };
+
+    const modalFormItemLayout = {
+      labelCol: {
+        xs: {span: 8},
+        sm: {span: 6},
+      },
       wrapperCol: {
-        xs: {span: 12},
-        sm: {span: 8},
+        xs: {span: 16},
+        sm: {span: 12},
       },
     };
 
@@ -117,20 +138,90 @@ class Index extends React.Component {
           offset: 0,
         },
         sm: {
-          span: 16,
-          offset: 8,
+          span: 14,
+          offset: 6,
         },
       },
     };
 
-    const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: '86',
-    })(
-      <Select style={{width: 70}}>
-        <Option value="86">+86</Option>
-        <Option value="87">+87</Option>
-      </Select>
-    );
+    const mainForm = (
+        <Form>
+          <FormItem
+            {...formItemLayout}
+            label="用户名"
+          >
+            {getFieldDecorator('user_code', {
+              initialValue: userInfo.user_code
+            })(
+              <Input disabled={true}/>
+            )}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="密码"
+          >
+            {getFieldDecorator('password', {
+              initialValue: userInfo.password
+            })(
+              <Input type="password" disabled={true}
+                     addonAfter={<span onClick={this.resetPassword}><Icon
+                       type="retweet"/>重置密码</span>}/>
+            )}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="用户ID"
+          >
+            {getFieldDecorator('role_id', {
+              initialValue: userInfo.role_id
+            })(
+              <Input disabled={true}/>
+            )}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="真实姓名"
+          >
+            {getFieldDecorator('user_name', {
+              initialValue: userInfo.user_name
+
+            })(
+              <Input disabled={true}/>
+            )}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="个人电话"
+          >
+            {getFieldDecorator('phone', {
+              initialValue: userInfo.phone
+            })(
+              <Input disabled={true}/>
+            )}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="所属区域"
+          >
+            {getFieldDecorator('region', {
+              initialValue: userInfo.region
+            })(
+              <Input disabled={true}/>
+            )}
+          </FormItem>
+          <FormItem {...tailFormItemLayout}>
+            {
+              userInfo.is_frozen === 1 ? (
+                  <Button type="primary" onClick={this.frozenUser}>解冻</Button>
+                )
+                : (
+                  <Button type="danger" onClick={this.frozenUser}>冻结</Button>
+                )
+            }
+          </FormItem>
+        </Form>
+      )
+    ;
 
     return (
       <div className="zui-content">
@@ -145,91 +236,63 @@ class Index extends React.Component {
           <h1 className='title'>用户详情</h1>
         </div>
         <div className='pageContent'>
-          <ZZCard
-            title="用户详情"
-          >
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem
-                {...formItemLayout}
-                label="用户名"
-              >
-                {getFieldDecorator('user_code', {
-                  initialValue: userInfo.user_code
-                })(
-                  <Input disabled={true}/>
-                )}
-              </FormItem>
-              <FormItem
-                {...formItemLayout}
-                label="密码"
-              >
-                {getFieldDecorator('password', {
-                  initialValue: userInfo.password
-                })(
-                  <Input type="password" disabled={true}
-                         addonAfter={<span onClick={this.resetPassword}><Icon type="retweet"/>重置密码</span>}/>
-                )}
-              </FormItem>
-              <FormItem
-                {...formItemLayout}
-                label="用户ID"
-              >
-                {getFieldDecorator('role_id', {
-                  initialValue: userInfo.role_id
-                })(
-                  <Input disabled={true}/>
-                )}
-              </FormItem>
-              <FormItem
-                {...formItemLayout}
-                label="真实姓名"
-              >
-                {getFieldDecorator('user_name', {
-                  initialValue: userInfo.user_name
-
-                })(
-                  <Input disabled={true}/>
-                )}
-              </FormItem>
-              <FormItem
-                {...formItemLayout}
-                label="个人电话"
-              >
-                {getFieldDecorator('phone', {
-                  initialValue: userInfo.phone
-                })(
-                  <Input disabled={true}/>
-                )}
-              </FormItem>
-              <FormItem
-                {...formItemLayout}
-                label="所属区域"
-              >
-                {getFieldDecorator('region', {
-                  initialValue: userInfo.region
-                })(
-                  <Input disabled={true}/>
-                )}
-              </FormItem>
-              <FormItem {...tailFormItemLayout}>
-                {
-                  userInfo.is_frozen === 1 ? (
-                      <Button type="primary" onClick={this.frozenUser}>解冻</Button>
-                    )
-                    : (
-                      <Button type="danger" onClick={this.frozenUser}>冻结</Button>
-                    )
-                }
-              </FormItem>
-            </Form>
+          <ZZCard>
+            {mainForm}
           </ZZCard>
         </div>
         <Modal
-          title="Basic Modal"
+          title="重置密码"
           visible={this.state.visible}
-          onOk={this.handleOk}
           onCancel={this.handleCancel}
+          footer={null}
         >
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem
+              {...modalFormItemLayout}
+              label="原始密码"
+            >
+              {getFieldDecorator('oldPassword', {
+                rules: [{
+                  required: true, message: '请输入密码',
+                }, {
+                  validator: this.validateToNextPassword,
+                }],
+              })(
+                <Input type="password"/>
+              )}
+            </FormItem>
+            <FormItem
+              {...modalFormItemLayout}
+              label="新密码"
+            >
+              {getFieldDecorator('newPassword', {
+                rules: [{
+                  required: true, message: '请输入密码',
+                }, {
+                  validator: this.validateToNextPassword,
+                }],
+              })(
+                <Input type="password"/>
+              )}
+            </FormItem>
+            <FormItem
+              {...modalFormItemLayout}
+              label="确认密码"
+            >
+              {getFieldDecorator('confirmNewPassword', {
+                rules: [{
+                  required: true, message: '请确认密码',
+                }, {
+                  validator: this.compareToFirstPassword,
+                }],
+              })(
+                <Input type="password" onBlur={this.handleConfirmBlur}/>
+              )}
+            </FormItem>
+            <FormItem {...tailFormItemLayout}>
+              <Button type="primary" htmlType="submit">提交</Button>
+            </FormItem>
+          </Form>
         </Modal>
       </div>
     );

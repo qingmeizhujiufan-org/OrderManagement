@@ -53,7 +53,7 @@ class PageRouter extends React.Component {
                             <Route path="user/count" component={User} />
                             <Route path="user/add" component={UserAdd} />
                             <Route path="user/list" component={UserList} />
-                            <Route path="user/detail" component={UserDetail} />
+                            <Route path="user/detail/:id" component={UserDetail}/>
                             <Route path="order/orderList" component={OrderList}/>
                             <Route path="order/add" component={OrderAdd}/>
                         </Route>
