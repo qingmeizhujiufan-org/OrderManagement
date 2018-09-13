@@ -6,7 +6,6 @@ import Frame from '../modules/Frame';
 
 /* 登录 */
 import Login from '../modules/login/component/login';
-import Home from "../modules/home/component/home";
 import User from "../modules/user/component";
 import UserList from "../modules/user/component/userList";
 import UserAdd from "../modules/user/component/userAdd";
@@ -46,8 +45,7 @@ class PageRouter extends React.Component {
                         <IndexRoute component={Login}/>
                         <Route path="login" component={Login}/>
                         <Route path="/frame(/*)" component={Frame} onEnter={requireAuth}>
-                            <IndexRoute component={Home}/>
-                            <Route path="home" component={Home} />
+                            <IndexRoute component={UserList}/>
                             <Route path="product/productList" component={ProductList} />
                             <Route path="product/productList/edit/:id" component={EditProduct} />
                             <Route path="product/add" component={AddProduct} />

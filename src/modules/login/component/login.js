@@ -27,25 +27,30 @@ class Login extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.setState({
-                    loading: true
-                });
-                ajax.postJSON(loginUrl, JSON.stringify(values), (data) => {
-                    if (data.success) {
-                        sessionStorage.setItem('token', data.token);
-                        sessionStorage.setItem('expireDate', data.expireDate);
-                        sessionStorage.setItem('userId', data.userId);
-                        sessionStorage.setItem('cityId', data.cityId);
-                        sessionStorage.setItem('type', data.type);
-                        sessionStorage.setItem('typeName', data.typeName);
-                        return this.context.router.push('/frame/home');
-                    } else {
-                        message.error(data.backMsg);
-                    }
-                    this.setState({
-                        loading: false
-                    });
-                });
+                // this.setState({
+                //     loading: true
+                // });
+                // ajax.postJSON(loginUrl, JSON.stringify(values), (data) => {
+                //     if (data.success) {
+                //         sessionStorage.setItem('token', data.token);
+                //         sessionStorage.setItem('expireDate', data.expireDate);
+                //         sessionStorage.setItem('userId', data.userId);
+                //         sessionStorage.setItem('cityId', data.cityId);
+                //         sessionStorage.setItem('type', data.type);
+                //         sessionStorage.setItem('typeName', data.typeName);
+                //         return this.context.router.push('/frame/home');
+                //     } else {
+                //         message.error(data.backMsg);
+                //     }
+                //     this.setState({
+                //         loading: false
+                //     });
+                // });
+                sessionStorage.setItem('token', '123');
+                sessionStorage.setItem('expireDate', new Date(new Date().getTime() + 10000000));
+                sessionStorage.setItem('userId', '123');
+                sessionStorage.setItem('type', '1');
+                return this.context.router.push('/frame/user/list');
             }
         });
     }

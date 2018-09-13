@@ -1,8 +1,6 @@
-const ADDR = 'http://www.xuecheh.com:8001/';
-// const ADDR = 'http://localhost:8118/';
+const ADDR = 'http://118.31.44.54:8899/';
 
 module.exports = {
     BASE_HOST: ADDR,
-    ADDR: ADDR + 'api/',
     UPLOAD: ADDR + 'AdminManage/UpLoadImage',
 };
