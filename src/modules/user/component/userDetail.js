@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Form, Input, Select, Breadcrumb, Checkbox, Button, AutoComplete} from 'antd';
+import {Form, Input, Select, Breadcrumb, Icon, Button, AutoComplete, Modal} from 'antd';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 
-const userAddUrl = restUrl.ADDR + 'user/save';
+const userDetailUrl = restUrl.ADDR + 'user/qureyOneUser';
 const delUrl = restUrl.ADDR + 'user/delete';
 
 const FormItem = Form.Item;
@@ -15,10 +15,57 @@ const AutoCompleteOption = AutoComplete.Option;
 
 
 class Index extends React.Component {
-  state = {
-    confirmDirty: false,
-    autoCompleteResult: [],
-  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      confirmDirty: false,
+      autoCompleteResult: [],
+      userInfo: {}
+    };
+  }
+
+  componentWillMount = () => {
+    this.getUserDetail(this.props.params.id)
+  }
+
+  //获取用户详细信息
+  getUserDetail = (id) => {
+    let userInfo = {
+      user_code: '222',
+      pic_src: '../../../assets/img/cover.jpg',
+      password: '1111',
+      role_id: '11',
+      user_name: 'ww',
+      phone: '3244',
+      is_frozen: 1,
+      region: '2'
+    }
+    this.setState({
+      userInfo: userInfo
+    });
+  }
+
+  frozenUser = () => {
+    const userInfo = this.state.userInfo;
+    Modal.confirm({
+      title: '提示',
+      content: userInfo.is_frozen === 1 ? '确认要解冻该用户吗？' : '确认冻结该用户吗?',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        let param = {};
+        param.id = userInfo.role_id;
+        param.type = userInfo.is_frozen ? 0 : 1;
+        console.log("param ===", param);
+      }
+    })
+  }
+
+  resetPassword = () => {
+    console.log("reset")
+  }
+
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -29,10 +76,6 @@ class Index extends React.Component {
     });
   }
 
-  handleConfirmBlur = (e) => {
-    const value = e.target.value;
-    this.setState({confirmDirty: this.state.confirmDirty || !!value});
-  }
 
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form;
@@ -54,7 +97,7 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {autoCompleteResult} = this.state;
+    const {autoCompleteResult, userInfo} = this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -90,21 +133,20 @@ class Index extends React.Component {
     );
 
     return (
-
       <div className="zui-content">
         <div className='pageHeader'>
           <div className="breadcrumb-block">
             <Breadcrumb>
               <Breadcrumb.Item>首页</Breadcrumb.Item>
               <Breadcrumb.Item>用户管理</Breadcrumb.Item>
-              <Breadcrumb.Item>新增用户</Breadcrumb.Item>
+              <Breadcrumb.Item>用户详情</Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <h1 className='title'>新增用户</h1>
+          <h1 className='title'>用户详情</h1>
         </div>
         <div className='pageContent'>
           <ZZCard
-            title="新增用户"
+            title="用户详情"
           >
             <Form onSubmit={this.handleSubmit}>
               <FormItem
@@ -112,11 +154,9 @@ class Index extends React.Component {
                 label="用户名"
               >
                 {getFieldDecorator('user_code', {
-                  rules: [{
-                    required: true, message: '请输入用户名',
-                  }],
+                  initialValue: userInfo.user_code
                 })(
-                  <Input/>
+                  <Input disabled={true}/>
                 )}
               </FormItem>
               <FormItem
@@ -124,27 +164,20 @@ class Index extends React.Component {
                 label="密码"
               >
                 {getFieldDecorator('password', {
-                  rules: [{
-                    required: true, message: '请输入密码',
-                  }, {
-                    validator: this.validateToNextPassword,
-                  }],
+                  initialValue: userInfo.password
                 })(
-                  <Input type="password"/>
+                  <Input type="password" disabled={true}
+                         addonAfter={<span onClick={this.resetPassword}><Icon type="retweet"/>重置密码</span>}/>
                 )}
               </FormItem>
               <FormItem
                 {...formItemLayout}
-                label="确认密码"
+                label="用户ID"
               >
-                {getFieldDecorator('confirm', {
-                  rules: [{
-                    required: true, message: '请确认密码',
-                  }, {
-                    validator: this.compareToFirstPassword,
-                  }],
+                {getFieldDecorator('role_id', {
+                  initialValue: userInfo.role_id
                 })(
-                  <Input type="password" onBlur={this.handleConfirmBlur}/>
+                  <Input disabled={true}/>
                 )}
               </FormItem>
               <FormItem
@@ -152,9 +185,10 @@ class Index extends React.Component {
                 label="真实姓名"
               >
                 {getFieldDecorator('user_name', {
-                  rules: [{required: true, message: '请输入真实姓名', whitespace: true}],
+                  initialValue: userInfo.user_name
+
                 })(
-                  <Input/>
+                  <Input disabled={true}/>
                 )}
               </FormItem>
               <FormItem
@@ -162,9 +196,9 @@ class Index extends React.Component {
                 label="个人电话"
               >
                 {getFieldDecorator('phone', {
-                  rules: [{required: true, message: '请输入个人电话'}],
+                  initialValue: userInfo.phone
                 })(
-                  <Input addonBefore={prefixSelector} style={{width: '100%'}}/>
+                  <Input disabled={true}/>
                 )}
               </FormItem>
               <FormItem
@@ -172,24 +206,31 @@ class Index extends React.Component {
                 label="所属区域"
               >
                 {getFieldDecorator('region', {
-                  rules: [{required: true, message: '请输入所属区域'}],
+                  initialValue: userInfo.region
                 })(
-                  <Input addonBefore={prefixSelector} style={{width: '100%'}}/>
+                  <Input disabled={true}/>
                 )}
               </FormItem>
               <FormItem {...tailFormItemLayout}>
-                {getFieldDecorator('agreement', {
-                  valuePropName: 'checked',
-                })(
-                  <Checkbox>我已同意<a href="">协议</a></Checkbox>
-                )}
-              </FormItem>
-              <FormItem {...tailFormItemLayout}>
-                <Button type="primary" htmlType="submit">提交</Button>
+                {
+                  userInfo.is_frozen === 1 ? (
+                      <Button type="primary" onClick={this.frozenUser}>解冻</Button>
+                    )
+                    : (
+                      <Button type="danger" onClick={this.frozenUser}>冻结</Button>
+                    )
+                }
               </FormItem>
             </Form>
           </ZZCard>
         </div>
+        <Modal
+          title="Basic Modal"
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+        </Modal>
       </div>
     );
   }

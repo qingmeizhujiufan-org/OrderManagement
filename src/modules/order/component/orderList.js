@@ -164,7 +164,7 @@ class ProductList extends React.Component {
             <ZZTable
               dataSource={n_dataSource}
               columns={this.columns}
-              scroll={{x: 2500}}
+              scroll={{x: 2400}}
             />
           </ZZCard>
         </div>

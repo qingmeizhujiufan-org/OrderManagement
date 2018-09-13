@@ -9,58 +9,55 @@ import '../index.less';
 const queryListUrl = restUrl.BASE_HOST + 'user/userList';
 const frozenUserUrl = restUrl.BASE_HOST + 'user/frozenUser';
 
-const columns = [{
-  title: '用户名',
-  dataIndex: 'user_code',
-  key: 'user_code',
-}, {
-  title: '密码',
-  dataIndex: 'password',
-  key: 'password',
-}, {
-  title: '姓名',
-  dataIndex: 'user_name',
-  key: 'user_name',
-}, {
-  title: '个人手机号',
-  dataIndex: 'phone',
-  key: 'phone',
-}, {
-  title: '区域',
-  dataIndex: 'region',
-  key: 'region',
-}, {
-  title: '用户角色',
-  dataIndex: 'role_id',
-  key: 'role_id',
-},{
-  title: '是否冻结',
-  dataIndex: 'is_frozen',
-  key: 'is_frozen',
-},{
-  title: '备注',
-  dataIndex: 'memo',
-  key: 'memo',
-}, {
-  title: '操作',
-  key: 'action',
-  align: 'center',
-  width: 200,
-  render: (text, record) => (
-    <span>
-      <a href="javascript:;">详情</a>
-      <Divider type="vertical"/>
-      <a href="javascript:;">编辑</a>
-      <Divider type="vertical"/>
-      <a href="javascript:;">删除</a>
-    </span>
-  ),
-}];
-
 class Index extends React.Component {
   constructor(props) {
     super(props);
 
+    this.columns = [{
+      title: '用户名',
+      dataIndex: 'user_code',
+      key: 'user_code',
+    }, {
+      title: '密码',
+      dataIndex: 'password',
+      key: 'password',
+    }, {
+      title: '姓名',
+      dataIndex: 'user_name',
+      key: 'user_name',
+    }, {
+      title: '个人手机号',
+      dataIndex: 'phone',
+      key: 'phone',
+    }, {
+      title: '区域',
+      dataIndex: 'region',
+      key: 'region',
+    }, {
+      title: '用户角色',
+      dataIndex: 'role_id',
+      key: 'role_id',
+    }, {
+      title: '是否冻结',
+      dataIndex: 'is_frozen',
+      key: 'is_frozen',
+    }, {
+      title: '备注',
+      dataIndex: 'memo',
+      key: 'memo',
+    }, {
+      title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+      key: 'operation',
+      width: 120,
+      align: 'center',
+      render: (text, record, index) => (
+         <span>
+            <a onClick={this.checkDetail}>详情</a>
+            <Divider type="vertical"/>
+            <a href="javascript:;">删除</a>
+          </span>
+      )
+    }];
     this.state = {
       selectedRowKeys: [], // Check here to configure the default column
       dataSource: [],
@@ -79,7 +76,7 @@ class Index extends React.Component {
   getList = () => {
     ajax.getJSON(queryListUrl, null, data => {
       if (data.success) {
-        data = data.backData;
+        data = data.backData.content;
         data.map(function (item, index) {
           item.key = index;
         });
@@ -93,32 +90,13 @@ class Index extends React.Component {
     });
   }
 
+  checkDetail = () => {
+
+  }
+
   onSelectChange = (selectedRowKeys) => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({selectedRowKeys});
-  }
-
-  delUser = () => {
-    const param = {};
-    param.ids = this.state.selectedRowKeys.join(',');
-    console.log('ids === ', param);
-    this.setState({
-      delLoading: true
-    });
-    ajax.postJSON(delUrl, JSON.stringify(param), data => {
-      if (data.success) {
-        const dataSource = [...this.state.dataSource].filter(item => item.id.indexOf(param.ids) <= -1);
-        this.setState({
-          dataSource,
-          selectedRowKeys: []
-        });
-      } else {
-        message.error(data.backMsg);
-      }
-      this.setState({
-        delLoading: false
-      });
-    });
   }
 
   addUser = () => {
@@ -148,17 +126,12 @@ class Index extends React.Component {
           <ZZCard
             title="用户列表"
           >
-            <Button type='primary' icon='plus' loading={delLoading} style={{marginBottom: 15, marginRight: 10}}
+            <Button type='primary' icon='plus' loading={delLoading} style={{marginBottom: 15}}
                     onClick={() => this.addUser()}>新增用户</Button>
-            <Button type='danger' icon='close' loading={delLoading} style={{marginBottom: 15}}
-                    onClick={() => this.delUser()}>批量删除</Button>
-
-            <Alert style={{marginBottom: 15}} message={<span>已选择 <a>{rowSelection.selectedRowKeys.length}</a> 项<a
-              style={{marginLeft: 20}}>清空</a></span>} type="info" showIcon/>
             <Spin spinning={loading}>
               <ZZTable
                 dataSource={dataSource}
-                columns={columns}
+                columns={this.columns}
                 rowKey={record => record.id}
                 rowSelection={rowSelection}
               />

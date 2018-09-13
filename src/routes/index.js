@@ -15,7 +15,7 @@ import AddProduct from "../modules/product/component/addProduct";
 import Organize from "../modules/organize/component";
 import OrderList from "../modules/order/component/orderList";
 import OrderAdd from "../modules/order/component/addOrder";
-
+import UserDetail from "../modules/user/component/userDetail"
 
 const requireAuth = (nextState, replace) => {
     if (!sessionStorage.expireDate || new Date(sessionStorage.expireDate).getTime() <= new Date().getTime()) {
@@ -53,6 +53,7 @@ class PageRouter extends React.Component {
                             <Route path="user/count" component={User} />
                             <Route path="user/add" component={UserAdd} />
                             <Route path="user/list" component={UserList} />
+                            <Route path="user/detail" component={UserDetail} />
                             <Route path="order/orderList" component={OrderList}/>
                             <Route path="order/add" component={OrderAdd}/>
                         </Route>
