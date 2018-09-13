@@ -53,6 +53,17 @@ const Menu = [
                 label: '订单列表'
             }
         ]
+    }, {
+        key: '5',
+        iconType: 'line-chart',
+        label: '报表管理',
+        children: [
+            {
+                key: '4_1',
+                link: '/frame/order/orderList',
+                label: '订单列表'
+            }
+        ]
     }
 ];
 
