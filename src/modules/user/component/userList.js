@@ -6,8 +6,8 @@ import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 
-const queryListUrl = restUrl.ADDR + 'user/queryList';
-const delUrl = restUrl.ADDR + 'user/delete';
+const queryListUrl = restUrl.BASE_HOST + 'user/userList';
+const frozenUserUrl = restUrl.BASE_HOST + 'user/frozenUser';
 
 const columns = [{
   title: '用户名',
