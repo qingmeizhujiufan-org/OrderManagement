@@ -144,12 +144,12 @@ var ajax = {
             }
         }
         //存在token则携带全局token到header里面
-        var token = sessionStorage.token;
-        if(token){
-            req.set('Token', token);
-        }else {
-            window.location.hash = '/login';
-        }
+        // var token = sessionStorage.token;
+        // if(token){
+        //     req.set('Token', token);
+        // }else {
+        //     window.location.hash = '/login';
+        // }
         req.query(_defaults.query).send(_defaults.send).end(function (err, res) {
             if (err && err.status === 401) {
                 window.location.hash = '/login';
