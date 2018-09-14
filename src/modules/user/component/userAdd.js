@@ -1,18 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Row, Col, Form, Input, Select, Breadcrumb, Checkbox, Button, AutoComplete, Upload, Icon} from 'antd';
-import {ZZCard, ZZTable} from 'Comps/zz-antD';
+import {Row, Col, Form, Input, Select, Breadcrumb, Button, Upload, Icon, Spin, notification} from 'antd';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 
 const userAddUrl = restUrl.BASE_HOST + 'user/save';
-const delUrl = restUrl.BASE_HOST + 'user/delete';
 const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const AutoCompleteOption = AutoComplete.Option;
 
 const formItemLayout = {
     labelCol: {span: 6},
@@ -26,7 +23,20 @@ class Index extends React.Component {
         this.state = {
             fileList: [],
             confirmDirty: false,
-            autoCompleteResult: [],
+            roleList: [{
+                id: '4a347f25084654cf73a88d8dc7262990',
+                name: '管理员'
+            }, {
+                id: '7ed07b2360b38b78d8864df188f0b704',
+                name: '业务员'
+            }, {
+                id: 'a8d93d94b49d3b46fd2df429178c9454',
+                name: 'sys管理员'
+            }, {
+                id: 'b99514487e9004f63740643f0fe7523f',
+                name: '二级管理员'
+            }],
+            roleLoading: false,
             submitLoading: false
         };
     }
@@ -39,18 +49,6 @@ class Index extends React.Component {
             return e;
         }
         return e && e.fileList;
-    }
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFieldsAndScroll((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-                this.setState({
-                    submitLoading: true
-                });
-            }
-        });
     }
 
     handleConfirmBlur = (e) => {
@@ -75,19 +73,42 @@ class Index extends React.Component {
         callback();
     }
 
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                // values.assessorys = values.picSrc.map(item => {
+                //     return item.response.backData;
+                // });
+                delete values.picSrc;
+                delete values.confirm;
+                console.log('handleSubmit  param === ', values);
+                this.setState({
+                    submitLoading: true
+                });
+                ajax.postJSON(userAddUrl, JSON.stringify(values), (data) => {
+                    if (data.success) {
+                        notification.open({
+                            message: '新增用户成功！',
+                            icon: <Icon type="smile-circle" style={{color: '#108ee9'}}/>,
+                        });
+
+                        return this.context.router.push('/frame/user/list');
+                    } else {
+                        message.error(data.backMsg);
+                    }
+
+                    this.setState({
+                        submitLoading: false
+                    });
+                });
+            }
+        });
+    }
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {fileList, autoCompleteResult, submitLoading} = this.state;
-
-        const prefixSelector = getFieldDecorator('prefix', {
-            initialValue: '86',
-        })(
-            <Select style={{width: 70}}>
-                <Option value="86">+86</Option>
-                <Option value="87">+87</Option>
-            </Select>
-        );
+        const {fileList, roleList, roleLoading, submitLoading} = this.state;
 
         return (
             <div className="zui-content">
@@ -110,10 +131,10 @@ class Index extends React.Component {
                                         label="头像"
                                         {...formItemLayout}
                                     >
-                                        {getFieldDecorator('newsCover', {
+                                        {getFieldDecorator('picSrc', {
                                             valuePropName: 'fileList',
                                             getValueFromEvent: this.normFile,
-                                            rules: [{required: true, message: '头像不能为空!'}],
+                                            rules: [{required: false, message: '头像不能为空!'}],
                                         })(
                                             <Upload
                                                 name='bannerImage'
@@ -127,14 +148,49 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
+                                <Col span={12}>
+                                    <FormItem
+                                        label="角色选择"
+                                        {...formItemLayout}
+                                    >
+                                        <Spin spinning={roleLoading} indicator={<Icon type="loading"/>}>
+                                            {getFieldDecorator('roleId', {
+                                                rules: [{required: true, message: '角色不能为空!'}]
+                                            })(
+                                                <Select>
+                                                    {
+                                                        roleList.map(item => {
+                                                            return (<Option key={item.id}
+                                                                            value={item.id}>{item.name}</Option>)
+                                                        })
+                                                    }
+                                                </Select>
+                                            )}
+                                        </Spin>
+                                    </FormItem>
+                                </Col>
                             </Row>
                             <Row>
                                 <Col span={12}>
                                     <FormItem
                                         {...formItemLayout}
+                                        label="用户编码"
+                                    >
+                                        {getFieldDecorator('userCode', {
+                                            rules: [{
+                                                required: true, message: '请输入用户编码',
+                                            }],
+                                        })(
+                                            <Input/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col span={12}>
+                                    <FormItem
+                                        {...formItemLayout}
                                         label="用户名"
                                     >
-                                        {getFieldDecorator('user_code', {
+                                        {getFieldDecorator('userName', {
                                             rules: [{
                                                 required: true, message: '请输入用户名',
                                             }],
@@ -143,6 +199,8 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
+                            </Row>
+                            <Row>
                                 <Col span={12}>
                                     <FormItem
                                         {...formItemLayout}
@@ -159,8 +217,6 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
                                 <Col span={12}>
                                     <FormItem
                                         {...formItemLayout}
@@ -177,18 +233,6 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="真实姓名"
-                                    >
-                                        {getFieldDecorator('user_name', {
-                                            rules: [{required: true, message: '请输入真实姓名', whitespace: true}],
-                                        })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
                             </Row>
                             <Row>
                                 <Col span={12}>
@@ -199,7 +243,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('phone', {
                                             rules: [{required: true, message: '请输入个人电话'}],
                                         })(
-                                            <Input addonBefore={prefixSelector} style={{width: '100%'}}/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -211,7 +255,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('region', {
                                             rules: [{required: true, message: '请输入所属区域'}],
                                         })(
-                                            <Input addonBefore={prefixSelector} style={{width: '100%'}}/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>

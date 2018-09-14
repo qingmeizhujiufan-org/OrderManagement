@@ -18,12 +18,12 @@ class ZZLeftSide extends React.Component {
 
         this.state = {
             defaultSelectedKeys: '',
-            menuTree: []
+            menuTree
         };
     }
 
     componentWillMount = () => {
-        this.authorityMenu();
+        // this.authorityMenu();
     }
 
     componentDidMount = () => {
@@ -131,7 +131,7 @@ class ZZLeftSide extends React.Component {
                 theme="dark"
                 mode="inline"
                 defaultSelectedKeys={[defaultSelectedKeys]}
-                defaultOpenKeys={['1', '2', '3', '4', '5', '6']}
+                defaultOpenKeys={['1', '2', '3', '4', '5']}
             >
                 {menu}
             </Menu>
@@ -142,7 +142,7 @@ class ZZLeftSide extends React.Component {
         const {menuTree} = this.state;
         const {collapsed} = this.props;
         const menu = menuTree.length > 0 ? this.buildMenu() : null;
-
+        console.log('menu === ', menu);
         return (
             <Sider
                 trigger={null}
@@ -164,8 +164,7 @@ class ZZLeftSide extends React.Component {
     }
 }
 
-ZZLeftSide
-    .contextTypes = {
+ZZLeftSide.contextTypes = {
     router: PropTypes.object
 }
 

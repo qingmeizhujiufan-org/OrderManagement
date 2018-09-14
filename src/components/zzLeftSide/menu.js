@@ -59,9 +59,9 @@ const Menu = [
         label: '报表管理',
         children: [
             {
-                key: '4_1',
+                key: '5_1',
                 link: '/frame/order/orderList',
-                label: '订单列表'
+                label: '报表'
             }
         ]
     }
