@@ -145,7 +145,6 @@ class Index extends React.Component {
       loading: true,
       pagination: {},
       delLoading: false,
-      total: ''
     };
   }
 
@@ -176,7 +175,12 @@ class Index extends React.Component {
     }, data => {
       if (data.success) {
         const pagination = {...this.state.pagination};
-        pagination.total = data.backData.totalElements;
+        const total= data.backData.totalElements;
+        pagination.total = total;
+        pagination.showQuickJumper = true;
+        pagination.showSizeChanger = true;
+        pagination.showTotal = total => `共 ${total} 条记录`;
+        console.log("pagination ==", pagination)
         data = data.backData.content;
         data.map(function (item, index) {
           item.key = index;
@@ -185,6 +189,7 @@ class Index extends React.Component {
         this.setState({
           dataSource: data,
           pagination,
+          total: pagination.total,
           loading: false
         });
       } else {
