@@ -22,44 +22,33 @@ const Menu = [
         ]
     }, {
         key: '2',
-        iconType: 'solution',
-        label: '权限管理',
-        children: [
-            {
-                key: '2_1',
-                link: '/frame/organize',
-                label: '组织权限'
-            }
-        ]
-    }, {
-        key: '3',
         iconType: 'table',
         label: '产品管理',
         children: [
             {
-                key: '3_1',
+                key: '2_1',
                 link: '/frame/product/productList',
                 label: '产品列表'
             }
         ]
     }, {
-        key: '4',
+        key: '3',
         iconType: 'line-chart',
         label: '订单管理',
         children: [
             {
-                key: '4_1',
+                key: '3_1',
                 link: '/frame/order/orderList',
                 label: '订单列表'
             }
         ]
     }, {
-        key: '5',
+        key: '4',
         iconType: 'line-chart',
         label: '报表管理',
         children: [
             {
-                key: '5_1',
+                key: '4_1',
                 link: '/frame/order/orderList',
                 label: '报表'
             }
