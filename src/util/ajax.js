@@ -15,72 +15,88 @@ var ajax = {
     getJSON: function getJSON(url, data, success, error, complete, cookies) {
         if (_.isFunction(data)) {
             //此时的data实际是success函数
-            this.request({ url: url, success: arguments[1], error: arguments[2], complete: arguments[3], cookies: arguments[4] });
+            this.request({
+                url: url,
+                success: arguments[1],
+                error: arguments[2],
+                complete: arguments[3],
+                cookies: arguments[4]
+            });
         } else {
-            this.request({ url: url, query: data, success: success, error: error, complete: complete, cookies: cookies });
-        }
-    }
-    //请求携带Cookies信息
-    ,
-    getJSONWithCookies: function getJSONWithCookies(url, data, success, error, complete) {
-        if (_.isFunction(data)) {
-            this.getJSON(url, arguments[1], arguments[2], arguments[3], true);
-        } else {
-            this.getJSON(url, data, success, error, complete, true);
+            this.request({url: url, query: data, success: success, error: error, complete: complete, cookies: cookies});
         }
     }
     //通过post方法请求json数据
     ,
     postJSON: function postJSON(url, data, success, error, complete, cookies) {
         if (_.isFunction(data)) {
-            this.request({ url: url, success: arguments[1], error: arguments[2], complete: arguments[3], cookies: arguments[4], method: 'POST' });
+            this.request({
+                url: url,
+                success: arguments[1],
+                error: arguments[2],
+                complete: arguments[3],
+                cookies: arguments[4],
+                method: 'POST'
+            });
         } else {
-            this.request({ url: url, send: data, success: success, error: error, complete: complete, cookies: cookies, method: 'POST' });
+            this.request({
+                url: url,
+                send: data,
+                success: success,
+                error: error,
+                complete: complete,
+                cookies: cookies,
+                method: 'POST'
+            });
         }
     }
-    //请求携带Cookies信息
-    ,
-    postJSONWithCookies: function postJSONWithCookies(url, data, success, error, complete) {
-        if (_.isFunction(data)) {
-            this.postJSON(url, arguments[1], arguments[2], arguments[3], true);
-        } else {
-            this.postJSON(url, data, success, error, complete, true);
-        }
-    }
-    //通过delete方法请求json数据
-    ,
-    delJSON: function delJSON(url, data, success, error, complete, cookies) {
-        if (_.isFunction(data)) {
-            this.request({ url: url, success: arguments[1], error: arguments[2], complete: arguments[3], cookies: arguments[4], method: 'DELETE' });
-        } else {
-            this.request({ url: url, send: data, success: success, error: success, complete: complete, cookies: cookies, method: 'DELETE' });
-        }
-    }
-    //请求携带Cookies信息
-    ,
-    delJSONWithCookies: function delJSONWithCookies(url, data, success, error, complete) {
-        if (_.isFunction(data)) {
-            this.delJSON(url, arguments[1], arguments[2], arguments[3], true);
-        } else {
-            this.delJSON(url, data, success, error, complete, true);
-        }
-    }
-    //通过get方法请求text数据
     ,
     getText: function getText(url, data, success, error, complete, cookies) {
         if (_.isFunction(data)) {
-            this.request({ url: url, success: arguments[1], error: arguments[2], complete: arguments[3], cookies: arguments[4], accept: 'text' });
+            this.request({
+                url: url,
+                success: arguments[1],
+                error: arguments[2],
+                complete: arguments[3],
+                cookies: arguments[4],
+                accept: 'text'
+            });
         } else {
-            this.request({ url: url, query: data, success: success, error: error, complete: complete, cookies: cookies, accept: 'text' });
+            this.request({
+                url: url,
+                query: data,
+                success: success,
+                error: error,
+                complete: complete,
+                cookies: cookies,
+                accept: 'text'
+            });
         }
     }
     //通过post方法请求text数据
     ,
     postText: function postText(url, data, success, error, complete, cookies) {
         if (_.isFunction(data)) {
-            this.request({ url: url, success: arguments[1], error: arguments[2], complete: arguments[3], cookies: arguments[4], method: 'POST', accept: 'text' });
+            this.request({
+                url: url,
+                success: arguments[1],
+                error: arguments[2],
+                complete: arguments[3],
+                cookies: arguments[4],
+                method: 'POST',
+                accept: 'text'
+            });
         } else {
-            this.request({ url: url, send: data, success: success, error: error, complete: complete, cookies: cookies, method: 'POST', accept: 'text' });
+            this.request({
+                url: url,
+                send: data,
+                success: success,
+                error: error,
+                complete: complete,
+                cookies: cookies,
+                method: 'POST',
+                accept: 'text'
+            });
         }
     }
     //设置全局header信息

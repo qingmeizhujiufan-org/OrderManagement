@@ -8,16 +8,6 @@ const Menu = [
                 key: '1_1',
                 link: '/frame/user/list',
                 label: '用户列表'
-            },
-            // {
-            //   key: '2_2',
-            //   link: '/frame/user/add',
-            //   label: '新增用户'
-            // },
-            {
-                key: '1_2',
-                link: '/frame/user/count',
-                label: '统计分析'
             }
         ]
     }, {

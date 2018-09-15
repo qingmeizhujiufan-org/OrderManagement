@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Row, Col, Form, Input, Select, Breadcrumb, Button, Upload, Icon, Spin, notification} from 'antd';
+import {Row, Col, Form, Input, Select, Breadcrumb, Button, Upload, Icon, Spin, Notification, Message} from 'antd';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 
 const userAddUrl = restUrl.BASE_HOST + 'user/save';
 const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
+const queryRoleUrl = restUrl.BASE_HOST + 'role/queryList';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -23,22 +24,37 @@ class Index extends React.Component {
         this.state = {
             fileList: [],
             confirmDirty: false,
-            roleList: [{
-                id: '4a347f25084654cf73a88d8dc7262990',
-                name: '管理员'
-            }, {
-                id: '7ed07b2360b38b78d8864df188f0b704',
-                name: '业务员'
-            }, {
-                id: 'a8d93d94b49d3b46fd2df429178c9454',
-                name: 'sys管理员'
-            }, {
-                id: 'b99514487e9004f63740643f0fe7523f',
-                name: '二级管理员'
-            }],
+            roleList: [],
             roleLoading: false,
             submitLoading: false
         };
+    }
+
+    componentDidMount = () => {
+        this.queryRole();
+    }
+
+    queryRole = () => {
+        this.setState({roleLoading: true});
+        ajax.getJSON(queryRoleUrl, null, data => {
+            if (data.success) {
+                let content = data.backData.content;
+                let roleList = [];
+                content.map(item => {
+                    roleList.push({
+                        id: item.id,
+                        name: item.roleName
+                    });
+                });
+
+                this.setState({
+                    roleList,
+                    roleLoading: false
+                });
+            } else {
+                Message.error(data.backMsg);
+            }
+        });
     }
 
     handleChange = ({fileList}) => this.setState({fileList})
@@ -77,9 +93,6 @@ class Index extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                // values.assessorys = values.picSrc.map(item => {
-                //     return item.response.backData;
-                // });
                 delete values.picSrc;
                 delete values.confirm;
                 console.log('handleSubmit  param === ', values);
@@ -88,14 +101,14 @@ class Index extends React.Component {
                 });
                 ajax.postJSON(userAddUrl, JSON.stringify(values), (data) => {
                     if (data.success) {
-                        notification.open({
-                            message: '新增用户成功！',
-                            icon: <Icon type="smile-circle" style={{color: '#108ee9'}}/>,
+                        Notification.success({
+                            message: '提示',
+                            description: '新增用户成功！'
                         });
 
                         return this.context.router.push('/frame/user/list');
                     } else {
-                        message.error(data.backMsg);
+                        Message.error(data.backMsg);
                     }
 
                     this.setState({

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Form, Icon, Row, Col, Input, Button, Checkbox, message} from 'antd';
+import {Form, Icon, Row, Col, Input, Button, Checkbox, Message} from 'antd';
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
 import '../login.less';
@@ -9,7 +9,7 @@ import loginBg from 'Img/login-bg.jpg';
 
 const FormItem = Form.Item;
 
-const loginUrl = restUrl.ADDR + 'server/login';
+const loginUrl = restUrl.BASE_HOST + 'user/login';
 
 class Login extends React.Component {
     constructor(props) {
@@ -27,30 +27,22 @@ class Login extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                // this.setState({
-                //     loading: true
-                // });
-                // ajax.postJSON(loginUrl, JSON.stringify(values), (data) => {
-                //     if (data.success) {
-                //         sessionStorage.setItem('token', data.token);
-                //         sessionStorage.setItem('expireDate', data.expireDate);
-                //         sessionStorage.setItem('userId', data.userId);
-                //         sessionStorage.setItem('cityId', data.cityId);
-                //         sessionStorage.setItem('type', data.type);
-                //         sessionStorage.setItem('typeName', data.typeName);
-                //         return this.context.router.push('/frame/home');
-                //     } else {
-                //         message.error(data.backMsg);
-                //     }
-                //     this.setState({
-                //         loading: false
-                //     });
-                // });
-                sessionStorage.setItem('token', '123');
-                sessionStorage.setItem('expireDate', new Date(new Date().getTime() + 10000000));
-                sessionStorage.setItem('userId', '123');
-                sessionStorage.setItem('type', '1');
-                return this.context.router.push('/frame/user/list');
+                this.setState({
+                    loading: true
+                });
+                ajax.postJSON(loginUrl, JSON.stringify(values), (data) => {
+                    if (data.success) {
+                        sessionStorage.setItem('expireDate', new Date(new Date().getTime() + 10000000));
+                        sessionStorage.setItem('userId', data.backData.id);
+                        sessionStorage.setItem('roleId', data.backData.roleId);
+                        return this.context.router.push('/frame/user/list');
+                    } else {
+                        Message.error(data.backMsg);
+                    }
+                    this.setState({
+                        loading: false
+                    });
+                });
             }
         });
     }
@@ -79,15 +71,15 @@ class Login extends React.Component {
                                     <p style={{margin: '0', color: '#999'}}>Welcome!</p>
                                 </FormItem>
                                 <FormItem>
-                                    {getFieldDecorator('userName', {
+                                    {getFieldDecorator('loginName', {
                                         rules: [{required: true, message: '请输入您的用户名!'}],
                                     })(
                                         <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                                               className="login-input" placeholder="用户名"/>
+                                               className="login-input" placeholder="用户编码/手机号"/>
                                     )}
                                 </FormItem>
                                 <FormItem>
-                                    {getFieldDecorator('userPwd', {
+                                    {getFieldDecorator('password', {
                                         rules: [{required: true, message: '请输入您的密码!'}],
                                     })(
                                         <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}

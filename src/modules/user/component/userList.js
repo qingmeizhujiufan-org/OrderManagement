@@ -185,8 +185,8 @@ class Index extends React.Component {
                 pagination.showTotal = total => `共 ${total} 条记录`;
                 console.log("pagination ==", pagination)
                 data = data.backData.content;
-                data.map(function (item, index) {
-                    item.key = index;
+                data.map(item => {
+                    item.key = item.id;
                 });
 
                 this.setState({
@@ -202,7 +202,7 @@ class Index extends React.Component {
     }
 
     addUser = () => {
-        return this.context.router.push('/frame/user/add');
+        return this.context.router.push('/frame/user/list/add');
     }
 
     onDetail = id => {
@@ -293,11 +293,10 @@ class Index extends React.Component {
                 </div>
                 <div className='pageContent'>
                     <ZZCard
-                        title="用户列表"
                         extra={<Button type='primary' icon='plus' loading={delLoading}
                                        onClick={this.addUser}>新增用户</Button>}
                     >
-                        <Spin spinning={loading}>
+                        <Spin spinning={loading} size='large'>
                             <ZZTable
                                 dataSource={dataSource}
                                 columns={this.columns}
