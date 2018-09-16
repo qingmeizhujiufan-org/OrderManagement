@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Row, Col, Form, Input, Select, Breadcrumb, Button, Upload, Icon, Spin, Notification, Message} from 'antd';
+import {Row, Col, Form, Input, Select, Breadcrumb, Button, Upload, Icon, Spin, Notification, Message, InputNumber} from 'antd';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
@@ -42,20 +42,18 @@ class Index extends React.Component {
                 });
                 ajax.postJSON(productAddUrl, JSON.stringify(values), data => {
                     if (data.success) {
-                        data = data.backData;
-                        data.map(function (item, index) {
-                            item.key = index;
+                        Notification.success({
+                            message: '提示',
+                            description: '新增产品成功！'
                         });
-                        this.setState({
-                            dataSource: data,
-                            loading: false
-                        });
+
+                        return this.context.router.push('/frame/product/list');
                     } else {
-                        this.setState({
-                            loading: false
-                        });
                         message.error(data.backMsg);
                     }
+                    this.setState({
+                        submitLoading: false
+                    });
                 });
             }
         });
@@ -85,28 +83,6 @@ class Index extends React.Component {
                             <Row>
                                 <Col span={12}>
                                     <FormItem
-                                        label="产品图片"
-                                        {...formItemLayout}
-                                    >
-                                        {getFieldDecorator('picSrc', {
-                                            valuePropName: 'fileList',
-                                            getValueFromEvent: this.normFile,
-                                            rules: [{required: false, message: '图片不能为空!'}],
-                                        })(
-                                            <Upload
-                                                name='bannerImage'
-                                                action={uploadUrl}
-                                                listType={'picture'}
-                                                onChange={this.handleChange}
-                                            >
-                                                {fileList.length >= 1 ? null :
-                                                    <Button><Icon type="upload"/> 上传</Button>}
-                                            </Upload>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col span={12}>
-                                    <FormItem
                                         {...formItemLayout}
                                         label="所属仓库"
                                     >
@@ -116,9 +92,21 @@ class Index extends React.Component {
                                             }],
                                         })(
                                             <Select placeholder="请输入所属仓库">
-                                                <Option value="0">武汉</Option>
-                                                <Option value="1">北京</Option>
+                                                <Option value={0}>武汉</Option>
+                                                <Option value={1}>北京</Option>
                                             </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col span={12}>
+                                    <FormItem
+                                        {...formItemLayout}
+                                        label="产品条码"
+                                    >
+                                        {getFieldDecorator('barCode', {
+                                            rules: [{required: true, message: '请输入产品条码'}],
+                                        })(
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -164,7 +152,12 @@ class Index extends React.Component {
                                                 required: true, message: '请输入成本价格',
                                             }],
                                         })(
-                                            <Input/>
+                                            <InputNumber
+                                                min={0}
+                                                precision={2}
+                                                step={1}
+                                                style={{width: '100%'}}
+                                            />
                                         )}
                                     </FormItem>
                                 </Col>
@@ -175,24 +168,10 @@ class Index extends React.Component {
                                     >
                                         {getFieldDecorator('memo', {
                                             rules: [{
-                                                required: true, message: '请输入备注',
+                                                required: false, message: '请输入备注',
                                             }],
                                         })(
-                                            <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
-                                    <FormItem
-                                        {...formItemLayout}
-                                        label="产品条码"
-                                    >
-                                        {getFieldDecorator('barCode', {
-                                            rules: [{required: true, message: '请输入产品条码'}],
-                                        })(
-                                            <Input/>
+                                            <TextArea/>
                                         )}
                                     </FormItem>
                                 </Col>
