@@ -10,7 +10,6 @@ import {
   Menu,
   Breadcrumb,
   Dropdown,
-  Divider,
   notification,
   Spin,
   Tabs,
@@ -24,6 +23,7 @@ import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
+import Util from "Utils/util";
 
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
@@ -50,13 +50,25 @@ class ProductList extends React.Component {
       {title: '收件人', align: 'center', dataIndex: 'receiver_name', key: 'receiver_name'},
       {title: '收件人电话', align: 'center', dataIndex: 'Receiver_phone', key: 'Receiver_phone'},
       {title: '收件人地址', align: 'center', dataIndex: 'receiver_addr', key: 'receiver_addr'},
-      {title: '定金', align: 'center', dataIndex: 'deposit_amout', key: 'deposit_amout'},
-      {title: '代收金额', align: 'center', dataIndex: 'collection_amout', key: 'collection_amout'},
-      {title: '总金额', align: 'center', dataIndex: 'total_amount', key: 'total_amount'},
+      {title: '定金', align: 'center', dataIndex: 'deposit_amout', key: 'deposit_amout',
+        render: (text, record, index) => (
+          <span>{Util.shiftThousands(text)}</span>
+        )},
+      {title: '代收金额', align: 'center', dataIndex: 'collection_amout', key: 'collection_amout',
+        render: (text, record, index) => (
+          <span>{Util.shiftThousands(text)}</span>
+        )},
+      {title: '总金额', align: 'center', dataIndex: 'total_amount', key: 'total_amount',
+        render: (text, record, index) => (
+          <span>{Util.shiftThousands(text)}</span>
+        )},
       {title: '国际件', align: 'center', dataIndex: 'is_foreign_express', key: 'is_foreign_express'},
       {title: '订单状态', align: 'center', dataIndex: 'order_state', key: 'order_state'},
       {title: '是否超过成本', align: 'center', dataIndex: 'is_over_cost', key: 'is_over_cost'},
-      {title: '成本', align: 'center', dataIndex: 'cost_amount', key: 'cost_amount'},
+      {title: '成本', align: 'center', dataIndex: 'cost_amount', key: 'cost_amount',
+        render: (text, record, index) => (
+          <span>{Util.shiftThousands(text)}</span>
+        )},
       {title: '快递单号', align: 'center', dataIndex: 'express_code', key: 'express_code'},
       {title: '快递状态', align: 'center', dataIndex: 'express_state', key: 'express_state'},
       {title: '广告渠道', align: 'center', dataIndex: 'advert_ channel', key: 'advert_ channel'},

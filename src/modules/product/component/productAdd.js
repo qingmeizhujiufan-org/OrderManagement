@@ -23,8 +23,7 @@ class Index extends React.Component {
     state = {
         confirmDirty: false,
         fileList: [],
-        submitLoadingsubmitLoading: false,
-
+        submitLoading: false,
     };
 
     handleSubmit = (e) => {
