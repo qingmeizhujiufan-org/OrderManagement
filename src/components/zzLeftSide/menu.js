@@ -1,7 +1,7 @@
 const Menu = [
     {
         key: '1',
-        iconType: 'rocket',
+        iconType: 'idcard',
         label: '用户管理',
         children: [
             {
@@ -12,7 +12,7 @@ const Menu = [
         ]
     }, {
         key: '2',
-        iconType: 'table',
+        iconType: 'file-search',
         label: '产品管理',
         children: [
             {
@@ -23,7 +23,7 @@ const Menu = [
         ]
     }, {
         key: '3',
-        iconType: 'line-chart',
+        iconType: 'file-text',
         label: '订单管理',
         children: [
             {
@@ -34,7 +34,7 @@ const Menu = [
         ]
     }, {
         key: '4',
-        iconType: 'line-chart',
+        iconType: 'area-chart',
         label: '报表管理',
         children: [
             {

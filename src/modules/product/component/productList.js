@@ -213,10 +213,6 @@ class ProductList extends React.Component {
 
     render() {
         const {loading, delLoading, dataSource, searchText, state, total} = this.state;
-        // let n_dataSource = [...dataSource].filter(item => item.newsTitle.indexOf(searchText) > -1);
-        // if (state !== 999) {
-        //     n_dataSource = n_dataSource.filter(item => item.state === state);
-        // }
 
         return (
             <div className="zui-content page-newsList">
@@ -230,23 +226,29 @@ class ProductList extends React.Component {
                     </div>
                     <h1 className='title'>产品列表</h1>
                     <div className='search-area'>
-                        <Row type='flex' justify="space-around" align="middle">
+                        <Row type='flex' justify="center" align="middle">
                             <Col span={8}>
                                 <Search
                                     placeholder="搜索产品关键字"
-                                    enterButton
+                                    enterButton='搜索'
                                     size="large"
                                     onSearch={searchText => this.setState({searchText})}
                                 />
+                            </Col>
+                            <Col span={3}>
+                                <Button
+                                    icon='plus'
+                                    size="large"
+                                    loading={delLoading}
+                                    onClick={this.addProduct}
+                                    style={{marginLeft: 25}}
+                                >新增产品</Button>
                             </Col>
                         </Row>
                     </div>
                 </div>
                 <div className='pageContent'>
-                    <ZZCard
-                        extra={<Button type='primary' icon='plus' loading={delLoading}
-                                       onClick={this.addProduct}>新增产品</Button>}
-                    >
+                    <ZZCard>
                         <Spin spinning={loading} size='large'>
                             <ZZTable
                                 dataSource={dataSource}

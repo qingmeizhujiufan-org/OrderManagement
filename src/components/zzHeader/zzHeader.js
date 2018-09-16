@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router';
 import PropTypes from 'prop-types';
-import {Layout, Row, Col, Affix, Icon, Input, Dropdown, Menu, Avatar, Tooltip, notification} from 'antd';
+import {Layout, Row, Col, Affix, Icon, Input, Dropdown, Menu, Avatar, Tooltip, Notification, Divider} from 'antd';
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
 import './zzHeader.less';
@@ -65,17 +65,13 @@ class ZZHeader extends React.Component {
                     <Col span={10}>
                     </Col>
                     <Col span={12} style={{textAlign: 'right'}}>
-                        {/*<Input*/}
-                        {/*className="input-search"*/}
-                        {/*placeholder="别说话，搜我..."*/}
-                        {/*prefix={<Icon type="search"*/}
-                        {/*style={{color: 'rgba(0,0,0,1)', fontSize: 16, fontWeight: 600}}/>}*/}
-                        {/*style={{width: 200}}*/}
-                        {/*/>*/}
+                        <Icon type="bell" theme="outlined"
+                              style={{fontSize: 18, verticalAlign: 'text-bottom'}}/>
+                        <Divider type="vertical" style={{margin: '0 30px'}} />
                         <Dropdown overlay={this.menu}>
                             <a className="ant-dropdown-link">
                                 <Avatar
-                                    style={{verticalAlign: '-6px', backgroundColor: '#fc5a59'}}
+                                    style={{marginRight: 5, verticalAlign: '-6px', backgroundColor: '#fc5a59'}}
                                     size="small"
                                     icon={sessionStorage.getItem('avatar') || "user"}
                                     src={sessionStorage.getItem('avatar') || null}
