@@ -27,9 +27,10 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
-const getLiveListUrl = restUrl.ADDR + 'product/queryListByAdmin';
-const reviewUrl = restUrl.ADDR + 'product/review';
-const delLiveUrl = restUrl.ADDR + 'product/delete';
+
+const getLiveListUrl = restUrl.BASE_HOST + 'product/queryList';
+const reviewUrl = restUrl.BASE_HOST + 'product/review';
+const delLiveUrl = restUrl.BASE_HOST + 'product/delete';
 
 class ProductList extends React.Component {
   constructor(props) {
@@ -43,18 +44,18 @@ class ProductList extends React.Component {
     }, {
       title: '产品名称',
       width: 300,
-      dataIndex: 'name',
-      key: 'name'
+      dataIndex: 'productName',
+      key: 'productName'
     }, {
       title: '单位',
       align: 'center',
-      dataIndex: 'unit',
-      key: 'unit',
+      dataIndex: 'productUnit',
+      key: 'productUnit',
     }, {
       title: '成本价格',
       align: 'right',
-      dataIndex: 'cost_price',
-      key: 'cost_price',
+      dataIndex: 'costPrice',
+      key: 'costPrice',
     }, {
       title: '备注',
       width: 120,
@@ -63,25 +64,41 @@ class ProductList extends React.Component {
     }, {
       title: '产品条码',
       align: 'center',
-      dataIndex: 'bar_code',
-      key: 'bar_code'
+      dataIndex: 'productCode',
+      key: 'productCode'
     }, {
-      title: '操作',
+      title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
       key: 'operation',
       fixed: 'right',
       width: 120,
-      render: (text, record) => (
-        <span>
-          <a href="javascript:;">编辑</a>
-          <Divider type="vertical"/>
-          <a href="javascript:;">删除</a>
-        </span>
-      ),
+      align: 'center',
+      render: (text, record, index) => (
+        <Dropdown
+          placement="bottomCenter"
+          overlay={
+            <Menu>
+              <Menu.Item>
+                <Link to={this.onDetail(record.id)}>查看</Link>
+              </Menu.Item>
+              <Menu.Item>
+                <Link to={this.onEdit(record.id)}>编辑</Link>
+              </Menu.Item>
+              <Menu.Item>
+                <a onClick={() => this.onDelete(record.id)}>删除</a>
+              </Menu.Item>
+            </Menu>
+          }
+        >
+          <a className="ant-dropdown-link">操作</a>
+        </Dropdown>
+      )
     }];
 
     this.state = {
       loading: false,
+      delLoading: false,
       dataSource: [],
+      pagination: {},
       searchText: '',
       state: 999
     };
@@ -94,24 +111,40 @@ class ProductList extends React.Component {
     this.getList();
   }
 
-  getList = () => {
-    // this.setState({
-    //     loading: true
-    // });
-    // let param = {};
-    // param.userId = sessionStorage.userId;
-    // ajax.getJSON(getLiveListUrl, param, data => {
-    //     if (data.success) {
-    //         let backData = data.backData;
-    //         backData.map(item => {
-    //             item.key = item.id;
-    //         });
-    //         this.setState({
-    //             dataSource: backData,
-    //             loading: false
-    //         });
-    //     }
-    // });
+  handleTableChange = (pagination) => {
+    this.setState({
+      pagination: pagination,
+    }, () => {
+      this.getList({
+        pageSize: pagination.pageSize,
+        pageNumber: pagination.current,
+      });
+    });
+
+  }
+
+  getList = (params = {}) => {
+    ajax.getJSON(getLiveListUrl, {
+      pageSize: 10,
+      pageNumber: 1,
+      ...params,
+    }, data => {
+      if (data.success) {
+        const total = data.backData.totalElements;
+        data = data.backData.content;
+        data.map(item => {
+          item.key = item.id;
+        });
+
+        this.setState({
+          dataSource: data,
+          total: total,
+          loading: false
+        });
+      } else {
+        message.error('查询产品列表失败');
+      }
+    });
   }
 
   addProduct = () => {
@@ -148,7 +181,7 @@ class ProductList extends React.Component {
   }
 
   render() {
-    const {loading, dataSource, searchText, state} = this.state;
+    const {loading, delLoading, dataSource, searchText, state, total} = this.state;
     let n_dataSource = [...dataSource].filter(item => item.newsTitle.indexOf(searchText) > -1);
     if (state !== 999) {
       n_dataSource = n_dataSource.filter(item => item.state === state);
@@ -179,12 +212,19 @@ class ProductList extends React.Component {
           </div>
         </div>
         <div className='pageContent'>
-          <ZZCard>
-            <Button type="primary" icon='plus' onClick={this.addProduct} style={{marginBottom: 15}}>新增产品</Button>
-            <ZZTable
-              dataSource={n_dataSource}
-              columns={this.columns}
-            />
+          <ZZCard
+            extra={<Button type='primary' icon='plus' loading={delLoading}
+                           onClick={this.addProduct}>新增产品</Button>}
+          >
+            <Spin spinning={loading} size='large'>
+              <ZZTable
+                dataSource={dataSource}
+                columns={this.columns}
+                total={total}
+                onChange={this.handleTableChange.bind(this)}
+                scroll={{x: 1500}}
+              />
+            </Spin>
           </ZZCard>
         </div>
       </div>

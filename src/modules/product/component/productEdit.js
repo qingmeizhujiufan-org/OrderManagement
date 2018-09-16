@@ -24,16 +24,16 @@ import htmlToDraft from 'html-to-draftjs';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const queryListUrl = restUrl.ADDR + 'city/queryList';
-const queryDetailUrl = restUrl.ADDR + 'product/queryDetail';
-const saveLiveUrl = restUrl.ADDR + 'product/save';
+const queryListUrl = restUrl.BASE_HOST + 'city/queryList';
+const queryDetailUrl = restUrl.BASE_HOST + 'product/findbyid';
+const saveLiveUrl = restUrl.BASE_HOST + 'product/save';
 
 const formItemLayout = {
     labelCol: {span: 6},
     wrapperCol: {span: 12},
 };
 
-class EditProduct extends React.Component {
+class ProductEdit extends React.Component {
     constructor(props) {
         super(props);
 
@@ -277,8 +277,8 @@ class EditProduct extends React.Component {
     }
 }
 
-const WrappedEditLive = Form.create()(EditProduct);
-EditProduct.contextTypes = {
+const WrappedEditLive = Form.create()(ProductEdit);
+ProductEdit.contextTypes = {
     router: PropTypes.object
 }
 
