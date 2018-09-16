@@ -62,17 +62,20 @@ class Index extends React.Component {
         ajax.getJSON(queryDetailUrl, param, data => {
             if (data.success) {
                 let backData = data.backData;
-                backData.assessorys.map((item, index) => {
-                    backData.assessorys[index] = _.assign({}, item, {
-                        uid: item.id,
-                        status: 'done',
-                        url: restUrl.ADDR + item.path + item.name,
-                        response: {
-                            data: item
-                        }
+                if(backData.assessorys) {
+                    backData.assessorys.map((item, index) => {
+                        backData.assessorys[index] = _.assign({}, item, {
+                            uid: item.id,
+                            status: 'done',
+                            url: restUrl.ADDR + item.path + item.name,
+                            response: {
+                                data: item
+                            }
+                        });
                     });
-                });
-                console.log('backData === ', backData);
+                }else {
+                    backData.assessorys = [];
+                }
                 const fileList = [].concat(backData.assessorys);
 
                 this.setState({
