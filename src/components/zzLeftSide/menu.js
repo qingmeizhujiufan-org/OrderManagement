@@ -17,7 +17,7 @@ const Menu = [
         children: [
             {
                 key: '2_1',
-                link: '/frame/product/productList',
+                link: '/frame/product/list',
                 label: '产品列表'
             }
         ]
@@ -28,7 +28,7 @@ const Menu = [
         children: [
             {
                 key: '3_1',
-                link: '/frame/order/orderList',
+                link: '/frame/order/list',
                 label: '订单列表'
             }
         ]

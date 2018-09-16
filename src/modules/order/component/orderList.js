@@ -94,7 +94,7 @@ class ProductList extends React.Component {
     }
 
     addOrder = () => {
-        return this.context.router.push('/frame/order/add');
+        return this.context.router.push('/frame/order/list/add');
 
     }
 
