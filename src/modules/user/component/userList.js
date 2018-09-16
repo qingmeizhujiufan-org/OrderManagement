@@ -290,7 +290,6 @@ class Index extends React.Component {
                                 <Button
                                     icon='plus'
                                     size="large"
-                                    loading={delLoading}
                                     onClick={this.addUser}
                                     style={{marginLeft: 25}}
                                 >新增用户</Button>

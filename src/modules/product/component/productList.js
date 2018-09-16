@@ -239,7 +239,6 @@ class ProductList extends React.Component {
                                 <Button
                                     icon='plus'
                                     size="large"
-                                    loading={delLoading}
                                     onClick={this.addProduct}
                                     style={{marginLeft: 25}}
                                 >新增产品</Button>

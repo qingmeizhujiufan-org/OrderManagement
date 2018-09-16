@@ -165,7 +165,7 @@ class ProductList extends React.Component {
   }
 
   render() {
-    const {loading, dataSource, searchText, state} = this.state;
+    const {loading, dataSource, searchText, state, delLoading} = this.state;
     let n_dataSource = [...dataSource].filter(item => item.newsTitle.indexOf(searchText) > -1);
     if (state !== 999) {
       n_dataSource = n_dataSource.filter(item => item.state === state);
@@ -182,24 +182,28 @@ class ProductList extends React.Component {
           </div>
           <h1 className='title'>订单列表</h1>
           <div className='search-area'>
-            <Row type='flex' justify="space-around" align="middle">
+            <Row type='flex' justify="center" align="middle">
               <Col span={8}>
                 <Search
-                  placeholder="搜索订单关键字"
-                  enterButton
+                  placeholder="搜索订单名称关键字"
+                  enterButton='搜索'
                   size="large"
                   onSearch={searchText => this.setState({searchText})}
                 />
+              </Col>
+              <Col span={3}>
+                <Button
+                  icon='plus'
+                  size="large"
+                  onClick={this.addOrder}
+                  style={{marginLeft: 25}}
+                >新增订单</Button>
               </Col>
             </Row>
           </div>
         </div>
         <div className='pageContent'>
-          <ZZCard
-            extra={<Button type='primary' icon='plus'
-                           onClick={this.addOrder}>新增订单</Button>}
-          >
-
+          <ZZCard>
             <Spin spinning={loading} size='large'>
               <ZZTable
                 dataSource={n_dataSource}
