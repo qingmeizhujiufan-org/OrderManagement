@@ -1,286 +1,229 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Select,
-  Breadcrumb,
-  Button,
-  Upload,
-  Icon,
-  Spin,
-  notification,
-  Message,
-  Notification
+    Row,
+    Col,
+    Form,
+    Input,
+    Select,
+    Breadcrumb,
+    Button,
+    Upload,
+    Icon,
+    Spin,
+    Message,
+    Notification
 } from 'antd';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 
 const productSaveUrl = restUrl.BASE_HOST + 'product/save';
-const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
 const queryDetailUrl = restUrl.BASE_HOST + 'product/findbyid';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 const formItemLayout = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 12},
+    labelCol: {span: 6},
+    wrapperCol: {span: 12},
 };
 
 class Index extends React.Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      data: {},
-      fileList: [],
-      confirmDirty: false,
-      roleList: [],
-      loading: false,
-      roleLoading: false,
-      submitLoading: false
-    };
-  }
-
-  componentDidMount = () => {
-    this.queryDetail();
-  }
-
-  queryDetail = () => {
-    const id = this.props.params.id;
-    const param = {};
-    param.id = id;
-    this.setState({
-      loading: true
-    });
-    ajax.getJSON(queryDetailUrl, param, data => {
-      if (data.success) {
-        let backData = data.backData;
-        if(backData.assessorys) {
-          backData.assessorys.map((item, index) => {
-            backData.assessorys[index] = _.assign({}, item, {
-              uid: item.id,
-              status: 'done',
-              url: restUrl.ADDR + item.path + item.name,
-              response: {
-                data: item
-              }
-            });
-          });
-        }else {
-          backData.assessorys = [];
-        }
-        const fileList = [].concat(backData.assessorys);
-
-        this.setState({
-          data: backData,
-          fileList,
-          loading: false
-        });
-      } else {
-        Message.error('用户信息查询失败');
-      }
-    });
-  }
-
-  handleChange = ({fileList}) => this.setState({fileList})
-
-  normFile = (e) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        values.id = this.props.params.id;
-        values.assessorys = values.assessorys ? values.assessorys.map(item => {
-          return item.response.backData;
-        }) : [];
-        console.log('handleSubmit  param === ', values);
-        this.setState({
-          submitLoading: true
-        });
-        ajax.postJSON(productSaveUrl, JSON.stringify(values), (data) => {
-          if (data.success) {
-            Notification.success({
-              message: '提示',
-              description: '产品信息保存成功！'
-            });
-
-            return this.context.router.push('/frame/product/list');
-          } else {
-            message.error(data.backMsg);
-          }
-
-          this.setState({
+        this.state = {
+            data: {},
+            loading: false,
             submitLoading: false
-          });
+        };
+    }
+
+    componentDidMount = () => {
+        this.queryDetail();
+    }
+
+    queryDetail = () => {
+        const id = this.props.params.id;
+        const param = {};
+        param.id = id;
+        this.setState({
+            loading: true
         });
-      }
-    });
-  }
+        ajax.getJSON(queryDetailUrl, param, data => {
+            if (data.success) {
+                let backData = data.backData;
 
-  render() {
-    const {getFieldDecorator} = this.props.form;
-    const {data, fileList, roleList, loading, roleLoading, submitLoading} = this.state;
+                this.setState({
+                    data: backData,
+                    loading: false
+                });
+            } else {
+                Message.error('产品信息查询失败');
+            }
+        });
+    }
 
-    return (
-      <div className="zui-content">
-        <div className='pageHeader'>
-          <div className="breadcrumb-block">
-            <Breadcrumb>
-              <Breadcrumb.Item>首页</Breadcrumb.Item>
-              <Breadcrumb.Item>产品管理</Breadcrumb.Item>
-              <Breadcrumb.Item>产品列表</Breadcrumb.Item>
-              <Breadcrumb.Item>更新产品信息</Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <h1 className='title'>更新产品信息</h1>
-        </div>
-        <div className='pageContent'>
-          <div className='ibox-content'>
-            <Spin spinning={loading} size='large'>
-              <Form onSubmit={this.handleSubmit}>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      label="产品图片"
-                      {...formItemLayout}
-                    >
-                      {getFieldDecorator('assessorys', {
-                        valuePropName: 'fileList',
-                        getValueFromEvent: this.normFile,
-                        rules: [{required: false, message: '产品图片不能为空!'}],
-                        initialValue: data.assessorys
-                      })(
-                        <Upload
-                          name='bannerImage'
-                          action={uploadUrl}
-                          listType={'picture'}
-                          onChange={this.handleChange}
-                        >
-                          {fileList.length >= 1 ? null :
-                            <Button><Icon type="upload"/> 上传</Button>}
-                        </Upload>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="所属仓库"
-                    >
-                      {getFieldDecorator('wareHouse', {
-                        rules: [{required: true, message: '请输入所属仓库'}],
-                        initialValue: data.wareHouse
-                      })(
-                        <Select placeholder="请输入所属仓库">
-                          <Option value="0">武汉</Option>
-                          <Option value="1">北京</Option>
-                        </Select>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="产品名称"
-                    >
-                      {getFieldDecorator('name', {
-                        rules: [{required: true, message: '请输入产品名称'}],
-                        initialValue: data.name
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="产品单位"
-                    >
-                      {getFieldDecorator('unit', {
-                        rules: [{required: true, message: '请输入产品单位'}],
-                        initialValue: data.unit
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="成本价格"
-                    >
-                      {getFieldDecorator('costPrice', {
-                        rules: [{required: true, message: '请输入成本价格'}],
-                        initialValue: data.region
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="备注"
-                    >
-                      {getFieldDecorator('memo', {
-                        rules: [{required: false, message: '请输入备注'}],
-                        initialValue: data.memo
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="产品条码"
-                    >
-                      {getFieldDecorator('barCode', {
-                        rules: [{required: false, message: '请输入产品条码'}],
-                        initialValue: data.memo
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <div className='toolbar'>
-                  <div className='pull-right'>
-                    <Button type="primary" size='large' htmlType="submit"
-                            loading={submitLoading}>保存</Button>
-                  </div>
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                values.id = this.props.params.id;
+                values.assessorys = values.assessorys ? values.assessorys.map(item => {
+                    return item.response.backData;
+                }) : [];
+                console.log('handleSubmit  param === ', values);
+                this.setState({
+                    submitLoading: true
+                });
+                ajax.postJSON(productSaveUrl, JSON.stringify(values), (data) => {
+                    if (data.success) {
+                        Notification.success({
+                            message: '提示',
+                            description: '产品信息保存成功！'
+                        });
+
+                        return this.context.router.push('/frame/product/list');
+                    } else {
+                        message.error(data.backMsg);
+                    }
+
+                    this.setState({
+                        submitLoading: false
+                    });
+                });
+            }
+        });
+    }
+
+    render() {
+        const {getFieldDecorator} = this.props.form;
+        const {data, loading, submitLoading} = this.state;
+
+        return (
+            <div className="zui-content">
+                <div className='pageHeader'>
+                    <div className="breadcrumb-block">
+                        <Breadcrumb>
+                            <Breadcrumb.Item>首页</Breadcrumb.Item>
+                            <Breadcrumb.Item>产品管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>产品列表</Breadcrumb.Item>
+                            <Breadcrumb.Item>更新产品信息</Breadcrumb.Item>
+                        </Breadcrumb>
+                    </div>
+                    <h1 className='title'>更新产品信息</h1>
                 </div>
-              </Form>
-            </Spin>
-          </div>
-        </div>
-      </div>
-    );
-  }
+                <div className='pageContent'>
+                    <div className='ibox-content'>
+                        <Spin spinning={loading} size='large'>
+                            <Form onSubmit={this.handleSubmit}>
+                                <Row>
+                                    <Col span={12}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="所属仓库"
+                                        >
+                                            {getFieldDecorator('wareHouse', {
+                                                rules: [{required: true, message: '请输入所属仓库'}],
+                                                initialValue: data.wareHouse
+                                            })(
+                                                <Select placeholder="请输入所属仓库">
+                                                    <Option value="0">武汉</Option>
+                                                    <Option value="1">北京</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="产品名称"
+                                        >
+                                            {getFieldDecorator('name', {
+                                                rules: [{required: true, message: '请输入产品名称'}],
+                                                initialValue: data.name
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col span={12}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="产品单位"
+                                        >
+                                            {getFieldDecorator('unit', {
+                                                rules: [{required: true, message: '请输入产品单位'}],
+                                                initialValue: data.unit
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="成本价格"
+                                        >
+                                            {getFieldDecorator('costPrice', {
+                                                rules: [{required: true, message: '请输入成本价格'}],
+                                                initialValue: data.costPrice
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col span={12}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="备注"
+                                        >
+                                            {getFieldDecorator('memo', {
+                                                rules: [{required: false, message: '请输入备注'}],
+                                                initialValue: data.memo
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="产品条码"
+                                        >
+                                            {getFieldDecorator('barCode', {
+                                                rules: [{required: false, message: '请输入产品条码'}],
+                                                initialValue: data.barCode
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <div className='toolbar'>
+                                    <div className='pull-right'>
+                                        <Button type="primary" size='large' htmlType="submit"
+                                                loading={submitLoading}>保存</Button>
+                                    </div>
+                                </div>
+                            </Form>
+                        </Spin>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
 
 const productEdit = Form.create()(Index);
 
 Index.contextTypes = {
-  router: PropTypes.object
+    router: PropTypes.object
 }
 
 export default productEdit;

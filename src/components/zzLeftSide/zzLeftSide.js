@@ -23,7 +23,7 @@ class ZZLeftSide extends React.Component {
     }
 
     componentWillMount = () => {
-        // this.authorityMenu();
+        this.authorityMenu();
     }
 
     componentDidMount = () => {
@@ -142,7 +142,6 @@ class ZZLeftSide extends React.Component {
         const {menuTree} = this.state;
         const {collapsed} = this.props;
         const menu = menuTree.length > 0 ? this.buildMenu() : null;
-        console.log('menu === ', menu);
         return (
             <Sider
                 trigger={null}
