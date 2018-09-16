@@ -98,7 +98,10 @@ module.exports = {
       filename: 'shared.[chunkhash:5].js'
     }),
     new ExtractTextPlugin({filename: '[name].[contenthash:5].css', allChunks: true}),
-    new HtmlWebpackPlugin({template: './index.html'}),
+      new HtmlWebpackPlugin({
+          template: './index.html',
+          favicon: './public/favicon.ico', // 添加小图标
+      }),
     new CleanWebpackPlugin(
       ['build/*'],　 //匹配删除的文件
       {

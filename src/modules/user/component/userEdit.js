@@ -61,8 +61,23 @@ class Index extends React.Component {
         });
         ajax.getJSON(queryDetailUrl, param, data => {
             if (data.success) {
+                let backData = data.backData;
+                backData.assessorys.map((item, index) => {
+                    backData.assessorys[index] = _.assign({}, item, {
+                        uid: item.id,
+                        status: 'done',
+                        url: restUrl.ADDR + item.path + item.name,
+                        response: {
+                            data: item
+                        }
+                    });
+                });
+                console.log('backData === ', backData);
+                const fileList = [].concat(backData.assessorys);
+
                 this.setState({
-                    data: data.backData,
+                    data: backData,
+                    fileList,
                     loading: false
                 });
             } else {
@@ -109,9 +124,9 @@ class Index extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 values.id = this.props.params.id;
-                values.assessorys = values.assessorys.map(item => {
+                values.assessorys = values.assessorys ? values.assessorys.map(item => {
                     return item.response.backData;
-                });
+                }) : [];
                 console.log('handleSubmit  param === ', values);
                 this.setState({
                     submitLoading: true
@@ -155,7 +170,7 @@ class Index extends React.Component {
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
-                        <Spin spinning={loading}>
+                        <Spin spinning={loading} size='large'>
                             <Form onSubmit={this.handleSubmit}>
                                 <Row>
                                     <Col span={12}>
@@ -167,6 +182,7 @@ class Index extends React.Component {
                                                 valuePropName: 'fileList',
                                                 getValueFromEvent: this.normFile,
                                                 rules: [{required: false, message: '头像不能为空!'}],
+                                                initialValue: data.assessorys
                                             })(
                                                 <Upload
                                                     name='bannerImage'
