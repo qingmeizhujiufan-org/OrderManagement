@@ -18,17 +18,13 @@ class ZZTable extends React.Component {
       pagination: {
         showTotal: total => `共 ${total} 条`,
         showSizeChanger: true,
-        showQuickJumper: true,
-        onChange: this.handelPageChange
+        showQuickJumper: true
       }
     })
   }
 
   handelPageChange = (pagination) => {
-    console.log('this ===', this)
-    const pager = {...this.state.pagination};
-    pager.current = pagination.current;
-    this.props.handleTableChange(pager);
+    this.props.callback(pagination);
   }
 
 
@@ -38,6 +34,7 @@ class ZZTable extends React.Component {
       <Table
         className='zzTable'
         pagination={pagination}
+        onChange={this.handelPageChange}
         {...this.props}
       />
     );

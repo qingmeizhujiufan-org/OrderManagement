@@ -6,7 +6,7 @@ import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 
-const userDetailUrl = restUrl.ADDR + 'user/qureyOneUser';
+const userDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
 const delUrl = restUrl.ADDR + 'user/delete';
 
 const FormItem = Form.Item;
@@ -32,19 +32,23 @@ class Index extends React.Component {
 
   //获取用户详细信息
   getUserDetail = (id) => {
-    let userInfo = {
-      user_code: '222',
-      pic_src: '../../../assets/img/cover.jpg',
-      password: '1111',
-      role_id: '11',
-      user_name: 'ww',
-      phone: '3244',
-      is_frozen: 1,
-      region: '2'
-    }
     this.setState({
-      userInfo: userInfo
+      loading: true
     });
+    let param = {};
+    param.id = id;
+    ajax.getJSON(userDetailUrl, param, data => {
+      if (data.success) {
+        let backData = data.backData;
+        this.setState({
+          userInfo: backData,
+          loading: false
+
+        });
+      }
+    })
+
+
   }
 
   frozenUser = () => {
@@ -150,7 +154,7 @@ class Index extends React.Component {
             {...formItemLayout}
             label="用户名"
           >
-            {getFieldDecorator('user_code', {
+            {getFieldDecorator('userName', {
               initialValue: userInfo.user_code
             })(
               <Input disabled={true}/>
@@ -172,23 +176,13 @@ class Index extends React.Component {
             {...formItemLayout}
             label="用户ID"
           >
-            {getFieldDecorator('role_id', {
+            {getFieldDecorator('userCode', {
               initialValue: userInfo.role_id
             })(
               <Input disabled={true}/>
             )}
           </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="真实姓名"
-          >
-            {getFieldDecorator('user_name', {
-              initialValue: userInfo.user_name
 
-            })(
-              <Input disabled={true}/>
-            )}
-          </FormItem>
           <FormItem
             {...formItemLayout}
             label="个人电话"

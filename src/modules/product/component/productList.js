@@ -148,7 +148,15 @@ class ProductList extends React.Component {
   }
 
   addProduct = () => {
-    return this.context.router.push('/frame/product/add');
+    return this.context.router.push('/frame/product/list/add');
+  }
+
+  onDetail = id => {
+    return `/frame/product/list/detail/${id}`
+  }
+
+  onEdit = id => {
+    return `/frame/product/list/edit/${id}`
   }
 
   onDelete = (key) => {

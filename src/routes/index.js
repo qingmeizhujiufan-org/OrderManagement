@@ -48,9 +48,9 @@ class PageRouter extends React.Component {
                     <Route path="frame(/*)" component={Frame} onEnter={requireAuth}>
                         <IndexRoute component={UserList}/>
                         <Route path="product/productList" component={ProductList}/>
-                        <Route path="product/detail/:id" component={ProductDetail}/>
-                        <Route path="product/edit/:id" component={ProductEdit}/>
-                        <Route path="product/add" component={ProductAdd}/>
+                        <Route path="product/list/detail/:id" component={ProductDetail}/>
+                        <Route path="product/list/edit/:id" component={ProductEdit}/>
+                        <Route path="product/list/add" component={ProductAdd}/>
                         <Route path="user/list" component={UserList}/>
                         <Route path="user/list/add" component={UserAdd}/>
                         <Route path="user/list/detail/:id" component={UserDetail}/>

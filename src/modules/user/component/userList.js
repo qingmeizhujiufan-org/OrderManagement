@@ -299,7 +299,7 @@ class Index extends React.Component {
                 dataSource={dataSource}
                 columns={this.columns}
                 total={total}
-                onChange={this.handleTableChange.bind(this)}
+                callback={this.handleTableChange.bind(this)}
                 scroll={{x: 1500}}
               />
 

@@ -1,285 +1,286 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    Form,
-    Row,
-    Col,
-    Icon,
-    Input,
-    Breadcrumb,
-    Button,
-    Upload,
-    Select,
-    notification,
-    Spin
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  Breadcrumb,
+  Button,
+  Upload,
+  Icon,
+  Spin,
+  notification,
+  Message,
+  Notification
 } from 'antd';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
-import ZZEditor from '../../../components/zzEditor/zzEditor';
 
-import {EditorState, convertToRaw, ContentState} from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
+const productSaveUrl = restUrl.BASE_HOST + 'product/save';
+const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
+const queryDetailUrl = restUrl.BASE_HOST + 'product/findbyid';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const queryListUrl = restUrl.BASE_HOST + 'city/queryList';
-const queryDetailUrl = restUrl.BASE_HOST + 'product/findbyid';
-const saveLiveUrl = restUrl.BASE_HOST + 'product/save';
 
 const formItemLayout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 12},
+  labelCol: {span: 6},
+  wrapperCol: {span: 12},
 };
 
-class ProductEdit extends React.Component {
-    constructor(props) {
-        super(props);
+class Index extends React.Component {
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            type: sessionStorage.type,
-            data: {},
-            fileList: [],
-            cityList: [],
-            editorState: EditorState.createEmpty(),
-            loading: false,
-            cityLoading: false
-        };
-    }
+    this.state = {
+      data: {},
+      fileList: [],
+      confirmDirty: false,
+      roleList: [],
+      loading: false,
+      roleLoading: false,
+      submitLoading: false
+    };
+  }
 
-    componentDidMount = () => {
-        this.getList();
-        this.queryDetail();
-    }
+  componentDidMount = () => {
+    this.queryDetail();
+  }
 
-    getList = () => {
-        this.setState({
-            cityLoading: true
-        });
-        let param = {};
-        ajax.getJSON(queryListUrl, param, data => {
-            if (data.success) {
-                let backData = data.backData;
-                this.setState({
-                    cityList: backData,
-                    cityLoading: false
-                });
-            }
-        });
-    }
-
-    queryDetail = () => {
-        this.setState({
-            loading: true
-        });
-        let param = {};
-        param.id = this.props.params.id;
-        ajax.getJSON(queryDetailUrl, param, data => {
-            if (data.success) {
-                let backData = data.backData;
-                if (backData.newsContent && backData.newsContent !== '') {
-                    backData.newsContent = draftToHtml(JSON.parse(backData.newsContent));
-                    const contentBlock = htmlToDraft(backData.newsContent);
-                    const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
-                    const editorState = EditorState.createWithContent(contentState);
-
-                    this.setState({
-                        editorState
-                    });
-                }
-                const newsCover = backData.newsCover;
-                let photoList = [{
-                    uid: newsCover.id,
-                    name: newsCover.fileName,
-                    status: 'done',
-                    url: restUrl.BASE_HOST + newsCover.filePath,
-                    response: {
-                        data: {
-                            id: newsCover.id
-                        }
-                    }
-                }];
-
-                backData.newsCover = photoList;
-
-                this.setState({
-                    data: backData,
-                    fileList: photoList,
-                    loading: false
-                });
-            } else {
-
-            }
-        });
-    }
-
-    handleChange = ({fileList}) => {
-        this.setState({
-            fileList
-        });
-    }
-
-    normFile = (e) => {
-        console.log('Upload event:', e);
-        if (Array.isArray(e)) {
-            return e;
+  queryDetail = () => {
+    const id = this.props.params.id;
+    const param = {};
+    param.id = id;
+    this.setState({
+      loading: true
+    });
+    ajax.getJSON(queryDetailUrl, param, data => {
+      if (data.success) {
+        let backData = data.backData;
+        if(backData.assessorys) {
+          backData.assessorys.map((item, index) => {
+            backData.assessorys[index] = _.assign({}, item, {
+              uid: item.id,
+              status: 'done',
+              url: restUrl.ADDR + item.path + item.name,
+              response: {
+                data: item
+              }
+            });
+          });
+        }else {
+          backData.assessorys = [];
         }
-        return e && e.fileList;
-    }
+        const fileList = [].concat(backData.assessorys);
 
-    saveEditorState = (editorState) => {
         this.setState({
-            editorState
+          data: backData,
+          fileList,
+          loading: false
         });
+      } else {
+        Message.error('用户信息查询失败');
+      }
+    });
+  }
+
+  handleChange = ({fileList}) => this.setState({fileList})
+
+  normFile = (e) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
     }
+    return e && e.fileList;
+  }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                values.id = this.props.params.id;
-                values.newsCover = values.newsCover.map(item => {
-                    return item.response.data.id;
-                }).join(',');
-                values.newsContent = JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()));
-                console.log('handleSubmit  param === ', values);
-
-                ajax.postJSON(saveLiveUrl, JSON.stringify(values), (data) => {
-                    if (data.success) {
-                        notification.open({
-                            message: '修改新闻信息成功！',
-                            icon: <Icon type="smile-circle" style={{color: '#108ee9'}}/>,
-                        });
-                    }
-                });
-            }
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        values.id = this.props.params.id;
+        values.assessorys = values.assessorys ? values.assessorys.map(item => {
+          return item.response.backData;
+        }) : [];
+        console.log('handleSubmit  param === ', values);
+        this.setState({
+          submitLoading: true
         });
-    }
+        ajax.postJSON(productSaveUrl, JSON.stringify(values), (data) => {
+          if (data.success) {
+            Notification.success({
+              message: '提示',
+              description: '产品信息保存成功！'
+            });
 
-    render() {
-        let {type, data, fileList, editorState, loading, cityList, cityLoading} = this.state;
-        const {getFieldDecorator, setFieldsValue} = this.props.form;
+            return this.context.router.push('/frame/product/list');
+          } else {
+            message.error(data.backMsg);
+          }
 
-        return (
-            <div className="zui-content">
-                <div className='pageHeader'>
-                    <div className="breadcrumb-block">
-                        <Breadcrumb>
-                            <Breadcrumb.Item>首页</Breadcrumb.Item>
-                            <Breadcrumb.Item>新闻资讯</Breadcrumb.Item>
-                            <Breadcrumb.Item>新闻列表</Breadcrumb.Item>
-                            <Breadcrumb.Item>更新新闻</Breadcrumb.Item>
-                        </Breadcrumb>
-                    </div>
-                    <h1 className='title'>修改新闻信息</h1>
+          this.setState({
+            submitLoading: false
+          });
+        });
+      }
+    });
+  }
+
+  render() {
+    const {getFieldDecorator} = this.props.form;
+    const {data, fileList, roleList, loading, roleLoading, submitLoading} = this.state;
+
+    return (
+      <div className="zui-content">
+        <div className='pageHeader'>
+          <div className="breadcrumb-block">
+            <Breadcrumb>
+              <Breadcrumb.Item>首页</Breadcrumb.Item>
+              <Breadcrumb.Item>产品管理</Breadcrumb.Item>
+              <Breadcrumb.Item>产品列表</Breadcrumb.Item>
+              <Breadcrumb.Item>更新产品信息</Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+          <h1 className='title'>更新产品信息</h1>
+        </div>
+        <div className='pageContent'>
+          <div className='ibox-content'>
+            <Spin spinning={loading} size='large'>
+              <Form onSubmit={this.handleSubmit}>
+                <Row>
+                  <Col span={12}>
+                    <FormItem
+                      label="产品图片"
+                      {...formItemLayout}
+                    >
+                      {getFieldDecorator('assessorys', {
+                        valuePropName: 'fileList',
+                        getValueFromEvent: this.normFile,
+                        rules: [{required: false, message: '产品图片不能为空!'}],
+                        initialValue: data.assessorys
+                      })(
+                        <Upload
+                          name='bannerImage'
+                          action={uploadUrl}
+                          listType={'picture'}
+                          onChange={this.handleChange}
+                        >
+                          {fileList.length >= 1 ? null :
+                            <Button><Icon type="upload"/> 上传</Button>}
+                        </Upload>
+                      )}
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="所属仓库"
+                    >
+                      {getFieldDecorator('wareHouse', {
+                        rules: [{required: true, message: '请输入所属仓库'}],
+                        initialValue: data.wareHouse
+                      })(
+                        <Select placeholder="请输入所属仓库">
+                          <Option value="0">武汉</Option>
+                          <Option value="1">北京</Option>
+                        </Select>
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="产品名称"
+                    >
+                      {getFieldDecorator('name', {
+                        rules: [{required: true, message: '请输入产品名称'}],
+                        initialValue: data.name
+                      })(
+                        <Input/>
+                      )}
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="产品单位"
+                    >
+                      {getFieldDecorator('unit', {
+                        rules: [{required: true, message: '请输入产品单位'}],
+                        initialValue: data.unit
+                      })(
+                        <Input/>
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="成本价格"
+                    >
+                      {getFieldDecorator('costPrice', {
+                        rules: [{required: true, message: '请输入成本价格'}],
+                        initialValue: data.region
+                      })(
+                        <Input/>
+                      )}
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="备注"
+                    >
+                      {getFieldDecorator('memo', {
+                        rules: [{required: false, message: '请输入备注'}],
+                        initialValue: data.memo
+                      })(
+                        <Input/>
+                      )}
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="产品条码"
+                    >
+                      {getFieldDecorator('barCode', {
+                        rules: [{required: false, message: '请输入产品条码'}],
+                        initialValue: data.memo
+                      })(
+                        <Input/>
+                      )}
+                    </FormItem>
+                  </Col>
+                </Row>
+                <div className='toolbar'>
+                  <div className='pull-right'>
+                    <Button type="primary" size='large' htmlType="submit"
+                            loading={submitLoading}>保存</Button>
+                  </div>
                 </div>
-                <div className='pageContent'>
-                    <div className="ibox-content">
-                        <Spin spinning={loading} size="large">
-                            <Form onSubmit={this.handleSubmit}>
-                                <Row>
-                                    <Col span={12}>
-                                        <FormItem
-                                            label="封面图片"
-                                            {...formItemLayout}
-                                        >
-                                            {getFieldDecorator('newsCover', {
-                                                valuePropName: 'fileList',
-                                                getValueFromEvent: this.normFile,
-                                                rules: [{required: true, message: '封面图片不能为空!'}],
-                                                initialValue: data.newsCover
-                                            })(
-                                                <Upload
-                                                    action={restUrl.UPLOAD}
-                                                    listType={'picture'}
-                                                    className='upload-list-inline'
-                                                    onChange={this.handleChange}
-                                                >
-                                                    {fileList.length >= 1 ? null :
-                                                        <Button><Icon type="upload"/> 上传</Button>}
-                                                </Upload>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col span={12}>
-                                        <FormItem
-                                            label="城市选择"
-                                            {...formItemLayout}
-                                        >
-                                            <Spin spinning={cityLoading} indicator={<Icon type="loading"/>}>
-                                                {getFieldDecorator('cityId', {
-                                                    rules: [{required: true, message: '城市不能为空!'}],
-                                                    initialValue: data.cityId
-                                                })(
-                                                    <Select
-                                                        disabled={type !== '1'}
-                                                    >
-                                                        {
-                                                            cityList.map(item => {
-                                                                return (<Option key={item.id} value={item.id}>{item.cityName}</Option>)
-                                                            })
-                                                        }
-                                                    </Select>
-                                                )}
-                                            </Spin>
-                                        </FormItem>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col span={12}>
-                                        <FormItem
-                                            label="名称"
-                                            {...formItemLayout}
-                                        >
-                                            {getFieldDecorator('newsTitle', {
-                                                rules: [{required: true, message: '名称不能为空!'}],
-                                                initialValue: data.newsTitle
-                                            })(
-                                                <Input placeholder=""/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col span={12}>
-                                        <FormItem
-                                            label="说明"
-                                            {...formItemLayout}
-                                        >
-                                            {getFieldDecorator('newsBrief', {
-                                                initialValue: data.newsBrief
-                                            })(
-                                                <Input.TextArea autosize={{minRows: 4, maxRows: 6}}/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        <ZZEditor editorState={editorState} saveEditorState={this.saveEditorState}/>
-                                    </Col>
-                                </Row>
-                                <div className='toolbar'>
-                                    <div className='pull-right'>
-                                        <Button
-                                            type="primary"
-                                            size={'large'}
-                                            htmlType="submit"
-                                            disabled={type === '1' ? false : !!data.state}
-                                        >确认</Button>
-                                    </div>
-                                </div>
-                            </Form>
-                        </Spin>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+              </Form>
+            </Spin>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
-const WrappedEditLive = Form.create()(ProductEdit);
-ProductEdit.contextTypes = {
-    router: PropTypes.object
+const productEdit = Form.create()(Index);
+
+Index.contextTypes = {
+  router: PropTypes.object
 }
 
-export default WrappedEditLive;
+export default productEdit;
