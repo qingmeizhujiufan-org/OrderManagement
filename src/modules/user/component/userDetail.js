@@ -235,59 +235,59 @@ class Index extends React.Component {
           </ZZCard>
         </div>
         <Modal
-          title="重置密码"
-          visible={this.state.visible}
-          onCancel={this.handleCancel}
-          footer={null}
-        >
-          <Form onSubmit={this.handleSubmit}>
-            <FormItem
-              {...modalFormItemLayout}
-              label="原始密码"
-            >
-              {getFieldDecorator('oldPassword', {
-                rules: [{
-                  required: true, message: '请输入密码',
-                }, {
-                  validator: this.validateToNextPassword,
-                }],
-              })(
-                <Input type="password"/>
-              )}
-            </FormItem>
-            <FormItem
-              {...modalFormItemLayout}
-              label="新密码"
-            >
-              {getFieldDecorator('newPassword', {
-                rules: [{
-                  required: true, message: '请输入密码',
-                }, {
-                  validator: this.validateToNextPassword,
-                }],
-              })(
-                <Input type="password"/>
-              )}
-            </FormItem>
-            <FormItem
-              {...modalFormItemLayout}
-              label="确认密码"
-            >
-              {getFieldDecorator('confirmNewPassword', {
-                rules: [{
-                  required: true, message: '请确认密码',
-                }, {
-                  validator: this.compareToFirstPassword,
-                }],
-              })(
-                <Input type="password" onBlur={this.handleConfirmBlur}/>
-              )}
-            </FormItem>
-            <FormItem {...tailFormItemLayout}>
-              <Button type="primary" htmlType="submit">提交</Button>
-            </FormItem>
-          </Form>
-        </Modal>
+        title="重置密码"
+        visible={this.state.visible}
+        onCancel={this.handleCancel}
+        footer={null}
+      >
+        <Form onSubmit={this.handleSubmit}>
+          <FormItem
+            {...modalFormItemLayout}
+            label="原始密码"
+          >
+            {getFieldDecorator('oldPassword', {
+              rules: [{
+                required: true, message: '请输入密码',
+              }, {
+                validator: this.validateToNextPassword,
+              }],
+            })(
+              <Input type="password"/>
+            )}
+          </FormItem>
+          <FormItem
+            {...modalFormItemLayout}
+            label="新密码"
+          >
+            {getFieldDecorator('newPassword', {
+              rules: [{
+                required: true, message: '请输入密码',
+              }, {
+                validator: this.validateToNextPassword,
+              }],
+            })(
+              <Input type="password"/>
+            )}
+          </FormItem>
+          <FormItem
+            {...modalFormItemLayout}
+            label="确认密码"
+          >
+            {getFieldDecorator('confirmNewPassword', {
+              rules: [{
+                required: true, message: '请确认密码',
+              }, {
+                validator: this.compareToFirstPassword,
+              }],
+            })(
+              <Input type="password" onBlur={this.handleConfirmBlur}/>
+            )}
+          </FormItem>
+          <FormItem {...tailFormItemLayout}>
+            <Button type="primary" htmlType="submit">提交</Button>
+          </FormItem>
+        </Form>
+      </Modal>
       </div>
     );
   }
