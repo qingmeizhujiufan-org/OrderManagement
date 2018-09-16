@@ -10,7 +10,7 @@ import {
   Breadcrumb,
   Button,
   Modal,
-  Table,
+  Divider,
   Spin,
   Icon,
   DatePicker,
@@ -18,7 +18,7 @@ import {
   Message,
   Radio
 } from 'antd';
-import moment from 'moment';
+
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 import ajax from 'Utils/ajax';
@@ -102,12 +102,39 @@ class Index extends React.Component {
       align: 'center',
       key: 'name'
     }, {
+      title: '产品条码',
+      dataIndex: 'barCode',
+      align: 'center',
+      width: 250,
+      key: 'barCode'
+    }, {
       title: '数量',
       dataIndex: 'number',
       align: 'center',
       key: 'number',
       render: (text, record, index) => (
-        <InputNumber defaultValue={1} min={1} step={1} onChange={value => this.setEachProNumber(value, index)}/>
+        <InputNumber
+          style={{width: '50%'}}
+          defaultValue={1}
+          min={1}
+          step={1}
+          onChange={value => this.setEachProNumber(value, record, index)}
+        />
+      )
+    }, {
+      title: '单价',
+      dataIndex: 'costPrice',
+      align: 'center',
+      key: 'costPrice',
+      render: (text, record, index) => (
+        <InputNumber
+          style={{width: '60%'}}
+          defaultValue={record.costPrice}
+          min={0.01}
+          step={0.01}
+          precision={2}
+          onChange={value => this.setEachPrice(value, record, index)}
+        />
       )
     }, {
       title: '单位',
@@ -115,11 +142,11 @@ class Index extends React.Component {
       key: 'unit',
       align: 'center',
     }, {
-      title: '产品条码',
-      dataIndex: 'barCode',
+      title: '小计',
+      dataIndex: 'total',
       align: 'center',
       width: 250,
-      key: 'barCode'
+      key: 'total'
     }]
   }
 
@@ -143,11 +170,13 @@ class Index extends React.Component {
   handleOk = () => {
     let selectedProduct = this.state.selectedProduct;
     for (let i in selectedProduct) {
-      selectedProduct[i].number = 1
+      selectedProduct[i].number = 1;
+      selectedProduct[i] = this.setTotalAmount(selectedProduct[i])
     }
     this.setState({
       submitProduct: selectedProduct,
       showModal: false
+    }, () => {
     });
   }
 
@@ -159,19 +188,35 @@ class Index extends React.Component {
         selectedProduct: selectedRows
       });
     } else {
-      message.error('产品种类最多为四种');
+      message.warning('产品种类最多为四种');
     }
     console.log('selectedRowKeys changed: ', selectedRows);
 
   }
 
-  setEachProNumber = (val, index) => {
+  setEachProNumber = (val, record, index) => {
     let data = this.state.submitProduct;
-    data[index].number = val ? val : 1;
+    record.number = val ? val : 1;
+    record = this.setTotalAmount(record);
+    data[index] = record;
     this.setState({
       submitProduct: data
-    }, () => {
     })
+  }
+
+  setEachPrice = (val, record, index) => {
+    let data = this.state.submitProduct;
+    record.costPrice = val ? val : record.costPrice;
+    record = this.setTotalAmount(record);
+    data[index] = record;
+    this.setState({
+      submitProduct: data
+    })
+  }
+
+  setTotalAmount = (record) => {
+    record.total = (record.number * record.costPrice).toFixed(2);
+    return record
   }
 
   validatePhone = (rule, value, callback) => {
@@ -181,10 +226,6 @@ class Index extends React.Component {
     } else {
       callback();
     }
-  }
-
-  getToltaAmount = () => {
-
   }
 
   handleTableChange = (pagination) => {
@@ -274,14 +315,13 @@ class Index extends React.Component {
         <div className='pageContent'>
           <div className='ibox-content'>
             <ZZCard
-              extra={<Button type='primary' icon='plus'
-                             onClick={this.showModal}>添加产品</Button>}
+              extra={<Button type='dashed' icon='plus'
+                             onClick={this.showModal}>选择产品</Button>}
             >
-              <Table
-                bordered
+              <ZZTable
                 dataSource={submitProduct}
                 columns={this.orderColumns}
-                pagination={false}
+                pagination={null}
               />
             </ZZCard>
             <Modal
@@ -290,428 +330,423 @@ class Index extends React.Component {
               width={800}
               onCancel={this.handleCancel}
               footer={[
-                <Button key="submit" type="primary" onClick={this.handleOk}>确定</Button>,
-                <Button key="back" onClick={this.handleCancel}>返回</Button>
+                <Button key="back" onClick={this.handleCancel}>返回</Button>,
+                <Button key="submit" type="primary" onClick={this.handleOk}>确定</Button>
               ]}
             >
-              <ZZCard>
-                <Row type='flex' justify="space-around" align="middle">
-                  <Col span={8}>
-                    <Search
-                      placeholder="搜索产品名称关键字"
-                      enterButton
-                      size="large"
-                      onSearch={searchText => this.setState({searchText})}
-                    />
-                  </Col>
-                </Row>
-                <span style={{marginBottom: 8}}>
-                {selectedRowKeys.length ? `已选择 ${selectedRowKeys.length} 个产品` : '未选择产品'}
-              </span>
-                <Spin spinning={loading} size='large'>
-                  <ZZTable
-                    rowSelection={rowSelection}
-                    dataSource={allProduct}
-                    columns={this.productColumns}
-                    total={total}
-                    callback={this.handleTableChange.bind(this)}
+              <Row type='flex' justify="space-around" align="middle">
+                <Col span={8}>
+                  <Search
+                    placeholder="搜索产品名称关键字"
+                    enterButton
+                    size="default"
+                    onSearch={searchText => this.setState({searchText})}
                   />
-                </Spin>
-              </ZZCard>
+                </Col>
+              </Row>
+              <h3 style={{marginBottom: 8}}>
+                {selectedRowKeys.length ? `已选择 ${selectedRowKeys.length} 个产品` : '未选择产品'}
+              </h3>
+              <Spin spinning={loading} size='large'>
+                <ZZTable
+                  rowSelection={rowSelection}
+                  dataSource={allProduct}
+                  columns={this.productColumns}
+                  total={total}
+                  callback={this.handleTableChange.bind(this)}
+                />
+              </Spin>
             </Modal>
-            <ZZCard
-              extra = {<span><Icon type="highlight" theme="outlined" />订单详情</span>}
-            >
-              <Form onSubmit={this.handleSubmit}>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="所属区域"
-                    >
-                      {getFieldDecorator('region', {
-                        rules: [{
-                          required: true, message: '请输入所属区域',
-                        }],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      label="所属仓库"
-                      {...formItemLayout}
-                    >
-                      {getFieldDecorator('warehouse', {
-                        rules: [{required: true, message: '所属仓库不能为空!'}]
-                      })(
-                        <Select>
-                          <Option key='0' value='0'>武汉</Option>
-                          <Option key='1' value='1'>北京</Option>
-                        </Select>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="业务员id"
-                    >
-                      {getFieldDecorator('userId', {
-                        rules: [{
-                          required: true, message: '请输入业务员id',
-                        }],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="业务员姓名"
-                    >
-                      {getFieldDecorator('userName', {
-                        rules: [{
-                          required: true, message: '请输入业务员姓名',
-                        }],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="订单编号"
-                    >
-                      {getFieldDecorator('orderCode', {
-                        rules: [{required: true, message: '请输入订单编号'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="订单性质"
-                    >
-                      {getFieldDecorator('orderNature', {
-                        rules: [{required: true, message: '请输入订单性质'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="寄件电话"
-                    >
-                      {getFieldDecorator('serderPhone', {
-                        rules: [{required: true, message: '请输入寄件电话'}, {
-                          validator: this.validatePhone,
-                        }],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="寄件详细地址"
-                    >
-                      {getFieldDecorator('senderAddr', {
-                        rules: [{required: true, message: '请输入寄件详细地址'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="成单微信号"
-                    >
-                      {getFieldDecorator('orderWechatCode', {
-                        rules: [{required: true, message: '请输入成单微信号'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="成单日期"
-                    >
-                      {getFieldDecorator('orderDate', {
-                        rules: [{required: true, message: '请输入成单日期'}],
-                      })(
-                        <DatePicker/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="发货日期"
-                    >
-                      {getFieldDecorator('deliverDate', {
-                        rules: [{required: true, message: '请输入发货日期'}],
-                      })(
-                        <DatePicker/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="收件人"
-                    >
-                      {getFieldDecorator('receiverName', {
-                        rules: [{required: true, message: '请输入收件人'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="收件人手机号"
-                    >
-                      {getFieldDecorator('receiverPhone', {
-                        rules: [{required: true, message: '请输入收件人手机号'}, {
-                          validator: this.validatePhone,
-                        }],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="收件人详细地址"
-                    >
-                      {getFieldDecorator('receiverAddr', {
-                        rules: [{required: true, message: '请输入收件人详细地址'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="广告渠道"
-                    >
-                      {getFieldDecorator('advertChannel', {
-                        rules: [{required: true, message: '请输入广告渠道'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="进线时间"
-                    >
-                      {getFieldDecorator('incomlineTime', {
-                        rules: [{required: true, message: '请输入进线时间'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="定金"
-                    >
-                      {getFieldDecorator('depositAmout', {
-                        rules: [{required: true, message: '请输入定金'}],
-                      })(
-                        <InputNumber
-                          step={0.01}
-                          precision={2}
-                          min={0}
-                        />
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="代收金额"
-                    >
-                      {getFieldDecorator('collectionAmout', {
-                        rules: [{required: true, message: '请输入代收金额'}],
-                      })(
-                        <InputNumber
-                          min={0}
-                          step={0.01}
-                          precision={2}
-                        />
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="总金额"
-                    >
-                      {getFieldDecorator('totalAmount', {
-                        rules: [{required: true, message: '请输入总金额'}],
-                      })(
-                        <InputNumber
-                          min={0}
-                          step={0.1}
-                          precision={2}
-                        />
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="是否国际件"
-                    >
-                      {getFieldDecorator('isForeignExpress', {
-                        rules: [{required: true, message: '请选择'}],
-                      })(
-                        <RadioGroup>
-                          <Radio value={0}>不是</Radio>
-                          <Radio value={1}>是</Radio>
-                        </RadioGroup>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="订单状态"
-                    >
-                      {getFieldDecorator('orderState', {
-                        rules: [{required: true, message: '请选择'}],
-                      })(
-                        <RadioGroup>
-                          <Radio value={0}>编辑中</Radio>
-                          <Radio value={1}>已锁定</Radio>
-                          <Radio value={2}>已发快递</Radio>
-                          <Radio value={3}>成单</Radio>
-                        </RadioGroup>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="是否超过成本"
-                    >
-                      {getFieldDecorator('isOverCost', {
-                        rules: [{required: true, message: '请选择'}],
-                      })(
-                        <RadioGroup>
-                          <Radio value={0}>不是</Radio>
-                          <Radio value={1}>是</Radio>
-                        </RadioGroup>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="成本数据"
-                    >
-                      {getFieldDecorator('costAmount', {
-                        rules: [{required: true, message: '请输入成本数据'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="成本比例"
-                    >
-                      {getFieldDecorator('costRatio', {
-                        rules: [{required: true, message: '请输入成本比例'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="快递单号"
-                    >
-                      {getFieldDecorator('expressCode', {
-                        rules: [{required: true, message: '请输入快递单号'}],
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="快递状态"
-                    >
-                      {getFieldDecorator('expressState', {
-                        rules: [{required: true, message: '请选择快递状态'}],
-                      })(
-                        <Select>
-                          <Option key='0' value='0'>未发货</Option>
-                          <Option key='1' value='1'>已发货</Option>
-                          <Option key='2' value='2'>取消发货</Option>
-                          <Option key='3' value='3'>未妥投</Option>
-                          <Option key='4' value='4'>退回</Option>
-                          <Option key='5' value='5'>签收</Option>
-                        </Select>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <div className='toolbar'>
-                  <div className='pull-right'>
-                    <Button type="primary" size='large' htmlType="submit"
-                            loading={submitLoading}>提交</Button>
-                  </div>
+            <Divider>订单信息</Divider>
+            <Form onSubmit={this.handleSubmit}>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="所属区域"
+                  >
+                    {getFieldDecorator('region', {
+                      rules: [{
+                        required: true, message: '请输入所属区域',
+                      }],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    label="所属仓库"
+                    {...formItemLayout}
+                  >
+                    {getFieldDecorator('warehouse', {
+                      rules: [{required: true, message: '所属仓库不能为空!'}]
+                    })(
+                      <Select>
+                        <Option key='0' value='0'>武汉</Option>
+                        <Option key='1' value='1'>北京</Option>
+                      </Select>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="业务员id"
+                  >
+                    {getFieldDecorator('userId', {
+                      rules: [{
+                        required: true, message: '请输入业务员id',
+                      }],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="业务员姓名"
+                  >
+                    {getFieldDecorator('userName', {
+                      rules: [{
+                        required: true, message: '请输入业务员姓名',
+                      }],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="订单编号"
+                  >
+                    {getFieldDecorator('orderCode', {
+                      rules: [{required: true, message: '请输入订单编号'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="订单性质"
+                  >
+                    {getFieldDecorator('orderNature', {
+                      rules: [{required: true, message: '请输入订单性质'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="寄件电话"
+                  >
+                    {getFieldDecorator('serderPhone', {
+                      rules: [{required: true, message: '请输入寄件电话'}, {
+                        validator: this.validatePhone,
+                      }],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="寄件详细地址"
+                  >
+                    {getFieldDecorator('senderAddr', {
+                      rules: [{required: true, message: '请输入寄件详细地址'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="成单微信号"
+                  >
+                    {getFieldDecorator('orderWechatCode', {
+                      rules: [{required: true, message: '请输入成单微信号'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="成单日期"
+                  >
+                    {getFieldDecorator('orderDate', {
+                      rules: [{required: true, message: '请输入成单日期'}],
+                    })(
+                      <DatePicker style={{width: '100%'}}/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="发货日期"
+                  >
+                    {getFieldDecorator('deliverDate', {
+                      rules: [{required: true, message: '请输入发货日期'}],
+                    })(
+                      <DatePicker style={{width: '100%'}}/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="收件人"
+                  >
+                    {getFieldDecorator('receiverName', {
+                      rules: [{required: true, message: '请输入收件人'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="收件人手机号"
+                  >
+                    {getFieldDecorator('receiverPhone', {
+                      rules: [{required: true, message: '请输入收件人手机号'}, {
+                        validator: this.validatePhone,
+                      }],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="收件人详细地址"
+                  >
+                    {getFieldDecorator('receiverAddr', {
+                      rules: [{required: true, message: '请输入收件人详细地址'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="广告渠道"
+                  >
+                    {getFieldDecorator('advertChannel', {
+                      rules: [{required: true, message: '请输入广告渠道'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="进线时间"
+                  >
+                    {getFieldDecorator('incomlineTime', {
+                      rules: [{required: true, message: '请输入进线时间'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="定金"
+                  >
+                    {getFieldDecorator('depositAmout', {
+                      rules: [{required: true, message: '请输入定金'}],
+                    })(
+                      <InputNumber
+                        step={0.01}
+                        precision={2}
+                        min={0}
+                      />
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="代收金额"
+                  >
+                    {getFieldDecorator('collectionAmout', {
+                      rules: [{required: true, message: '请输入代收金额'}],
+                    })(
+                      <InputNumber
+                        min={0}
+                        step={0.01}
+                        precision={2}
+                      />
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="总金额"
+                  >
+                    {getFieldDecorator('totalAmount', {
+                      rules: [{required: true, message: '请输入总金额'}],
+                    })(
+                      <InputNumber
+                        min={0}
+                        step={0.1}
+                        precision={2}
+                      />
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="是否国际件"
+                  >
+                    {getFieldDecorator('isForeignExpress', {
+                      rules: [{required: true, message: '请选择'}],
+                    })(
+                      <RadioGroup>
+                        <Radio value={0}>不是</Radio>
+                        <Radio value={1}>是</Radio>
+                      </RadioGroup>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="订单状态"
+                  >
+                    {getFieldDecorator('orderState', {
+                      rules: [{required: true, message: '请选择'}],
+                    })(
+                      <RadioGroup>
+                        <Radio value={0}>编辑中</Radio>
+                        <Radio value={1}>已锁定</Radio>
+                        <Radio value={2}>已发快递</Radio>
+                        <Radio value={3}>成单</Radio>
+                      </RadioGroup>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="是否超过成本"
+                  >
+                    {getFieldDecorator('isOverCost', {
+                      rules: [{required: true, message: '请选择'}],
+                    })(
+                      <RadioGroup>
+                        <Radio value={0}>不是</Radio>
+                        <Radio value={1}>是</Radio>
+                      </RadioGroup>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="成本数据"
+                  >
+                    {getFieldDecorator('costAmount', {
+                      rules: [{required: true, message: '请输入成本数据'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="成本比例"
+                  >
+                    {getFieldDecorator('costRatio', {
+                      rules: [{required: true, message: '请输入成本比例'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="快递单号"
+                  >
+                    {getFieldDecorator('expressCode', {
+                      rules: [{required: true, message: '请输入快递单号'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="快递状态"
+                  >
+                    {getFieldDecorator('expressState', {
+                      rules: [{required: true, message: '请选择快递状态'}],
+                    })(
+                      <Select>
+                        <Option key='0' value='0'>未发货</Option>
+                        <Option key='1' value='1'>已发货</Option>
+                        <Option key='2' value='2'>取消发货</Option>
+                        <Option key='3' value='3'>未妥投</Option>
+                        <Option key='4' value='4'>退回</Option>
+                        <Option key='5' value='5'>签收</Option>
+                      </Select>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <div className='toolbar'>
+                <div className='pull-right'>
+                  <Button type="primary" size='large' htmlType="submit"
+                          loading={submitLoading}>提交</Button>
                 </div>
-              </Form>
-            </ZZCard>
+              </div>
+            </Form>
           </div>
         </div>
       </div>
