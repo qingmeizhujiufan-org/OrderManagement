@@ -12,7 +12,7 @@ import {
     Icon,
     Spin,
     Message,
-    Notification
+    Notification, InputNumber
 } from 'antd';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
@@ -70,9 +70,6 @@ class Index extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 values.id = this.props.params.id;
-                values.assessorys = values.assessorys ? values.assessorys.map(item => {
-                    return item.response.backData;
-                }) : [];
                 console.log('handleSubmit  param === ', values);
                 this.setState({
                     submitLoading: true
@@ -129,12 +126,27 @@ class Index extends React.Component {
                                                 initialValue: data.wareHouse
                                             })(
                                                 <Select placeholder="请输入所属仓库">
-                                                    <Option value="0">武汉</Option>
-                                                    <Option value="1">北京</Option>
+                                                    <Option value='0'>武汉</Option>
+                                                    <Option value='1'>北京</Option>
                                                 </Select>
                                             )}
                                         </FormItem>
                                     </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="产品条码"
+                                        >
+                                            {getFieldDecorator('barCode', {
+                                                rules: [{required: false, message: '请输入产品条码'}],
+                                                initialValue: data.barCode
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Row>
                                     <Col span={12}>
                                         <FormItem
                                             {...formItemLayout}
@@ -148,8 +160,6 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                </Row>
-                                <Row>
                                     <Col span={12}>
                                         <FormItem
                                             {...formItemLayout}
@@ -163,6 +173,8 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
+                                </Row>
+                                <Row>
                                     <Col span={12}>
                                         <FormItem
                                             {...formItemLayout}
@@ -172,12 +184,15 @@ class Index extends React.Component {
                                                 rules: [{required: true, message: '请输入成本价格'}],
                                                 initialValue: data.costPrice
                                             })(
-                                                <Input/>
+                                                <InputNumber
+                                                    min={0}
+                                                    precision={2}
+                                                    step={1}
+                                                    style={{width: '100%'}}
+                                                />
                                             )}
                                         </FormItem>
                                     </Col>
-                                </Row>
-                                <Row>
                                     <Col span={12}>
                                         <FormItem
                                             {...formItemLayout}
@@ -186,19 +201,6 @@ class Index extends React.Component {
                                             {getFieldDecorator('memo', {
                                                 rules: [{required: false, message: '请输入备注'}],
                                                 initialValue: data.memo
-                                            })(
-                                                <Input/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col span={12}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="产品条码"
-                                        >
-                                            {getFieldDecorator('barCode', {
-                                                rules: [{required: false, message: '请输入产品条码'}],
-                                                initialValue: data.barCode
                                             })(
                                                 <Input/>
                                             )}

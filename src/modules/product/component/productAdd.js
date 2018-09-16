@@ -92,8 +92,8 @@ class Index extends React.Component {
                                             }],
                                         })(
                                             <Select placeholder="请输入所属仓库">
-                                                <Option value={0}>武汉</Option>
-                                                <Option value={1}>北京</Option>
+                                                <Option value='0'>武汉</Option>
+                                                <Option value='1'>北京</Option>
                                             </Select>
                                         )}
                                     </FormItem>

@@ -112,5 +112,14 @@ export default {
         arr.sort(sortNumber);
 
         return arr;
+    },
+    /**
+     * @param 使用js让数字的千分位用,分隔
+     */
+    shiftThousands: val => {
+        if (typeof val !== "number") {
+            return null;
+        }
+        return val.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');//使用正则替换，每隔三个数加一个','
     }
 };

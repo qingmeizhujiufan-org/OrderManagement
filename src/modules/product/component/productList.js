@@ -22,6 +22,7 @@ import {
 import _ from 'lodash';
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
+import Util from 'Utils/util';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
@@ -38,34 +39,56 @@ class ProductList extends React.Component {
 
         this.columns = [{
             title: '仓库地址',
-            dataIndex: 'warehouse',
-            width: 250,
-            key: 'warehouse'
+            dataIndex: 'wareHouse',
+            width: 150,
+            align: 'center',
+            key: 'wareHouse',
+            render: (text, record, index) => (
+                <span>{text === '0' ? '武汉' : '北京'}</span>
+            )
         }, {
             title: '产品名称',
             width: 300,
-            dataIndex: 'productName',
-            key: 'productName'
+            align: 'center',
+            dataIndex: 'name',
+            key: 'name'
         }, {
             title: '单位',
+            width: 150,
             align: 'center',
-            dataIndex: 'productUnit',
-            key: 'productUnit',
+            dataIndex: 'unit',
+            key: 'unit',
         }, {
             title: '成本价格',
+            width: 150,
             align: 'right',
             dataIndex: 'costPrice',
             key: 'costPrice',
+            render: (text, record, index) => (
+                <span>{Util.shiftThousands(text)}</span>
+            )
+        }, {
+            title: '产品条码',
+            align: 'center',
+            dataIndex: 'barCode',
+            key: 'barCode'
         }, {
             title: '备注',
             width: 120,
             dataIndex: 'memo',
             key: 'memo'
         }, {
-            title: '产品条码',
+            title: '更新时间',
+            width: 200,
             align: 'center',
-            dataIndex: 'productCode',
-            key: 'productCode'
+            dataIndex: 'updateTime',
+            key: 'updateTime',
+        }, {
+            title: '创建时间',
+            width: 200,
+            align: 'center',
+            dataIndex: 'createTime',
+            key: 'createTime',
         }, {
             title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
             key: 'operation',
@@ -190,10 +213,10 @@ class ProductList extends React.Component {
 
     render() {
         const {loading, delLoading, dataSource, searchText, state, total} = this.state;
-        let n_dataSource = [...dataSource].filter(item => item.newsTitle.indexOf(searchText) > -1);
-        if (state !== 999) {
-            n_dataSource = n_dataSource.filter(item => item.state === state);
-        }
+        // let n_dataSource = [...dataSource].filter(item => item.newsTitle.indexOf(searchText) > -1);
+        // if (state !== 999) {
+        //     n_dataSource = n_dataSource.filter(item => item.state === state);
+        // }
 
         return (
             <div className="zui-content page-newsList">

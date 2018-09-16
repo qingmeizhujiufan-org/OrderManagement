@@ -62,7 +62,7 @@ class Index extends React.Component {
         ajax.getJSON(queryDetailUrl, param, data => {
             if (data.success) {
                 let backData = data.backData;
-                if(backData.assessorys) {
+                if (backData.assessorys) {
                     backData.assessorys.map((item, index) => {
                         backData.assessorys[index] = _.assign({}, item, {
                             uid: item.id,
@@ -73,7 +73,7 @@ class Index extends React.Component {
                             }
                         });
                     });
-                }else {
+                } else {
                     backData.assessorys = [];
                 }
                 const fileList = [].concat(backData.assessorys);
@@ -120,6 +120,15 @@ class Index extends React.Component {
             return e;
         }
         return e && e.fileList;
+    }
+
+    validatePhone = (rule, value, callback) => {
+        const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        if (value && value !== '' && !reg.test(value)) {
+            callback(new Error('手机号格式不正确'));
+        } else {
+            callback();
+        }
     }
 
     handleSubmit = (e) => {
@@ -232,7 +241,7 @@ class Index extends React.Component {
                                                 rules: [{required: true, message: '请输入用户编码'}],
                                                 initialValue: data.userCode
                                             })(
-                                                <Input/>
+                                                <Input disabled/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -257,7 +266,9 @@ class Index extends React.Component {
                                             label="个人电话"
                                         >
                                             {getFieldDecorator('phone', {
-                                                rules: [{required: true, message: '请输入个人电话'}],
+                                                rules: [{required: true, message: '请输入个人电话'}, {
+                                                    validator: this.validatePhone
+                                                }],
                                                 initialValue: data.phone
                                             })(
                                                 <Input/>

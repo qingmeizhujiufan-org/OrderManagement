@@ -75,7 +75,7 @@ class Index extends React.Component {
     compareToFirstPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && value !== form.getFieldValue('password')) {
-            callback('Two passwords that you enter is inconsistent!');
+            callback('密码不一致!');
         } else {
             callback();
         }
@@ -87,6 +87,15 @@ class Index extends React.Component {
             form.validateFields(['confirm'], {force: true});
         }
         callback();
+    }
+
+    validatePhone = (rule, value, callback) => {
+        const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        if (value && value !== '' && !reg.test(value)) {
+            callback(new Error('手机号格式不正确'));
+        } else {
+            callback();
+        }
     }
 
     handleSubmit = (e) => {
@@ -190,11 +199,9 @@ class Index extends React.Component {
                                         label="用户编码"
                                     >
                                         {getFieldDecorator('userCode', {
-                                            rules: [{
-                                                required: true, message: '请输入用户编码',
-                                            }],
+                                            rules: [{required: false}],
                                         })(
-                                            <Input/>
+                                            <Input disabled placeholder={'由用户名自动生成'}/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -254,7 +261,9 @@ class Index extends React.Component {
                                         label="个人电话"
                                     >
                                         {getFieldDecorator('phone', {
-                                            rules: [{required: true, message: '请输入个人电话'}],
+                                            rules: [{required: true, message: '请输入个人电话'}, {
+                                                validator: this.validatePhone,
+                                            }],
                                         })(
                                             <Input/>
                                         )}
