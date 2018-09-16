@@ -18,50 +18,50 @@ import ProductEdit from "../modules/product/component/productEdit";
 import ProductAdd from "../modules/product/component/productAdd";
 /* 订单管理 */
 import OrderList from "../modules/order/component/orderList";
-import OrderAdd from "../modules/order/component/addOrder";
+import OrderAdd from "../modules/order/component/orderAdd";
 
 const requireAuth = (nextState, replace) => {
-  if (!sessionStorage.expireDate || new Date(sessionStorage.expireDate).getTime() <= new Date().getTime()) {
-    replace({pathname: '/'})
-  }
+    if (!sessionStorage.expireDate || new Date(sessionStorage.expireDate).getTime() <= new Date().getTime()) {
+        replace({pathname: '/'})
+    }
 }
 
 class PageRouter extends React.Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {};
-  }
+        this.state = {};
+    }
 
-  componentWillMount = () => {
-  }
+    componentWillMount = () => {
+    }
 
-  componentDidMount = () => {
-  }
+    componentDidMount = () => {
+    }
 
-  render() {
-    return (
-      <Router history={hashHistory}>
-        <Route path="/" component={App}>
-          <IndexRoute component={Login}/>
-          <Route path="login" component={Login}/>
-          <Route path="frame(/*)" component={Frame} onEnter={requireAuth}>
-            <IndexRoute component={UserList}/>
-            <Route path="product/productList" component={ProductList}/>
-            <Route path="product/detail/:id" component={ProductDetail}/>
-            <Route path="product/edit/:id" component={ProductEdit}/>
-            <Route path="product/add" component={ProductAdd}/>
-            <Route path="user/list" component={UserList}/>
-            <Route path="user/add" component={UserAdd}/>
-            <Route path="user/detail/:id" component={UserDetail}/>
-            <Route path="user/edit/:id" component={UserEdit}/>
-            <Route path="order/orderList" component={OrderList}/>
-            <Route path="order/add" component={OrderAdd}/>
-          </Route>
-        </Route>
-      </Router>
-    )
-  }
+    render() {
+        return (
+            <Router history={hashHistory}>
+                <Route path="/" component={App}>
+                    <IndexRoute component={Login}/>
+                    <Route path="login" component={Login}/>
+                    <Route path="frame(/*)" component={Frame} onEnter={requireAuth}>
+                        <IndexRoute component={UserList}/>
+                        <Route path="product/productList" component={ProductList}/>
+                        <Route path="product/detail/:id" component={ProductDetail}/>
+                        <Route path="product/edit/:id" component={ProductEdit}/>
+                        <Route path="product/add" component={ProductAdd}/>
+                        <Route path="user/list" component={UserList}/>
+                        <Route path="user/list/add" component={UserAdd}/>
+                        <Route path="user/list/detail/:id" component={UserDetail}/>
+                        <Route path="user/list/edit/:id" component={UserEdit}/>
+                        <Route path="order/orderList" component={OrderList}/>
+                        <Route path="order/add" component={OrderAdd}/>
+                    </Route>
+                </Route>
+            </Router>
+        )
+    }
 }
 
 export default PageRouter;
