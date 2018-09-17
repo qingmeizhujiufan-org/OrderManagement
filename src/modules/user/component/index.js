@@ -69,7 +69,6 @@ class Index extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>首页</Breadcrumb.Item>
                             <Breadcrumb.Item>用户管理</Breadcrumb.Item>
                             <Breadcrumb.Item>统计分析</Breadcrumb.Item>
                         </Breadcrumb>

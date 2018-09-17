@@ -219,7 +219,6 @@ class ProductList extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>首页</Breadcrumb.Item>
                             <Breadcrumb.Item>产品管理</Breadcrumb.Item>
                             <Breadcrumb.Item>产品列表</Breadcrumb.Item>
                         </Breadcrumb>

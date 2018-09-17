@@ -137,7 +137,6 @@ class Index extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>首页</Breadcrumb.Item>
                             <Breadcrumb.Item>用户管理</Breadcrumb.Item>
                             <Breadcrumb.Item>新增用户</Breadcrumb.Item>
                         </Breadcrumb>
@@ -282,12 +281,10 @@ class Index extends React.Component {
                                     </FormItem>
                                 </Col>
                             </Row>
-                            <div className='toolbar'>
-                                <div className='pull-right'>
-                                    <Button type="primary" size='large' htmlType="submit"
-                                            loading={submitLoading}>提交</Button>
-                                </div>
-                            </div>
+                            <Row type="flex" justify="center">
+                              <Button type="primary" size='large' style={{marginTop: 10,width: 120}} htmlType="submit"
+                                      loading={submitLoading}>提交</Button>
+                            </Row>
                         </Form>
                     </div>
                 </div>

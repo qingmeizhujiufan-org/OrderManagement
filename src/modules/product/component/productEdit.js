@@ -103,7 +103,6 @@ class Index extends React.Component {
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
-                            <Breadcrumb.Item>首页</Breadcrumb.Item>
                             <Breadcrumb.Item>产品管理</Breadcrumb.Item>
                             <Breadcrumb.Item>产品列表</Breadcrumb.Item>
                             <Breadcrumb.Item>更新产品信息</Breadcrumb.Item>
@@ -206,6 +205,21 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
+                                </Row>
+                                <Row>
+                                  <Col span={12}>
+                                    <FormItem
+                                      {...formItemLayout}
+                                      label="创建时间"
+                                    >
+                                      {getFieldDecorator('createTime', {
+                                        rules: [{required: false}],
+                                        initialValue: data.createTime
+                                      })(
+                                        <Input disabled/>
+                                      )}
+                                    </FormItem>
+                                  </Col>
                                 </Row>
                                 <div className='toolbar'>
                                     <div className='pull-right'>

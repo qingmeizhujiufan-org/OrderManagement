@@ -103,7 +103,6 @@ class Index extends React.Component {
         <div className='pageHeader'>
           <div className="breadcrumb-block">
             <Breadcrumb>
-              <Breadcrumb.Item>首页</Breadcrumb.Item>
               <Breadcrumb.Item>订单管理</Breadcrumb.Item>
               <Breadcrumb.Item>订单列表</Breadcrumb.Item>
               <Breadcrumb.Item>更新订单信息</Breadcrumb.Item>
@@ -503,6 +502,21 @@ class Index extends React.Component {
                         rules: [{required: true, message: '请输入成本比例'}],
                       })(
                         <Input/>
+                      )}
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="创建时间"
+                    >
+                      {getFieldDecorator('createTime', {
+                        rules: [{required: false}],
+                        initialValue: data.createTime
+                      })(
+                        <Input disabled/>
                       )}
                     </FormItem>
                   </Col>
