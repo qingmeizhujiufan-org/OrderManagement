@@ -303,12 +303,10 @@ class Index extends React.Component {
                                         </FormItem>
                                     </Col>
                                 </Row>
-                                <div className='toolbar'>
-                                    <div className='pull-right'>
-                                        <Button type="primary" size='large' htmlType="submit"
-                                                loading={submitLoading}>保存</Button>
-                                    </div>
-                                </div>
+                              <Row type="flex" justify="center" style={{marginTop: 40}}>
+                                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                                        loading={submitLoading}>保存</Button>
+                              </Row>
                             </Form>
                         </Spin>
                     </div>

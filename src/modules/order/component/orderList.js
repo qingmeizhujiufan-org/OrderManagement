@@ -10,7 +10,7 @@ import {
   Menu,
   Breadcrumb,
   Dropdown,
-  notification,
+  Notification,
   Spin,
   Tabs,
   message,
@@ -146,18 +146,13 @@ class ProductList extends React.Component {
         param.id = key;
         ajax.postJSON(delLiveUrl, JSON.stringify(param), data => {
           if (data.success) {
-            notification.open({
-              message: '删除成功！',
-              icon: <Icon type="smile-circle" style={{color: '#108ee9'}}/>,
+            Notification.success({
+              message: '提示',
+              description: '删除成功！'
             });
-
-            const dataSource = [...this.state.dataSource].filter(item => item.key !== id);
-
-            this.setState({
-              dataSource,
-            });
+            this.getList();
           } else {
-            message.warning(data.backMsg);
+            message.error(data.backMsg);
           }
         });
       }
@@ -165,11 +160,8 @@ class ProductList extends React.Component {
   }
 
   render() {
-    const {loading, dataSource, searchText, state, delLoading} = this.state;
-    let n_dataSource = [...dataSource].filter(item => item.newsTitle.indexOf(searchText) > -1);
-    if (state !== 999) {
-      n_dataSource = n_dataSource.filter(item => item.state === state);
-    }
+    const {loading, dataSource, searchText} = this.state;
+
     return (
       <div className="zui-content page-newsList">
         <div className='pageHeader'>
@@ -205,7 +197,7 @@ class ProductList extends React.Component {
           <ZZCard>
             <Spin spinning={loading} size='large'>
               <ZZTable
-                dataSource={n_dataSource}
+                dataSource={dataSource}
                 columns={this.columns}
                 scroll={{x: 2400}}
               />

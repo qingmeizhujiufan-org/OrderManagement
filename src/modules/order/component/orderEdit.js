@@ -5,14 +5,18 @@ import {
   Col,
   Form,
   Input,
+  InputNumber,
   Select,
   Breadcrumb,
   Button,
-  Upload,
-  Icon,
+  Modal,
+  Divider,
   Spin,
+  Icon,
+  DatePicker,
+  Notification,
   Message,
-  Notification
+  Radio
 } from 'antd';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
@@ -23,6 +27,8 @@ const queryDetailUrl = restUrl.BASE_HOST + 'product/findbyid';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
+const Search = Input.Search;
 
 const formItemLayout = {
   labelCol: {span: 6},
@@ -521,12 +527,10 @@ class Index extends React.Component {
                     </FormItem>
                   </Col>
                 </Row>
-                <div className='toolbar'>
-                  <div className='pull-right'>
-                    <Button type="primary" size='large' htmlType="submit"
-                            loading={submitLoading}>保存</Button>
-                  </div>
-                </div>
+                <Row type="flex" justify="center" style={{marginTop: 40}}>
+                  <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                          loading={submitLoading}>保存</Button>
+                </Row>
               </Form>
             </Spin>
           </div>
