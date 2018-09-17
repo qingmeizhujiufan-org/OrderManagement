@@ -43,12 +43,11 @@ class ZZLeftSide extends React.Component {
   }
 
   componentDidMount = () => {
-
+    this.selectActiveTab()
   }
 
   componentWillReceiveProps = nextProps => {
-    if ('storageChange' in nextProps && nextProps.storageChange !== this.props.storageChange) {
-    }
+
   }
 
   authorityMenu = () => {
