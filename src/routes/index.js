@@ -20,6 +20,9 @@ import ProductAdd from "../modules/product/component/productAdd";
 import OrderList from "../modules/order/component/orderList";
 import OrderAdd from "../modules/order/component/orderAdd";
 import OrderEdit from "../modules/order/component/orderEdit";
+/* 个人设置 */
+import SettingList from "../modules/setting/component/userCenter";
+
 
 const requireAuth = (nextState, replace) => {
     if (!sessionStorage.expireDate || new Date(sessionStorage.expireDate).getTime() <= new Date().getTime()) {
@@ -59,7 +62,7 @@ class PageRouter extends React.Component {
                         <Route path="order/list" component={OrderList}/>
                         <Route path="order/list/add" component={OrderAdd}/>
                         <Route path="order/list/edit/:id" component={OrderEdit}/>
-
+                        <Route path="setting/list" component={SettingList}/>
                     </Route>
                 </Route>
             </Router>

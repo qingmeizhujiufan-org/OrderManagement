@@ -39,11 +39,22 @@ const Menu = [
         children: [
             {
                 key: '4_1',
-                link: '/frame/order/orderList',
+                link: '/frame/order/list',
                 label: '报表'
             }
         ]
-    }
+    }, {
+    key: '5',
+    iconType: 'setting',
+    label: '个人设置',
+    children: [
+      {
+        key: '5_1',
+        link: '/frame/setting/list',
+        label: '个人中心'
+      }
+    ]
+  }
 ];
 
 export default Menu;

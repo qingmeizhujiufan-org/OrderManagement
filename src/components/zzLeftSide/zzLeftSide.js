@@ -17,22 +17,37 @@ class ZZLeftSide extends React.Component {
     super(props);
 
     this.state = {
-      defaultSelectedKeys: '',
+      defaultSelectedKeys: '1',
       menuTree
     };
   }
 
   componentWillMount = () => {
     this.authorityMenu();
+    let that = this;
+    let hashUrl = location.hash.split('#')[1];
+    console.log('hashUrl ===',hashUrl)
+    _.forEach(menuTree, function(item){
+      if(item.children){
+        _.find(item.children, function(subItem){
+          if(subItem.link.indexOf(hashUrl) > -1){
+            that.setState({defaultSelectedKeys: subItem.key});
+          }
+        });
+      } else {
+        if(item.link.indexOf(hashUrl) > -1){
+          that.setState({defaultSelectedKeys: item.key});
+        }
+      }
+    });
   }
 
   componentDidMount = () => {
-    this.selectActiveTab();
+
   }
 
   componentWillReceiveProps = nextProps => {
     if ('storageChange' in nextProps && nextProps.storageChange !== this.props.storageChange) {
-      this.selectActiveTab();
     }
   }
 
@@ -131,7 +146,7 @@ class ZZLeftSide extends React.Component {
         theme="dark"
         mode="inline"
         defaultSelectedKeys={[defaultSelectedKeys]}
-        defaultOpenKeys={['1', '2', '3', '4', '5']}
+        defaultOpenKeys={['1','2','3','4','5']}
       >
         {menu}
       </Menu>
@@ -156,7 +171,7 @@ class ZZLeftSide extends React.Component {
           </Link>
         </div>
         <Scrollbars style={{height: 'calc(100vh - 64px)'}}>
-          {menu}
+          {menu }
         </Scrollbars>
       </Sider>
     );

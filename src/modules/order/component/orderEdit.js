@@ -22,7 +22,7 @@ import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 
-const productSaveUrl = restUrl.BASE_HOST + 'product/save';
+const orderSaveUrl = restUrl.BASE_HOST + 'product/save';
 const queryDetailUrl = restUrl.BASE_HOST + 'product/findbyid';
 
 const FormItem = Form.Item;
@@ -80,13 +80,12 @@ class Index extends React.Component {
         this.setState({
           submitLoading: true
         });
-        ajax.postJSON(productSaveUrl, JSON.stringify(values), (data) => {
+        ajax.postJSON(orderSaveUrl, JSON.stringify(values), (data) => {
           if (data.success) {
             Notification.success({
               message: '提示',
               description: '订单信息保存成功！'
             });
-
             return this.context.router.push('/frame/order/list');
           } else {
             message.error(data.backMsg);
@@ -127,7 +126,6 @@ class Index extends React.Component {
                       label="所属区域"
                     >
                       {getFieldDecorator('region', {
-                        initialValue: data.region,
                         rules: [{
                           required: true, message: '请输入所属区域',
                         }],
@@ -142,7 +140,6 @@ class Index extends React.Component {
                       {...formItemLayout}
                     >
                       {getFieldDecorator('warehouse', {
-                        initialValue: data.region,
                         rules: [{required: true, message: '所属仓库不能为空!'}]
                       })(
                         <Select>
@@ -160,7 +157,6 @@ class Index extends React.Component {
                       label="业务员id"
                     >
                       {getFieldDecorator('userId', {
-                        initialValue: data.userId,
                         rules: [{
                           required: true, message: '请输入业务员id',
                         }],
@@ -175,7 +171,6 @@ class Index extends React.Component {
                       label="业务员姓名"
                     >
                       {getFieldDecorator('userName', {
-                        initialValue: data.userName,
                         rules: [{
                           required: true, message: '请输入业务员姓名',
                         }],
@@ -192,7 +187,6 @@ class Index extends React.Component {
                       label="订单编号"
                     >
                       {getFieldDecorator('orderCode', {
-                        initialValue: data.orderCode,
                         rules: [{required: true, message: '请输入订单编号'}],
                       })(
                         <Input/>
@@ -205,7 +199,6 @@ class Index extends React.Component {
                       label="订单性质"
                     >
                       {getFieldDecorator('orderNature', {
-                        initialValue: data.orderNature,
                         rules: [{required: true, message: '请输入订单性质'}],
                       })(
                         <Input/>
@@ -220,8 +213,9 @@ class Index extends React.Component {
                       label="寄件电话"
                     >
                       {getFieldDecorator('serderPhone', {
-                        initialValue: data.serderPhone,
-                        rules: [{required: true, message: '请输入寄件电话'}],
+                        rules: [{required: true, message: '请输入寄件电话'}, {
+                          validator: this.validatePhone,
+                        }],
                       })(
                         <Input/>
                       )}
@@ -233,7 +227,6 @@ class Index extends React.Component {
                       label="寄件详细地址"
                     >
                       {getFieldDecorator('senderAddr', {
-                        initialValue: data.senderAddr,
                         rules: [{required: true, message: '请输入寄件详细地址'}],
                       })(
                         <Input/>
@@ -248,7 +241,6 @@ class Index extends React.Component {
                       label="成单微信号"
                     >
                       {getFieldDecorator('orderWechatCode', {
-                        initialValue: data.orderWechatCode,
                         rules: [{required: true, message: '请输入成单微信号'}],
                       })(
                         <Input/>
@@ -261,10 +253,9 @@ class Index extends React.Component {
                       label="成单日期"
                     >
                       {getFieldDecorator('orderDate', {
-                        initialValue: data.orderDate,
                         rules: [{required: true, message: '请输入成单日期'}],
                       })(
-                        <Input/>
+                        <DatePicker style={{width: '100%'}}/>
                       )}
                     </FormItem>
                   </Col>
@@ -276,10 +267,9 @@ class Index extends React.Component {
                       label="发货日期"
                     >
                       {getFieldDecorator('deliverDate', {
-                        initialValue: data.deliverDate,
                         rules: [{required: true, message: '请输入发货日期'}],
                       })(
-                        <Input/>
+                        <DatePicker style={{width: '100%'}}/>
                       )}
                     </FormItem>
                   </Col>
@@ -289,7 +279,6 @@ class Index extends React.Component {
                       label="收件人"
                     >
                       {getFieldDecorator('receiverName', {
-                        initialValue: data.receiverName,
                         rules: [{required: true, message: '请输入收件人'}],
                       })(
                         <Input/>
@@ -304,8 +293,9 @@ class Index extends React.Component {
                       label="收件人手机号"
                     >
                       {getFieldDecorator('receiverPhone', {
-                        initialValue: data.receiverPhone,
-                        rules: [{required: true, message: '请输入收件人手机号'}],
+                        rules: [{required: true, message: '请输入收件人手机号'}, {
+                          validator: this.validatePhone,
+                        }],
                       })(
                         <Input/>
                       )}
@@ -317,7 +307,6 @@ class Index extends React.Component {
                       label="收件人详细地址"
                     >
                       {getFieldDecorator('receiverAddr', {
-                        initialValue: data.receiverAddr,
                         rules: [{required: true, message: '请输入收件人详细地址'}],
                       })(
                         <Input/>
@@ -332,7 +321,6 @@ class Index extends React.Component {
                       label="广告渠道"
                     >
                       {getFieldDecorator('advertChannel', {
-                        initialValue: data.advertChannel,
                         rules: [{required: true, message: '请输入广告渠道'}],
                       })(
                         <Input/>
@@ -345,7 +333,6 @@ class Index extends React.Component {
                       label="进线时间"
                     >
                       {getFieldDecorator('incomlineTime', {
-                        initialValue: data.incomlineTime,
                         rules: [{required: true, message: '请输入进线时间'}],
                       })(
                         <Input/>
@@ -360,7 +347,6 @@ class Index extends React.Component {
                       label="定金"
                     >
                       {getFieldDecorator('depositAmout', {
-                        initialValue: data.depositAmout,
                         rules: [{required: true, message: '请输入定金'}],
                       })(
                         <InputNumber
@@ -377,7 +363,6 @@ class Index extends React.Component {
                       label="代收金额"
                     >
                       {getFieldDecorator('collectionAmout', {
-                        initialValue: data.collectionAmout,
                         rules: [{required: true, message: '请输入代收金额'}],
                       })(
                         <InputNumber
@@ -396,7 +381,6 @@ class Index extends React.Component {
                       label="总金额"
                     >
                       {getFieldDecorator('totalAmount', {
-                        initialValue: data.totalAmount,
                         rules: [{required: true, message: '请输入总金额'}],
                       })(
                         <InputNumber
@@ -413,7 +397,6 @@ class Index extends React.Component {
                       label="是否国际件"
                     >
                       {getFieldDecorator('isForeignExpress', {
-                        initialValue: data.isForeignExpress,
                         rules: [{required: true, message: '请选择'}],
                       })(
                         <RadioGroup>
@@ -431,7 +414,6 @@ class Index extends React.Component {
                       label="订单状态"
                     >
                       {getFieldDecorator('orderState', {
-                        initialValue: data.orderState,
                         rules: [{required: true, message: '请选择'}],
                       })(
                         <RadioGroup>
@@ -449,7 +431,6 @@ class Index extends React.Component {
                       label="是否超过成本"
                     >
                       {getFieldDecorator('isOverCost', {
-                        initialValue: data.isOverCost,
                         rules: [{required: true, message: '请选择'}],
                       })(
                         <RadioGroup>
@@ -493,7 +474,7 @@ class Index extends React.Component {
                       label="快递单号"
                     >
                       {getFieldDecorator('expressCode', {
-                        rules: [{required: true, message: '请输入成本数据'}],
+                        rules: [{required: true, message: '请输入快递单号'}],
                       })(
                         <Input/>
                       )}
@@ -505,31 +486,23 @@ class Index extends React.Component {
                       label="快递状态"
                     >
                       {getFieldDecorator('expressState', {
-                        rules: [{required: true, message: '请输入成本比例'}],
+                        rules: [{required: true, message: '请选择快递状态'}],
                       })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="创建时间"
-                    >
-                      {getFieldDecorator('createTime', {
-                        rules: [{required: false}],
-                        initialValue: data.createTime
-                      })(
-                        <Input disabled/>
+                        <Select>
+                          <Option key='0' value='0'>未发货</Option>
+                          <Option key='1' value='1'>已发货</Option>
+                          <Option key='2' value='2'>取消发货</Option>
+                          <Option key='3' value='3'>未妥投</Option>
+                          <Option key='4' value='4'>退回</Option>
+                          <Option key='5' value='5'>签收</Option>
+                        </Select>
                       )}
                     </FormItem>
                   </Col>
                 </Row>
                 <Row type="flex" justify="center" style={{marginTop: 40}}>
                   <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                          loading={submitLoading}>保存</Button>
+                          loading={submitLoading}>提交</Button>
                 </Row>
               </Form>
             </Spin>
