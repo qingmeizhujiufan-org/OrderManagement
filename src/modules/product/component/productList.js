@@ -120,7 +120,7 @@ class ProductList extends React.Component {
 
         this.state = {
             loading: false,
-            delLoading: false,
+            delForceUpdate: false,
             searchText: ''
         };
     }
@@ -158,6 +158,8 @@ class ProductList extends React.Component {
                             message: '提示',
                             description: '删除成功！'
                         });
+
+                        this.setState({delForceUpdate: true});
                     } else {
                         Message.error(data.backMsg);
                     }
@@ -167,7 +169,7 @@ class ProductList extends React.Component {
     }
 
     render() {
-        const {loading, delLoading, searchText, state, total} = this.state;
+        const {loading, delForceUpdate} = this.state;
 
         return (
             <div className="zui-content page-newsList">
@@ -207,6 +209,7 @@ class ProductList extends React.Component {
                                 columns={this.columns}
                                 scroll={{x: 1500}}
                                 queryUrl={getListUrl}
+                                delForceUpdate={delForceUpdate}
                             />
                         </Spin>
                     </ZZCard>

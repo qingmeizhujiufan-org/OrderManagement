@@ -1,5 +1,5 @@
 import React from 'react';
-import {Message, Table} from 'antd';
+import {Message, Modal, Notification, Table} from 'antd';
 import _ from 'lodash';
 import './index.less';
 import ajax from "Utils/ajax";
@@ -24,6 +24,20 @@ class ZZTable extends React.Component {
 
     componentDidMount = () => {
         this.getList();
+    }
+
+    componentWillReceiveProps = nextProps => {
+        console.log('nextProps === ', nextProps);
+        if('delForceUpdate' in nextProps){
+            this.setState({
+                _params: {
+                    pageNumber: 1,
+                    pageSize: 10
+                }
+            }, () => {
+                this.getList();
+            });
+        }
     }
 
     getList = () => {
