@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router';
 import PropTypes from 'prop-types';
-import {Layout, Row, Col, Affix, Icon, Input, Dropdown, Menu, Avatar, Tooltip, Notification, Divider} from 'antd';
+import {Layout, Row, Col, Affix, Icon, Badge, Dropdown, Menu, Avatar, Tooltip, Notification, Divider} from 'antd';
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
 import './zzHeader.less';
@@ -28,6 +28,10 @@ class ZZHeader extends React.Component {
 
   goUserCenter = () => {
     this.context.router.push('/frame/setting/list/');
+  }
+
+  checkMessage = () => {
+    this.context.router.push('/frame/setting/list/message');
   }
 
   logout = () => {
@@ -70,8 +74,11 @@ class ZZHeader extends React.Component {
           <Col span={10}>
           </Col>
           <Col span={12} style={{textAlign: 'right'}}>
-            <Icon type="bell" theme="outlined"
-                  style={{fontSize: 18, verticalAlign: 'text-bottom'}}/>
+            <Badge count={5} title='个人消息'>
+              <span onClick={this.checkMessage}>
+                <Icon type="bell" theme="outlined" style={{fontSize: 20, verticalAlign: 'text-bottom'}}/>
+              </span>
+            </Badge>
             <Divider type="vertical" style={{margin: '0 30px'}}/>
             <Dropdown overlay={this.menu}>
               <a className="ant-dropdown-link">

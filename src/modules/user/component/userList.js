@@ -324,13 +324,10 @@ class Index extends React.Component {
           <ZZCard>
             <Spin spinning={loading} size='large'>
               <ZZTable
-                dataSource={dataSource}
                 columns={this.columns}
-                total={total}
-                callback={this.handleTableChange.bind(this)}
                 scroll={{x: 1500}}
+                queryUrl={queryListUrl}
               />
-
             </Spin>
           </ZZCard>
         </div>

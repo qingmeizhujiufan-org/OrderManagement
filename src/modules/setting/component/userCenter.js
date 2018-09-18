@@ -11,7 +11,7 @@ import {
   Upload,
   Icon,
   Spin,
-  notification,
+  Tabs,
   Message,
   Notification
 } from 'antd';
@@ -23,26 +23,27 @@ const userSaveUrl = restUrl.BASE_HOST + 'user/save';
 const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
 const queryRoleUrl = restUrl.BASE_HOST + 'role/queryList';
 const queryDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
+const updatePasswordUrl = restUrl.BASE_HOST + 'user/updatePassword';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const TabPane = Tabs.TabPane;
 
 const formItemLayout = {
   labelCol: {span: 6},
   wrapperCol: {span: 12},
 };
 
-class Index extends React.Component {
+class DetailForm extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      id: '',
       data: {},
       fileList: [],
-      confirmDirty: false,
-      roleList: [],
       loading: false,
-      roleLoading: false,
+      roleList: [],
       submitLoading: false
     };
   }
@@ -50,6 +51,18 @@ class Index extends React.Component {
   componentDidMount = () => {
     this.queryDetail();
     this.queryRole();
+    this.setState({
+      id: this.props.id
+    });
+  }
+  handleChange = ({fileList}) => this.setState({fileList})
+
+  normFile = (e) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
   }
 
   queryDetail = () => {
@@ -112,14 +125,177 @@ class Index extends React.Component {
     });
   }
 
-  handleChange = ({fileList}) => this.setState({fileList})
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        values.id = this.state.id;
+        values.assessorys = values.assessorys ? values.assessorys.map(item => {
+          return item.response.backData;
+        }) : [];
+        console.log('handleSubmit  param === ', values);
+        this.setState({
+          submitLoading: true
+        });
+        ajax.postJSON(userSaveUrl, JSON.stringify(values), (data) => {
+          if (data.success) {
+            Notification.success({
+              message: '提示',
+              description: '用户信息保存成功！'
+            });
 
-  normFile = (e) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
+          } else {
+            Message.error(data.backMsg);
+          }
+
+          this.setState({
+            submitLoading: false
+          });
+        });
+      }
+    });
+  }
+
+  render() {
+    const {getFieldDecorator} = this.props.form;
+    const {data, fileList, roleList, roleLoading, submitLoading} = this.state;
+    return (
+      <Form onSubmit={this.handleSubmit}>
+        <Row>
+          <Col span={12}>
+            <FormItem
+              label="头像"
+              {...formItemLayout}
+            >
+              {getFieldDecorator('assessorys', {
+                valuePropName: 'fileList',
+                getValueFromEvent: this.normFile,
+                rules: [{required: false, message: '头像不能为空!'}],
+                initialValue: data.assessorys
+              })(
+                <Upload
+                  name='bannerImage'
+                  action={uploadUrl}
+                  listType={'picture'}
+                  onChange={this.handleChange}
+                >
+                  {fileList.length >= 1 ? null :
+                    <Button><Icon type="upload"/> 上传</Button>}
+                </Upload>
+              )}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem
+              label="角色选择"
+              {...formItemLayout}
+            >
+              <Spin spinning={roleLoading} indicator={<Icon type="loading"/>}>
+                {getFieldDecorator('roleId', {
+                  rules: [{required: true, message: '角色不能为空!'}],
+                  initialValue: data.roleId
+                })(
+                  <Select disabled>
+                    {
+                      roleList.map(item => {
+                        return (<Option key={item.id}
+                                        value={item.id}>{item.name}</Option>)
+                      })
+                    }
+                  </Select>
+                )}
+              </Spin>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem
+              {...formItemLayout}
+              label="用户编码"
+            >
+              {getFieldDecorator('userCode', {
+                rules: [{required: true, message: '请输入用户编码'}],
+                initialValue: data.userCode
+              })(
+                <Input disabled/>
+              )}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem
+              {...formItemLayout}
+              label="用户名"
+            >
+              {getFieldDecorator('userName', {
+                rules: [{required: true, message: '请输入用户名'}],
+                initialValue: data.userName
+              })(
+                <Input/>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem
+              {...formItemLayout}
+              label="个人电话"
+            >
+              {getFieldDecorator('phone', {
+                rules: [{required: true, message: '请输入个人电话'}],
+                initialValue: data.phone
+              })(
+                <Input disabled/>
+              )}
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem
+              {...formItemLayout}
+              label="所属区域"
+            >
+              {getFieldDecorator('region', {
+                rules: [{required: true, message: '请输入所属区域'}],
+                initialValue: data.region
+              })(
+                <Input/>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <FormItem
+              {...formItemLayout}
+              label="创建时间"
+            >
+              {getFieldDecorator('createTime', {
+                rules: [{required: false}],
+                initialValue: data.createTime
+              })(
+                <Input disabled/>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row type="flex" justify="center" style={{marginTop: 40}}>
+          <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                  loading={submitLoading}>保存</Button>
+        </Row>
+      </Form>
+    )
+  }
+}
+
+DetailForm = Form.create({})(DetailForm);
+
+class PasswordForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      submitLoading: false
+    };
   }
 
   validatePhone = (rule, value, callback) => {
@@ -135,22 +311,20 @@ class Index extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        values.id = this.props.params.id;
-        values.assessorys = values.assessorys ? values.assessorys.map(item => {
-          return item.response.backData;
-        }) : [];
         console.log('handleSubmit  param === ', values);
+        const val = {
+          phone: values.phoneNumber,
+          password: values.newPassword
+        }
         this.setState({
           submitLoading: true
         });
-        ajax.postJSON(userSaveUrl, JSON.stringify(values), (data) => {
+        ajax.postJSON(updatePasswordUrl, JSON.stringify(val), (data) => {
           if (data.success) {
             Notification.success({
               message: '提示',
-              description: '用户信息保存成功！'
+              description: '修改密码成功！'
             });
-
-            return this.context.router.push('/frame/user/list');
           } else {
             message.error(data.backMsg);
           }
@@ -162,11 +336,66 @@ class Index extends React.Component {
       }
     });
   }
-
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {data, fileList, roleList, loading, roleLoading, submitLoading} = this.state;
+    const { submitLoading} = this.state;
+    return (
+      <Form onSubmit={this.handleSubmit} autoComplete="off" >
+        <Row type="flex" justify="center" style={{marginTop: 40}}>
+          <Col span={12}>
+            <FormItem
+              {...formItemLayout}
+              label="手机号"
+            >
+              {getFieldDecorator('phoneNumber', {
+                initialValue: '',
+                rules: [{required: true, message: '请输入个人电话'}, {
+                  validator: this.validatePhone
+                }],
+              })(
+                <Input autoComplete="off"/>
+              )}
+            </FormItem>
 
+          </Col>
+          <Col span={12}>
+            <FormItem
+              {...formItemLayout}
+              label="新密码"
+            >
+              {getFieldDecorator('newPassword', {
+                initialValue: '',
+                rules: [{required: true, message: '请输入新密码'}],
+              })(
+                <Input type='password' autoComplete="off"/>
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row type="flex" justify="center" style={{marginTop: 40}}>
+          <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                  loading={submitLoading}>保存</Button>
+        </Row>
+      </Form>
+    )
+  }
+}
+PasswordForm = Form.create({})(PasswordForm);
+
+class Index extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      id: ''
+    };
+  }
+  componentDidMount = () => {
+
+  }
+
+  render() {
+    const id = this.props.params.id;
     return (
       <div className="zui-content">
         <div className='pageHeader'>
@@ -180,134 +409,14 @@ class Index extends React.Component {
         </div>
         <div className='pageContent'>
           <div className='ibox-content'>
-            <Spin spinning={false} size='large'>
-              <Form onSubmit={this.handleSubmit}>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      label="头像"
-                      {...formItemLayout}
-                    >
-                      {getFieldDecorator('assessorys', {
-                        valuePropName: 'fileList',
-                        getValueFromEvent: this.normFile,
-                        rules: [{required: false, message: '头像不能为空!'}],
-                        initialValue: data.assessorys
-                      })(
-                        <Upload
-                          name='bannerImage'
-                          action={uploadUrl}
-                          listType={'picture'}
-                          onChange={this.handleChange}
-                        >
-                          {fileList.length >= 1 ? null :
-                            <Button><Icon type="upload"/> 上传</Button>}
-                        </Upload>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      label="角色选择"
-                      {...formItemLayout}
-                    >
-                      <Spin spinning={roleLoading} indicator={<Icon type="loading"/>}>
-                        {getFieldDecorator('roleId', {
-                          rules: [{required: true, message: '角色不能为空!'}],
-                          initialValue: data.roleId
-                        })(
-                          <Select>
-                            {
-                              roleList.map(item => {
-                                return (<Option key={item.id}
-                                                value={item.id}>{item.name}</Option>)
-                              })
-                            }
-                          </Select>
-                        )}
-                      </Spin>
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="用户编码"
-                    >
-                      {getFieldDecorator('userCode', {
-                        rules: [{required: true, message: '请输入用户编码'}],
-                        initialValue: data.userCode
-                      })(
-                        <Input disabled/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="用户名"
-                    >
-                      {getFieldDecorator('userName', {
-                        rules: [{required: true, message: '请输入用户名'}],
-                        initialValue: data.userName
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="个人电话"
-                    >
-                      {getFieldDecorator('phone', {
-                        rules: [{required: true, message: '请输入个人电话'}, {
-                          validator: this.validatePhone
-                        }],
-                        initialValue: data.phone
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="所属区域"
-                    >
-                      {getFieldDecorator('region', {
-                        rules: [{required: true, message: '请输入所属区域'}],
-                        initialValue: data.region
-                      })(
-                        <Input/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={12}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="创建时间"
-                    >
-                      {getFieldDecorator('createTime', {
-                        rules: [{required: false}],
-                        initialValue: data.createTime
-                      })(
-                        <Input disabled/>
-                      )}
-                    </FormItem>
-                  </Col>
-                </Row>
-                <Row type="flex" justify="center" style={{marginTop: 40}}>
-                  <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                          loading={submitLoading}>保存</Button>
-                </Row>
-              </Form>
-            </Spin>
+            <Tabs defaultActiveKey="1">
+              <TabPane tab={<span><Icon type="setting"/>个人信息</span>} key="1">
+                <DetailForm id={id}/>
+              </TabPane>
+              <TabPane tab={<span><Icon type="lock"/>修改密码</span>} key="2">
+                <PasswordForm/>
+              </TabPane>
+            </Tabs>
           </div>
         </div>
       </div>
@@ -315,10 +424,8 @@ class Index extends React.Component {
   }
 }
 
-const userCenter = Form.create()(Index);
-
 Index.contextTypes = {
   router: PropTypes.object
 }
 
-export default userCenter;
+export default Index;

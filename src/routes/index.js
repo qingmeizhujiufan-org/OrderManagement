@@ -22,6 +22,7 @@ import OrderAdd from "../modules/order/component/orderAdd";
 import OrderEdit from "../modules/order/component/orderEdit";
 /* 个人设置 */
 import SettingList from "../modules/setting/component/userCenter";
+import MessageList from "../modules/setting/component/messageList";
 
 
 const requireAuth = (nextState, replace) => {
@@ -63,6 +64,7 @@ class PageRouter extends React.Component {
                         <Route path="order/list/add" component={OrderAdd}/>
                         <Route path="order/list/edit/:id" component={OrderEdit}/>
                         <Route path="setting/list" component={SettingList}/>
+                        <Route path="setting/list/message" component={MessageList}/>
                     </Route>
                 </Route>
             </Router>

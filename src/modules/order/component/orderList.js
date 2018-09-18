@@ -27,7 +27,7 @@ import Util from "Utils/util";
 
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
-const getLiveListUrl = restUrl.ADDR + 'product/queryListByAdmin';
+const queryListUrl = restUrl.ADDR + 'product/queryListByAdmin';
 const reviewUrl = restUrl.ADDR + 'product/review';
 const delLiveUrl = restUrl.ADDR + 'product/delete';
 
@@ -197,9 +197,9 @@ class ProductList extends React.Component {
           <ZZCard>
             <Spin spinning={loading} size='large'>
               <ZZTable
-                dataSource={dataSource}
                 columns={this.columns}
                 scroll={{x: 2400}}
+                queryUrl={queryListUrl}
               />
             </Spin>
           </ZZCard>
