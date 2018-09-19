@@ -23,27 +23,13 @@ class ZZLeftSide extends React.Component {
     }
 
     componentWillMount = () => {
+        this.selectActiveTab();
         this.authorityMenu();
-        let that = this;
-        let hashUrl = location.hash.split('#')[1];
-        console.log('hashUrl ===', hashUrl)
-        _.forEach(menuTree, function (item) {
-            if (item.children) {
-                _.find(item.children, function (subItem) {
-                    if (subItem.link.indexOf(hashUrl) > -1) {
-                        that.setState({defaultSelectedKeys: subItem.key});
-                    }
-                });
-            } else {
-                if (item.link.indexOf(hashUrl) > -1) {
-                    that.setState({defaultSelectedKeys: item.key});
-                }
-            }
-        });
     }
 
     componentDidMount = () => {
-        this.selectActiveTab()
+
+        window.addEventListener('hashchange', this.selectActiveTab);
     }
 
     componentWillReceiveProps = nextProps => {
@@ -88,11 +74,10 @@ class ZZLeftSide extends React.Component {
 
     selectActiveTab = () => {
         const menu = this.getFlatMenu(this.state.menuTree);
-
+        const hashUrl = location.hash.split('#')[1];
         for (let i = 0; i < menu.length; i++) {
             const item = menu[i];
-
-            if (window.location.hash.split('#')[1].indexOf(item.link) > -1) {
+            if (hashUrl.indexOf(item.link) > -1) {
                 this.setState({defaultSelectedKeys: item.key});
                 return;
             }

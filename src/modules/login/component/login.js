@@ -33,11 +33,15 @@ class Login extends React.Component {
                 ajax.postJSON(loginUrl, JSON.stringify(values), (data) => {
                     if (data.success) {
                         let backData = data.backData;
-                        sessionStorage.setItem('expireDate', new Date(new Date().getTime() + 10000000));
-                        sessionStorage.setItem('userId', backData.id);
-                        sessionStorage.setItem('roleId', backData.roleId);
-                        if(backData.assessorys && backData.assessorys.length > 0){
-                            sessionStorage.setItem('avatar', restUrl.ADDR + backData.assessorys[0].path + backData.assessorys[0].name);
+                        sessionStorage.setItem('token', backData.token);
+                        const loginedUser = backData.loginedUser;
+                        if(loginedUser) {
+                            sessionStorage.setItem('expireDate', new Date(new Date().getTime() + 10000000));
+                            sessionStorage.setItem('userId', loginedUser.id);
+                            sessionStorage.setItem('roleId', loginedUser.roleId);
+                            if(loginedUser.assessorys && loginedUser.assessorys.length > 0){
+                                sessionStorage.setItem('avatar', restUrl.ADDR + backData.assessorys[0].path + backData.assessorys[0].name);
+                            }
                         }
 
                         return this.context.router.push('/frame/user/list');

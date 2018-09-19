@@ -160,34 +160,22 @@ var ajax = {
             }
         }
         //存在token则携带全局token到header里面
-        // var token = sessionStorage.token;
-        // if(token){
-        //     req.set('Token', token);
-        // }else {
-        //     window.location.hash = '/login';
-        // }
+        var token = sessionStorage.token;
+        if(token){
+            req.set('x-auth-token', token);
+        }else {
+            window.location.hash = '/login';
+        }
         req.query(_defaults.query).send(_defaults.send).end(function (err, res) {
             if (err && err.status === 401) {
                 window.location.hash = '/login';
             }
             if (res && res.ok) {
-                if (res.headers && res.headers['icop-content-type']) {
-                    if (typeof _defaults.error === 'function') {
-                        //如果有外部的错误异常处理则使用外部的
-                        _defaults.error(res);
+                if (typeof _defaults.success === 'function') {
+                    if (_defaults.accept === 'text') {
+                        _defaults.success(res.text);
                     } else {
-                        //如果没有则使用内部默认的异常处理
-                        //捕获服务端包装的异常消息
-                        // Toast.fail(res.text && res.text.length > 0 ? res.text : res.body, 3);
-                    }
-                    return;
-                } else {
-                    if (typeof _defaults.success === 'function') {
-                        if (_defaults.accept === 'text') {
-                            _defaults.success(res.text);
-                        } else {
-                            _defaults.success(res.body);
-                        }
+                        _defaults.success(res.body);
                     }
                 }
             }
