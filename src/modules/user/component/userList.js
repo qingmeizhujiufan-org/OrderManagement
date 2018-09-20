@@ -110,31 +110,32 @@ class Index extends React.Component {
                 width: 180,
                 align: 'center',
                 render: (text, record, index) => (
-                    <span>
-            <a onClick={() => this.resetPassword(record.phone)}>重置密码</a>
-            <Divider type="vertical"/>
-            <Dropdown
-                placement="bottomCenter"
-                overlay={
-                    <Menu>
-                        <Menu.Item>
-                            <Link to={this.onDetail(record.id)}>查看</Link>
-                        </Menu.Item>
-                        <Menu.Item>
-                            <Link to={this.onEdit(record.id)}>编辑</Link>
-                        </Menu.Item>
-                        <Menu.Item>
-                            <a onClick={() => this.onDelete(record.id)}>删除</a>
-                        </Menu.Item>
-                    </Menu>
-                }
-            >
-              <a className="ant-dropdown-link">操作</a>
-          </Dropdown>
-          </span>
-
+                    <div>
+                        <a onClick={() => this.resetPassword(record.phone)}>重置密码</a>
+                        <Divider type="vertical"/>
+                        <Dropdown
+                            placement="bottomCenter"
+                            overlay={
+                                <Menu>
+                                    <Menu.Item>
+                                        <Link to={this.onDetail(record.id)}>查看</Link>
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        <Link to={this.onEdit(record.id)}>编辑</Link>
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        <a onClick={() => this.onDelete(record.id)}>删除</a>
+                                    </Menu.Item>
+                                </Menu>
+                            }
+                        >
+                            <a className="ant-dropdown-link">操作</a>
+                        </Dropdown>
+                    </div>
                 )
             }];
+
+
         this.state = {
             roleList: [{
                 id: '4a347f25084654cf73a88d8dc7262990',
@@ -150,10 +151,7 @@ class Index extends React.Component {
                 name: '二级管理员'
             }],
             searchText: '',
-            dataSource: [],
-            total: '',
-            pageSize: '',
-            page: '',
+            delForceUpdate: false
         };
     }
 
@@ -235,7 +233,8 @@ class Index extends React.Component {
                             message: '提示',
                             description: '删除成功！'
                         });
-                        this.getList()
+
+                        this.setState({delForceUpdate: true});
                     } else {
                         Message.error(data.backMsg);
                     }
@@ -245,7 +244,7 @@ class Index extends React.Component {
     }
 
     render() {
-        const {searchText} = this.state;
+        const {searchText, delForceUpdate} = this.state;
 
         return (
             <div className="zui-content">
@@ -287,7 +286,7 @@ class Index extends React.Component {
                             params={{
                                 keyWords: ''
                             }}
-                            delForceUpdate
+                            delForceUpdate={delForceUpdate}
                         />
                     </ZZCard>
                 </div>

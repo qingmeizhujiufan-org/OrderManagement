@@ -67,7 +67,7 @@ class Login extends React.Component {
                     <Row>
                         <Col span={13} style={{height: '400px', backgroundColor: 'rgba(101, 116, 154, .65)'}}>
                             <div style={{margin: '85px 0 40px', textAlign: 'center'}}>
-                                <Icon type="windows" style={{fontSize: 90, color: '#fff'}}/>
+                                <Icon type="windows" theme='filled' style={{fontSize: 90, color: '#fff'}}/>
                             </div>
                             <div
                                 style={{paddingTop: 30, textAlign: 'center', fontSize: 20, color: '#fff'}}>订单管理后台系统

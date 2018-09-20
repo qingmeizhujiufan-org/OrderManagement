@@ -28,7 +28,7 @@ class ZZTable extends React.Component {
 
     componentWillReceiveProps = nextProps => {
         console.log('nextProps === ', nextProps);
-        if('delForceUpdate' in nextProps){
+        if('delForceUpdate' in nextProps && nextProps.delForceUpdate !== this.props.delForceUpdate){
             this.setState({
                 _params: {
                     pageNumber: 1,
@@ -108,10 +108,11 @@ class ZZTable extends React.Component {
 
     render() {
         const {dataSource, pagination, loading} = this.state;
-        const {queryUrl, className, ...restProps} = this.props;
+        const {queryUrl, className, columns, ...restProps} = this.props;
         return (
             <Table
                 className={`zzTable ${className}`}
+                columns={columns}
                 dataSource={dataSource}
                 pagination={pagination}
                 loading={loading}

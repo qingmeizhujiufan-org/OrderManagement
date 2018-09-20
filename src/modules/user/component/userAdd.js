@@ -158,6 +158,9 @@ class Index extends React.Component {
                                             rules: [{required: false, message: '头像不能为空!'}],
                                         })(
                                             <Upload
+                                                headers={{
+                                                    'X-Auth-Token': sessionStorage.token
+                                                }}
                                                 name='bannerImage'
                                                 action={uploadUrl}
                                                 listType={'picture'}
