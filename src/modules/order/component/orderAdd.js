@@ -11,6 +11,7 @@ import {
   Button,
   Modal,
   Divider,
+  Table,
   Spin,
   Icon,
   DatePicker,
@@ -140,6 +141,7 @@ class Index extends React.Component {
       title: '单位',
       dataIndex: 'unit',
       key: 'unit',
+      width: 100,
       align: 'center',
     }, {
       title: '小计',
@@ -147,10 +149,41 @@ class Index extends React.Component {
       align: 'center',
       width: 250,
       key: 'total'
+    },{
+      title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+      key: 'operation',
+      width: 200,
+      align: 'center',
+      render: (text, record, index) => (
+        <div>
+          <a onClick={() => this.onDelete(index)}>删除</a>
+        </div>
+      )
     }]
   }
 
   componentDidMount = () => {
+  }
+
+  onDelete = index => {
+    Modal.confirm({
+      title: '提示',
+      content: '确认要删除吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        let selectedProduct = this.state.selectedProduct;
+        selectedProduct.splice(index,1)
+        this.setState({
+          selectedProduct
+        }, () => {
+          Notification.success({
+            message: '提示',
+            description: '删除成功！'
+          });
+        });
+      }
+    });
   }
 
   showModal = () => {
@@ -315,9 +348,11 @@ class Index extends React.Component {
           <div className='ibox-content'>
             <ZZCard
               extra={<Button type='dashed' icon='plus'
-                             onClick={this.showModal}>选择产品</Button>}
+                             onClick={this.showModal}>选择产品</Button>
+              }
             >
-              <ZZTable
+              <Table
+                bordered
                 dataSource={submitProduct}
                 columns={this.orderColumns}
                 pagination={false}
@@ -346,15 +381,11 @@ class Index extends React.Component {
               <h3 style={{marginBottom: 8}}>
                 {selectedRowKeys.length ? `已选择 ${selectedRowKeys.length} 个产品` : '未选择产品'}
               </h3>
-              <Spin spinning={loading} size='large'>
-                <ZZTable
-                  rowSelection={rowSelection}
-                  dataSource={allProduct}
-                  columns={this.productColumns}
-                  total={total}
-                  callback={this.handleTableChange.bind(this)}
-                />
-              </Spin>
+              <ZZTable
+                columns={this.productColumns}
+                rowSelection={rowSelection}
+                queryUrl={getProuctListUrl}
+              />
             </Modal>
             <Divider>订单信息</Divider>
             <Form onSubmit={this.handleSubmit}>
