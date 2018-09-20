@@ -1,121 +1,74 @@
 import React from 'react';
-import {Message, Modal, Notification, Table} from 'antd';
+import {Table} from 'antd';
 import _ from 'lodash';
 import './index.less';
-import ajax from "Utils/ajax";
 
 class ZZTable extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            _params: {
-                pageNumber: 1,
-                pageSize: 10
-            },
-            dataSource: [],
-            pagination: {
+            _dataSource: [],
+            _pagination: {
                 showSizeChanger: true,
-                showQuickJumper: true
-            },
-            loading: false
+                showQuickJumper: true,
+                onChange: this.onChange,
+                onShowSizeChange: this.onShowSizeChange
+            }
         };
     }
 
     componentDidMount = () => {
-        this.getList();
+        this.setData();
     }
 
     componentWillReceiveProps = nextProps => {
-        console.log('nextProps === ', nextProps);
-        if('updateCount' in nextProps && nextProps.updateCount !== this.props.updateCount){
+        if (('dataSource' in nextProps && nextProps.dataSource.length !== this.props.dataSource.length)
+            || ('pagination' in nextProps && _.isEqual(nextProps.pagination, this.props.pagination) !== true)) {
             this.setState({
-                _params: {
-                    pageNumber: 1,
-                    pageSize: 10
-                }
-            }, () => {
-                this.getList();
+                _dataSource: nextProps.dataSource
             });
         }
     }
 
-    getList = () => {
-        const {_params} = this.state;
-        const {queryUrl, params} = this.props;
-        const param = _.assign({}, _params, params);
+    setData = () => {
+        const {dataSource, pagination} = this.props;
+        const total = pagination.total || 0;
 
-        this.setState({loading: true});
-        ajax.getJSON(queryUrl, param, data => {
-            if (data.success) {
-                const backData = data.backData;
-                const dataSource = backData.content;
-                dataSource.map(item => {
-                    item.key = item.id;
-                });
-                this.setPagination(backData.totalElements);
-
-                this.setState({
-                    dataSource
-                });
-            } else {
-                Message.error('查询列表失败');
-            }
-            this.setState({loading: false});
-        });
-    }
-
-    setPagination = totalElements => {
-        let {pagination} = this.state;
-        const total = totalElements;
-        pagination = _.assign(pagination, {
+        const _pagination = _.assign({}, this.state._pagination, {
             total,
-            showTotal: total => `共 ${total} 条`,
-            onChange: this.onChange,
-            onShowSizeChange: this.onShowSizeChange
-        });
-
-        this.setState({pagination});
-    }
-
-    onChange = (page, pageSize) => {
-        const {_params} = this.state;
-        const params = _.assign(_params, {
-            pageNumber: page,
-            pageSize: pageSize
+            showTotal: total => `共 ${total} 条`
         });
 
         this.setState({
-            _params: params
-        }, () => {
-            this.getList();
+            _dataSource: dataSource,
+            _pagination
+        });
+    }
+
+    onChange = (page, pageSize) => {
+        this.props.handlePageChange({
+            pageNumber: page,
+            pageSize: pageSize
         });
     }
 
     onShowSizeChange = (current, size) => {
-        const {_params} = this.state;
-        const params = _.assign(_params, {
+        this.props.handlePageChange({
             pageNumber: 1,
             pageSize: size
-        });
-
-        this.setState({
-            _params: params
-        }, () => {
-            this.getList();
         });
     }
 
     render() {
-        const {dataSource, pagination, loading} = this.state;
-        const {queryUrl, className, columns, ...restProps} = this.props;
+        const {_dataSource, _pagination} = this.state;
+        const {className, dataSource, pagination, handlePageChange, ...restProps} = this.props;
+
         return (
             <Table
                 className={`zzTable ${className}`}
-                columns={columns}
-                dataSource={dataSource}
-                pagination={pagination}
-                loading={loading}
+                dataSource={_dataSource}
+                pagination={_pagination}
                 {...restProps}
             />
         );

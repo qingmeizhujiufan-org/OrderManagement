@@ -16,7 +16,7 @@ import {
     Row,
     Col,
     Input,
-    Modal
+    Modal, Table
 } from 'antd';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
@@ -135,8 +135,10 @@ class Index extends React.Component {
                 )
             }];
 
-
         this.state = {
+            loading: false,
+            dataSource: [],
+            pagination: {},
             roleList: [{
                 id: '4a347f25084654cf73a88d8dc7262990',
                 name: '管理员'
@@ -150,8 +152,11 @@ class Index extends React.Component {
                 id: 'b99514487e9004f63740643f0fe7523f',
                 name: '二级管理员'
             }],
-            searchText: '',
-            updateCount: 0
+            params: {
+                pageNumber: 1,
+                pageSize: 10,
+            },
+            keyWords: ''
         };
     }
 
@@ -159,6 +164,60 @@ class Index extends React.Component {
     }
 
     componentDidMount = () => {
+        this.queryList();
+    }
+
+    queryList = () => {
+        const {params, keyWords} = this.state;
+        const param = _.assign({}, params, {keyWords});
+        this.setState({loading: true});
+        ajax.getJSON(queryListUrl, param, data => {
+            if (data.success) {
+                if(data.backData){
+                    const backData = data.backData;
+                    const dataSource = backData.content;
+                    const total = backData.totalElements;
+                    dataSource.map(item => {
+                        item.key = item.id;
+                    });
+
+                    this.setState({
+                        dataSource,
+                        pagination: {total}
+                    });
+                }else {
+                    this.setState({
+                        dataSource: [],
+                        pagination: {total: 0}
+                    });
+                }
+            } else {
+                Message.error('查询列表失败');
+            }
+            this.setState({loading: false});
+        });
+    }
+
+    // 处理分页变化
+    handlePageChange = param => {
+        const params = _.assign({}, this.state.params, param);
+        this.setState({params}, () => {
+            this.queryList();
+        });
+    }
+
+    // 搜索
+    onSearch = (value, event) => {
+        console.log('onsearch value == ', value);
+        this.setState({
+            params: {
+                pageNumber: 1,
+                pageSize: 10,
+            },
+            keyWords: value
+        }, () => {
+            this.queryList();
+        });
     }
 
     addUser = () => {
@@ -206,8 +265,9 @@ class Index extends React.Component {
                     message: '提示',
                     description: '冻结设置成功！'
                 });
-
-                this.setState({updateCount: ++this.state.updateCount});
+                const dataSource = this.state.dataSource;
+                dataSource[index].isFrozen = checked ? 1 : 0;
+                this.setState({dataSource});
             } else {
                 Message.error(data.backMsg);
             }
@@ -240,7 +300,7 @@ class Index extends React.Component {
     }
 
     render() {
-        const {searchText, updateCount} = this.state;
+        const {dataSource, pagination, loading} = this.state;
 
         return (
             <div className="zui-content">
@@ -259,7 +319,7 @@ class Index extends React.Component {
                                     placeholder="搜索用户名关键字"
                                     enterButton='搜索'
                                     size="large"
-                                    onSearch={searchText => this.setState({searchText})}
+                                    onSearch={this.onSearch}
                                 />
                             </Col>
                             <Col span={3}>
@@ -277,12 +337,11 @@ class Index extends React.Component {
                     <ZZCard>
                         <ZZTable
                             columns={this.columns}
+                            dataSource={dataSource}
+                            pagination={pagination}
+                            loading={loading}
                             scroll={{x: 1500}}
-                            queryUrl={queryListUrl}
-                            params={{
-                                keyWords: ''
-                            }}
-                            updateCount={updateCount}
+                            handlePageChange={this.handlePageChange.bind(this)}
                         />
                     </ZZCard>
                 </div>
