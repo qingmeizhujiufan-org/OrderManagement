@@ -151,7 +151,7 @@ class Index extends React.Component {
                 name: '二级管理员'
             }],
             searchText: '',
-            delForceUpdate: false
+            updateCount: 0
         };
     }
 
@@ -206,12 +206,8 @@ class Index extends React.Component {
                     message: '提示',
                     description: '冻结设置成功！'
                 });
-                const dataSource = [...this.state.dataSource];
-                dataSource[index].isFrozen = checked ? 1 : 0;
 
-                this.setState({
-                    dataSource,
-                });
+                this.setState({updateCount: ++this.state.updateCount});
             } else {
                 Message.error(data.backMsg);
             }
@@ -234,7 +230,7 @@ class Index extends React.Component {
                             description: '删除成功！'
                         });
 
-                        this.setState({delForceUpdate: true});
+                        this.setState({updateCount: ++this.state.updateCount});
                     } else {
                         Message.error(data.backMsg);
                     }
@@ -244,7 +240,7 @@ class Index extends React.Component {
     }
 
     render() {
-        const {searchText, delForceUpdate} = this.state;
+        const {searchText, updateCount} = this.state;
 
         return (
             <div className="zui-content">
@@ -286,7 +282,7 @@ class Index extends React.Component {
                             params={{
                                 keyWords: ''
                             }}
-                            delForceUpdate={delForceUpdate}
+                            updateCount={updateCount}
                         />
                     </ZZCard>
                 </div>

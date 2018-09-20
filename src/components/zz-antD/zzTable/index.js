@@ -28,7 +28,7 @@ class ZZTable extends React.Component {
 
     componentWillReceiveProps = nextProps => {
         console.log('nextProps === ', nextProps);
-        if('delForceUpdate' in nextProps && nextProps.delForceUpdate !== this.props.delForceUpdate){
+        if('updateCount' in nextProps && nextProps.updateCount !== this.props.updateCount){
             this.setState({
                 _params: {
                     pageNumber: 1,

@@ -40,7 +40,7 @@ class Login extends React.Component {
                             sessionStorage.setItem('userId', loginedUser.id);
                             sessionStorage.setItem('roleId', loginedUser.roleId);
                             if(loginedUser.assessorys && loginedUser.assessorys.length > 0){
-                                sessionStorage.setItem('avatar', restUrl.ADDR + backData.assessorys[0].path + backData.assessorys[0].name);
+                                sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);
                             }
                         }
 
