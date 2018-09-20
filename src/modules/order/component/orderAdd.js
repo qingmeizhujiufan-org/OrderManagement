@@ -99,8 +99,8 @@ class Index extends React.Component {
     this.orderColumns = [{
       title: '产品名称',
       dataIndex: 'name',
-      width: 250,
       align: 'center',
+      width:250,
       key: 'name'
     }, {
       title: '产品条码',
@@ -112,6 +112,7 @@ class Index extends React.Component {
       title: '数量',
       dataIndex: 'number',
       align: 'center',
+      width: 150,
       key: 'number',
       render: (text, record, index) => (
         <InputNumber
@@ -126,6 +127,7 @@ class Index extends React.Component {
       title: '单价',
       dataIndex: 'costPrice',
       align: 'center',
+      width: 150,
       key: 'costPrice',
       render: (text, record, index) => (
         <InputNumber
@@ -141,18 +143,18 @@ class Index extends React.Component {
       title: '单位',
       dataIndex: 'unit',
       key: 'unit',
-      width: 100,
+      width: 150,
       align: 'center',
     }, {
       title: '小计',
       dataIndex: 'total',
       align: 'center',
-      width: 250,
+      width: 150,
       key: 'total'
-    },{
+    }, {
       title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
       key: 'operation',
-      width: 200,
+      width: 150,
       align: 'center',
       render: (text, record, index) => (
         <div>
@@ -173,9 +175,13 @@ class Index extends React.Component {
       cancelText: '取消',
       onOk: () => {
         let selectedProduct = this.state.selectedProduct;
-        selectedProduct.splice(index,1)
+        let selectedRowKeys = this.state.selectedRowKeys;
+        selectedProduct.splice(index, 1);
+        selectedRowKeys.splice(index, 1);
+        console.log('selectedRowKeys ===',selectedRowKeys)
         this.setState({
-          selectedProduct
+          selectedProduct,
+          selectedRowKeys
         }, () => {
           Notification.success({
             message: '提示',
@@ -188,7 +194,7 @@ class Index extends React.Component {
 
   showModal = () => {
     this.setState({
-      showModal: true
+      showModal: true,
     }, () => {
       this.getList();
     })
