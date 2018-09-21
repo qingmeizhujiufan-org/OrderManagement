@@ -1,5 +1,5 @@
 {
-  "name": "admin-templet",
+  "name": "OrderManagement",
   "version": "1.0.0",
   "main": "lib/index",
   "scripts": {

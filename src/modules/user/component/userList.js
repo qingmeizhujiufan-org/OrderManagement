@@ -164,7 +164,7 @@ class Index extends React.Component {
     }
 
     componentDidMount = () => {
-        this.queryList();
+        this.queryList()
     }
 
     queryList = () => {
@@ -290,7 +290,13 @@ class Index extends React.Component {
                             description: '删除成功！'
                         });
 
-                        this.setState({updateCount: ++this.state.updateCount});
+                        this.setState({
+                            params: {
+                                pageNumber: 1
+                            },
+                        }, () => {
+                            this.queryList();
+                        });
                     } else {
                         Message.error(data.backMsg);
                     }

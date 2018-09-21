@@ -26,7 +26,8 @@ class ZZTable extends React.Component {
         if (('dataSource' in nextProps && nextProps.dataSource.length !== this.props.dataSource.length)
             || ('pagination' in nextProps && _.isEqual(nextProps.pagination, this.props.pagination) !== true)) {
             this.setState({
-                _dataSource: nextProps.dataSource
+                _dataSource: nextProps.dataSource,
+                _pagination: nextProps.pagination
             });
         }
     }
@@ -34,7 +35,6 @@ class ZZTable extends React.Component {
     setData = () => {
         const {dataSource, pagination} = this.props;
         const total = pagination.total || 0;
-
         const _pagination = _.assign({}, this.state._pagination, {
             total,
             showTotal: total => `共 ${total} 条`

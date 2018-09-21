@@ -2,21 +2,21 @@ import React from 'react';
 import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import {
-  Row,
-  Col,
-  Input,
-  Icon,
-  Badge,
-  Menu,
-  Breadcrumb,
-  Dropdown,
-  Notification,
-  Spin,
-  Tabs,
-  message,
-  Modal,
-  Radio,
-  Button
+    Row,
+    Col,
+    Input,
+    Icon,
+    Badge,
+    Menu,
+    Breadcrumb,
+    Dropdown,
+    Notification,
+    Spin,
+    Tabs,
+    message,
+    Modal,
+    Radio,
+    Button, Message
 } from 'antd';
 import _ from 'lodash';
 import restUrl from 'RestUrl';
@@ -26,191 +26,377 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from "Utils/util";
 
 const Search = Input.Search;
-const TabPane = Tabs.TabPane;
-const queryListUrl = restUrl.ADDR + 'product/queryListByAdmin';
-const reviewUrl = restUrl.ADDR + 'product/review';
-const delLiveUrl = restUrl.ADDR + 'product/delete';
 
-class ProductList extends React.Component {
-  constructor(props) {
-    super(props);
+const queryListUrl = restUrl.BASE_HOST + 'product/queryList';
+const delUrl = restUrl.BASE_HOST + 'product/delete';
 
-    this.columns = [
-      {title: '区域', dataIndex: 'region', key: 'region', fixed: 'left'},
-      {title: '业务员姓名', dataIndex: 'user_name', key: 'user_name', fixed: 'left'},
-      {title: '订单编号', align: 'center', dataIndex: 'order_code', key: 'order_code', fixed: 'left'},
-      {title: '所属仓库', align: 'center', dataIndex: 'warehouse', key: 'warehouse'},
-      {title: '订单性质', dataIndex: 'order_nature', key: 'order_nature'},
-      {title: '快递类别', align: 'center', dataIndex: 'expressType', key: 'expressType'},
-      {title: '寄件电话', dataIndex: 'serder_phone', key: 'serder_phone'},
-      {title: '寄件地址', align: 'center', dataIndex: 'sender_addr', key: 'sender_addr'},
-      {title: '成单微信号', align: 'center', dataIndex: 'order_wechat_code', key: 'order_wechat_code'},
-      {title: '成单日期', align: 'center', dataIndex: 'order_date', key: 'order_date'},
-      {title: '发货日期', align: 'center', dataIndex: 'deliver_date', key: 'deliver_date'},
-      {title: '收件人', align: 'center', dataIndex: 'receiver_name', key: 'receiver_name'},
-      {title: '收件人电话', align: 'center', dataIndex: 'Receiver_phone', key: 'Receiver_phone'},
-      {title: '收件人地址', align: 'center', dataIndex: 'receiver_addr', key: 'receiver_addr'},
-      {title: '定金', align: 'center', dataIndex: 'deposit_amout', key: 'deposit_amout',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )},
-      {title: '代收金额', align: 'center', dataIndex: 'collection_amout', key: 'collection_amout',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )},
-      {title: '总金额', align: 'center', dataIndex: 'total_amount', key: 'total_amount',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )},
-      {title: '国际件', align: 'center', dataIndex: 'is_foreign_express', key: 'is_foreign_express'},
-      {title: '订单状态', align: 'center', dataIndex: 'order_state', key: 'order_state'},
-      {title: '是否超过成本', align: 'center', dataIndex: 'is_over_cost', key: 'is_over_cost'},
-      {title: '成本', align: 'center', dataIndex: 'cost_amount', key: 'cost_amount',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )},
-      {title: '快递单号', align: 'center', dataIndex: 'express_code', key: 'express_code'},
-      {title: '快递状态', align: 'center', dataIndex: 'express_state', key: 'express_state'},
-      {title: '广告渠道', align: 'center', dataIndex: 'advert_ channel', key: 'advert_ channel'},
-      {title: '进线时间', align: 'center', dataIndex: 'incomline_time', key: 'incomline_time'},
-      {title: '备注', align: 'center', dataIndex: 'remark', key: 'remark'},
-      {
-        title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-        key: 'operation',
-        fixed: 'right',
-        width: 120,
-        align: 'center',
-        render: (text, record, index) => (
-          <Dropdown
-            placement="bottomCenter"
-            overlay={
-              <Menu>
-                <Menu.Item>
-                  <Link to={this.onDetail(record.id)}>查看</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <Link to={this.onEdit(record.id)}>编辑</Link>
-                </Menu.Item>
-                <Menu.Item>
-                  <a onClick={() => this.onDelete(record.id)}>删除</a>
-                </Menu.Item>
-              </Menu>
+class OrderList extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.columns = [
+            {
+                title: '订单编号',
+                width: 120,
+                align: 'center',
+                dataIndex: 'orderCode',
+                key: 'orderCode',
+                fixed: 'left'
+            }, {
+                title: '业务员姓名',
+                width: 120,
+                dataIndex: 'userName',
+                key: 'userName'
+            }, {
+                title: '区域',
+                width: 100,
+                dataIndex: 'region',
+                key: 'region'
+            }, {
+                title: '所属仓库',
+                width: 100,
+                align: 'center',
+                dataIndex: 'warehouse',
+                key: 'warehouse'
+            }, {
+                title: '订单性质',
+                width: 100,
+                dataIndex: 'orderNature',
+                key: 'orderNature'
+            }, {
+                title: '快递类别',
+                width: 100,
+                align: 'center',
+                dataIndex: 'expressType',
+                key: 'expressType'
+            }, {
+                title: '寄件电话',
+                width: 100,
+                dataIndex: 'serderPhone',
+                key: 'serderPhone'
+            }, {
+                title: '寄件地址',
+                width: 150,
+                align: 'center',
+                dataIndex: 'senderAddr',
+                key: 'senderAddr'
+            }, {
+                title: '成单微信号',
+                width: 120,
+                align: 'center',
+                dataIndex: 'orderWechatCode',
+                key: 'orderWechatCode'
+            }, {
+                title: '成单日期',
+                width: 100,
+                align: 'center',
+                dataIndex: 'orderDate',
+                key: 'orderDate'
+            }, {
+                title: '发货日期',
+                width: 100,
+                align: 'center',
+                dataIndex: 'deliverDate',
+                key: 'deliverDate'
+            }, {
+                title: '收件人',
+                width: 100,
+                align: 'center',
+                dataIndex: 'receiverName',
+                key: 'receiverName'
+            }, {
+                title: '收件人电话',
+                width: 120,
+                align: 'center',
+                dataIndex: 'ReceiverPhone',
+                key: 'ReceiverPhone'
+            }, {
+                title: '收件人地址',
+                width: 150,
+                align: 'center',
+                dataIndex: 'receiverAddr',
+                key: 'receiverAddr'
+            }, {
+                title: '定金',
+                width: 100,
+                align: 'right',
+                dataIndex: 'depositAmout',
+                key: 'depositAmout',
+                render: (text, record, index) => (
+                    <span>{Util.shiftThousands(text)}</span>
+                )
+            }, {
+                title: '代收金额',
+                width: 100,
+                align: 'right',
+                dataIndex: 'collectionAmout',
+                key: 'collectionAmout',
+                render: (text, record, index) => (
+                    <span>{Util.shiftThousands(text)}</span>
+                )
+            }, {
+                title: '总金额',
+                width: 100,
+                align: 'right',
+                dataIndex: 'totalAmount',
+                key: 'totalAmount',
+                render: (text, record, index) => (
+                    <span>{Util.shiftThousands(text)}</span>
+                )
+            }, {
+                title: '国际件',
+                width: 100,
+                align: 'center',
+                dataIndex: 'isForeignExpress',
+                key: 'isForeignExpress'
+            }, {
+                title: '订单状态',
+                width: 100,
+                align: 'center',
+                dataIndex: 'orderState',
+                key: 'orderState'
+            }, {
+                title: '是否超过成本',
+                width: 120,
+                align: 'center',
+                dataIndex: 'isOverCost',
+                key: 'isOverCost'
+            }, {
+                title: '成本',
+                width: 100,
+                align: 'right',
+                dataIndex: 'costAmount',
+                key: 'costAmount',
+                render: (text, record, index) => (
+                    <span>{Util.shiftThousands(text)}</span>
+                )
+            }, {
+                title: '快递单号',
+                width: 120,
+                align: 'center',
+                dataIndex: 'expressCode',
+                key: 'expressCode'
+            }, {
+                title: '快递状态',
+                width: 100,
+                align: 'center',
+                dataIndex: 'expressState',
+                key: 'expressState'
+            }, {
+                title: '广告渠道',
+                width: 100,
+                align: 'center',
+                dataIndex: 'advertChannel',
+                key: 'advertChannel channel'
+            }, {
+                title: '进线时间',
+                width: 100,
+                align: 'center',
+                dataIndex: 'incomlineTime',
+                key: 'incomlineTime'
+            }, {
+                title: '备注',
+                align: 'center',
+                dataIndex: 'remark',
+                key: 'remark'
+            }, {
+                title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+                key: 'operation',
+                fixed: 'right',
+                width: 120,
+                align: 'center',
+                render: (text, record, index) => (
+                    <Dropdown
+                        placement="bottomCenter"
+                        overlay={
+                            <Menu>
+                                <Menu.Item>
+                                    <Link to={this.onDetail(record.id)}>查看</Link>
+                                </Menu.Item>
+                                <Menu.Item>
+                                    <Link to={this.onEdit(record.id)}>编辑</Link>
+                                </Menu.Item>
+                                <Menu.Item>
+                                    <a onClick={() => this.onDelete(record.id)}>删除</a>
+                                </Menu.Item>
+                            </Menu>
+                        }
+                    >
+                        <a className="ant-dropdown-link">操作</a>
+                    </Dropdown>
+                )
             }
-          >
-            <a className="ant-dropdown-link">操作</a>
-          </Dropdown>
-        )
-      }
-    ];
+        ];
 
-    this.state = {
-      loading: false,
-      dataSource: [],
-      searchText: '',
-      state: 999
-    };
-  }
+        this.state = {
+            loading: false,
+            dataSource: [],
+            pagination: {},
+            params: {
+                pageNumber: 1,
+                pageSize: 10,
+            },
+            keyWords: ''
+        };
+    }
 
-  componentWillMount = () => {
-  }
+    componentWillMount = () => {
+    }
 
-  componentDidMount = () => {
-    this.getList();
-  }
+    componentDidMount = () => {
+        this.queryList();
+    }
 
-  getList = () => {
+    queryList = () => {
+        const {params, keyWords} = this.state;
+        const param = _.assign({}, params, {keyWords});
+        this.setState({loading: true});
+        ajax.getJSON(queryListUrl, param, data => {
+            if (data.success) {
+                if (data.backData) {
+                    const backData = data.backData;
+                    const dataSource = backData.content;
+                    const total = backData.totalElements;
+                    dataSource.map(item => {
+                        item.key = item.id;
+                    });
 
-  }
-
-  addOrder = () => {
-    this.context.router.push('/frame/order/list/add');
-
-  }
-
-  onDetail = id => {
-    return `/frame/order/list/detail/${id}`
-  }
-
-  onEdit = id => {
-    return `/frame/order/list/edit/${id}`
-  }
-
-  onDelete = (key) => {
-    Modal.confirm({
-      title: '提示',
-      content: '确认要删除吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => {
-        let param = {};
-        param.id = key;
-        ajax.postJSON(delLiveUrl, JSON.stringify(param), data => {
-          if (data.success) {
-            Notification.success({
-              message: '提示',
-              description: '删除成功！'
-            });
-            this.getList();
-          } else {
-            message.error(data.backMsg);
-          }
+                    this.setState({
+                        dataSource,
+                        pagination: {total}
+                    });
+                } else {
+                    this.setState({
+                        dataSource: [],
+                        pagination: {total: 0}
+                    });
+                }
+            } else {
+                Message.error('查询列表失败');
+            }
+            this.setState({loading: false});
         });
-      }
-    });
-  }
+    }
 
-  render() {
-    const {loading, dataSource, searchText} = this.state;
+    // 处理分页变化
+    handlePageChange = param => {
+        const params = _.assign({}, this.state.params, param);
+        this.setState({params}, () => {
+            this.queryList();
+        });
+    }
 
-    return (
-      <div className="zui-content page-newsList">
-        <div className='pageHeader'>
-          <div className="breadcrumb-block">
-            <Breadcrumb>
-              <Breadcrumb.Item>订单管理</Breadcrumb.Item>
-              <Breadcrumb.Item>订单列表</Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <h1 className='title'>订单列表</h1>
-          <div className='search-area'>
-            <Row type='flex' justify="center" align="middle">
-              <Col span={8}>
-                <Search
-                  placeholder="搜索订单名称关键字"
-                  enterButton='搜索'
-                  size="large"
-                  onSearch={searchText => this.setState({searchText})}
-                />
-              </Col>
-              <Col span={3}>
-                <Button
-                  icon='plus'
-                  size="large"
-                  onClick={this.addOrder}
-                  style={{marginLeft: 25}}
-                >新增订单</Button>
-              </Col>
-            </Row>
-          </div>
-        </div>
-        <div className='pageContent'>
-          <ZZCard>
-            <Spin spinning={loading} size='large'>
-              <ZZTable
-                columns={this.columns}
-                scroll={{x: 2400}}
-                queryUrl={queryListUrl}
-              />
-            </Spin>
-          </ZZCard>
-        </div>
-      </div>
-    );
-  }
+    // 搜索
+    onSearch = (value, event) => {
+        console.log('onsearch value == ', value);
+        this.setState({
+            params: {
+                pageNumber: 1,
+                pageSize: 10,
+            },
+            keyWords: value
+        }, () => {
+            this.queryList();
+        });
+    }
+
+    addOrder = () => {
+        this.context.router.push('/frame/order/list/add');
+
+    }
+
+    onDetail = id => {
+        return `/frame/order/list/detail/${id}`
+    }
+
+    onEdit = id => {
+        return `/frame/order/list/edit/${id}`
+    }
+
+    onDelete = (key) => {
+        Modal.confirm({
+            title: '提示',
+            content: '确认要删除吗？',
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => {
+                let param = {};
+                param.id = key;
+                ajax.postJSON(delLiveUrl, JSON.stringify(param), data => {
+                    if (data.success) {
+                        Notification.success({
+                            message: '提示',
+                            description: '删除成功！'
+                        });
+
+                        this.setState({
+                            params: {
+                                pageNumber: 1
+                            },
+                        }, () => {
+                            this.queryList();
+                        });
+                    } else {
+                        message.error(data.backMsg);
+                    }
+                });
+            }
+        });
+    }
+
+    render() {
+        const {dataSource, pagination, loading} = this.state;
+
+        return (
+            <div className="zui-content page-newsList">
+                <div className='pageHeader'>
+                    <div className="breadcrumb-block">
+                        <Breadcrumb>
+                            <Breadcrumb.Item>订单管理</Breadcrumb.Item>
+                            <Breadcrumb.Item>订单列表</Breadcrumb.Item>
+                        </Breadcrumb>
+                    </div>
+                    <h1 className='title'>订单列表</h1>
+                    <div className='search-area'>
+                        <Row type='flex' justify="center" align="middle">
+                            <Col span={8}>
+                                <Search
+                                    placeholder="搜索订单名称关键字"
+                                    enterButton='搜索'
+                                    size="large"
+                                    onSearch={this.onSearch}
+                                />
+                            </Col>
+                            <Col span={3}>
+                                <Button
+                                    icon='plus'
+                                    size="large"
+                                    onClick={this.addOrder}
+                                    style={{marginLeft: 25}}
+                                >新增订单</Button>
+                            </Col>
+                        </Row>
+                    </div>
+                </div>
+                <div className='pageContent'>
+                    <ZZCard>
+                        <ZZTable
+                            columns={this.columns}
+                            dataSource={dataSource}
+                            pagination={pagination}
+                            loading={loading}
+                            scroll={{x: 3000}}
+                            handlePageChange={this.handlePageChange.bind(this)}
+                        />
+                    </ZZCard>
+                </div>
+            </div>
+        );
+    }
 }
 
-ProductList.contextTypes = {
-  router: PropTypes.object
+OrderList.contextTypes = {
+    router: PropTypes.object
 }
 
-export default ProductList;
+export default OrderList;

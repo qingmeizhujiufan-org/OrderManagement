@@ -28,9 +28,8 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 
 const Search = Input.Search;
-const TabPane = Tabs.TabPane;
 
-const getListUrl = restUrl.BASE_HOST + 'product/queryList';
+const queryListUrl = restUrl.BASE_HOST + 'product/queryList';
 const delUrl = restUrl.BASE_HOST + 'product/delete';
 
 class ProductList extends React.Component {
@@ -120,8 +119,13 @@ class ProductList extends React.Component {
 
         this.state = {
             loading: false,
-            delForceUpdate: false,
-            searchText: ''
+            dataSource: [],
+            pagination: {},
+            params: {
+                pageNumber: 1,
+                pageSize: 10,
+            },
+            keyWords: ''
         };
     }
 
@@ -129,6 +133,60 @@ class ProductList extends React.Component {
     }
 
     componentDidMount = () => {
+        this.queryList();
+    }
+
+    queryList = () => {
+        const {params, keyWords} = this.state;
+        const param = _.assign({}, params, {keyWords});
+        this.setState({loading: true});
+        ajax.getJSON(queryListUrl, param, data => {
+            if (data.success) {
+                if(data.backData){
+                    const backData = data.backData;
+                    const dataSource = backData.content;
+                    const total = backData.totalElements;
+                    dataSource.map(item => {
+                        item.key = item.id;
+                    });
+
+                    this.setState({
+                        dataSource,
+                        pagination: {total}
+                    });
+                }else {
+                    this.setState({
+                        dataSource: [],
+                        pagination: {total: 0}
+                    });
+                }
+            } else {
+                Message.error('查询列表失败');
+            }
+            this.setState({loading: false});
+        });
+    }
+
+    // 处理分页变化
+    handlePageChange = param => {
+        const params = _.assign({}, this.state.params, param);
+        this.setState({params}, () => {
+            this.queryList();
+        });
+    }
+
+    // 搜索
+    onSearch = (value, event) => {
+        console.log('onsearch value == ', value);
+        this.setState({
+            params: {
+                pageNumber: 1,
+                pageSize: 10,
+            },
+            keyWords: value
+        }, () => {
+            this.queryList();
+        });
     }
 
     addProduct = () => {
@@ -159,7 +217,13 @@ class ProductList extends React.Component {
                             description: '删除成功！'
                         });
 
-                        this.setState({delForceUpdate: true});
+                        this.setState({
+                            params: {
+                                pageNumber: 1
+                            },
+                        }, () => {
+                            this.queryList();
+                        });
                     } else {
                         Message.error(data.backMsg);
                     }
@@ -169,7 +233,7 @@ class ProductList extends React.Component {
     }
 
     render() {
-        const {loading, delForceUpdate} = this.state;
+        const {dataSource, pagination, loading} = this.state;
 
         return (
             <div className="zui-content page-newsList">
@@ -188,7 +252,7 @@ class ProductList extends React.Component {
                                     placeholder="搜索产品关键字"
                                     enterButton='搜索'
                                     size="large"
-                                    onSearch={searchText => this.setState({searchText})}
+                                    onSearch={this.onSearch}
                                 />
                             </Col>
                             <Col span={3}>
@@ -204,14 +268,14 @@ class ProductList extends React.Component {
                 </div>
                 <div className='pageContent'>
                     <ZZCard>
-                        <Spin spinning={loading} size='large'>
-                            <ZZTable
-                                columns={this.columns}
-                                scroll={{x: 1500}}
-                                queryUrl={getListUrl}
-                                delForceUpdate={delForceUpdate}
-                            />
-                        </Spin>
+                        <ZZTable
+                            columns={this.columns}
+                            dataSource={dataSource}
+                            pagination={pagination}
+                            loading={loading}
+                            scroll={{x: 1500}}
+                            handlePageChange={this.handlePageChange.bind(this)}
+                        />
                     </ZZCard>
                 </div>
             </div>
