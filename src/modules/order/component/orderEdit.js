@@ -22,8 +22,8 @@ import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 
-const orderSaveUrl = restUrl.BASE_HOST + 'product/save';
-const queryDetailUrl = restUrl.BASE_HOST + 'product/findbyid';
+const orderSaveUrl = restUrl.BASE_HOST + 'order/save';
+const queryDetailUrl = restUrl.BASE_HOST + 'order/findbyid';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -128,6 +128,8 @@ class Index extends React.Component {
                       {getFieldDecorator('region', {
                         rules: [{
                           required: true, message: '请输入所属区域',
+                          initialValue: data.region
+
                         }],
                       })(
                         <Input/>
@@ -140,7 +142,8 @@ class Index extends React.Component {
                       {...formItemLayout}
                     >
                       {getFieldDecorator('warehouse', {
-                        rules: [{required: true, message: '所属仓库不能为空!'}]
+                        rules: [{required: true, message: '所属仓库不能为空!'}],
+                        initialValue: data.warehouse == 0 ? '武汉': '北京'
                       })(
                         <Select>
                           <Option key='0' value='0'>武汉</Option>
@@ -160,6 +163,8 @@ class Index extends React.Component {
                         rules: [{
                           required: true, message: '请输入业务员id',
                         }],
+                        initialValue: data.userId
+
                       })(
                         <Input/>
                       )}
@@ -174,6 +179,8 @@ class Index extends React.Component {
                         rules: [{
                           required: true, message: '请输入业务员姓名',
                         }],
+                        initialValue: data.userName
+
                       })(
                         <Input/>
                       )}
@@ -188,6 +195,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('orderCode', {
                         rules: [{required: true, message: '请输入订单编号'}],
+                        initialValue: data.orderCode
+
                       })(
                         <Input/>
                       )}
@@ -200,6 +209,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('orderNature', {
                         rules: [{required: true, message: '请输入订单性质'}],
+                        initialValue: data.orderNature
+
                       })(
                         <Input/>
                       )}
@@ -216,6 +227,8 @@ class Index extends React.Component {
                         rules: [{required: true, message: '请输入寄件电话'}, {
                           validator: this.validatePhone,
                         }],
+                        initialValue: data.serderPhone
+
                       })(
                         <Input/>
                       )}
@@ -228,6 +241,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('senderAddr', {
                         rules: [{required: true, message: '请输入寄件详细地址'}],
+                        initialValue: data.senderAddr
+
                       })(
                         <Input/>
                       )}
@@ -242,6 +257,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('orderWechatCode', {
                         rules: [{required: true, message: '请输入成单微信号'}],
+                        initialValue: data.orderWechatCode
+
                       })(
                         <Input/>
                       )}
@@ -254,6 +271,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('orderDate', {
                         rules: [{required: true, message: '请输入成单日期'}],
+                        // initialValue: data.orderDate
+
                       })(
                         <DatePicker style={{width: '100%'}}/>
                       )}
@@ -268,6 +287,7 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('deliverDate', {
                         rules: [{required: true, message: '请输入发货日期'}],
+                        // initialValue: data.deliverDate
                       })(
                         <DatePicker style={{width: '100%'}}/>
                       )}
@@ -280,6 +300,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('receiverName', {
                         rules: [{required: true, message: '请输入收件人'}],
+                        initialValue: data.receiverName
+
                       })(
                         <Input/>
                       )}
@@ -296,6 +318,8 @@ class Index extends React.Component {
                         rules: [{required: true, message: '请输入收件人手机号'}, {
                           validator: this.validatePhone,
                         }],
+                        initialValue: data.receiverPhone
+
                       })(
                         <Input/>
                       )}
@@ -308,6 +332,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('receiverAddr', {
                         rules: [{required: true, message: '请输入收件人详细地址'}],
+                        initialValue: data.receiverAddr
+
                       })(
                         <Input/>
                       )}
@@ -322,6 +348,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('advertChannel', {
                         rules: [{required: true, message: '请输入广告渠道'}],
+                        initialValue: data.advertChannel
+
                       })(
                         <Input/>
                       )}
@@ -334,6 +362,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('incomlineTime', {
                         rules: [{required: true, message: '请输入进线时间'}],
+                        initialValue: data.incomlineTime
+
                       })(
                         <Input/>
                       )}
@@ -348,6 +378,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('depositAmout', {
                         rules: [{required: true, message: '请输入定金'}],
+                        initialValue: data.depositAmout
+
                       })(
                         <InputNumber
                           step={0.01}
@@ -364,6 +396,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('collectionAmout', {
                         rules: [{required: true, message: '请输入代收金额'}],
+                        initialValue: data.collectionAmout
+
                       })(
                         <InputNumber
                           min={0}
@@ -382,6 +416,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('totalAmount', {
                         rules: [{required: true, message: '请输入总金额'}],
+                        initialValue: data.totalAmount
+
                       })(
                         <InputNumber
                           min={0}
@@ -398,6 +434,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('isForeignExpress', {
                         rules: [{required: true, message: '请选择'}],
+                        initialValue: data.isForeignExpress
+
                       })(
                         <RadioGroup>
                           <Radio value={0}>不是</Radio>
@@ -415,6 +453,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('orderState', {
                         rules: [{required: true, message: '请选择'}],
+                        initialValue: data.orderState
+
                       })(
                         <RadioGroup>
                           <Radio value={0}>编辑中</Radio>
@@ -432,6 +472,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('isOverCost', {
                         rules: [{required: true, message: '请选择'}],
+                        initialValue: data.isOverCost
+
                       })(
                         <RadioGroup>
                           <Radio value={0}>不是</Radio>
@@ -449,6 +491,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('costAmount', {
                         rules: [{required: true, message: '请输入成本数据'}],
+                        initialValue: data.costAmount
+
                       })(
                         <Input/>
                       )}
@@ -461,6 +505,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('costRatio', {
                         rules: [{required: true, message: '请输入成本比例'}],
+                        initialValue: data.costRatio
+
                       })(
                         <Input/>
                       )}
@@ -475,6 +521,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('expressCode', {
                         rules: [{required: true, message: '请输入快递单号'}],
+                        initialValue: data.expressCode
+
                       })(
                         <Input/>
                       )}
@@ -487,6 +535,8 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('expressState', {
                         rules: [{required: true, message: '请选择快递状态'}],
+                        initialValue: data.expressState
+
                       })(
                         <Select>
                           <Option key='0' value='0'>未发货</Option>

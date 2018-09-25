@@ -27,8 +27,8 @@ import Util from "Utils/util";
 
 const Search = Input.Search;
 
-const queryListUrl = restUrl.BASE_HOST + 'product/queryList';
-const delUrl = restUrl.BASE_HOST + 'product/delete';
+const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
+const delUrl = restUrl.BASE_HOST + 'order/delete';
 
 class OrderList extends React.Component {
     constructor(props) {
@@ -37,7 +37,7 @@ class OrderList extends React.Component {
         this.columns = [
             {
                 title: '订单编号',
-                width: 120,
+                width: 180,
                 align: 'center',
                 dataIndex: 'orderCode',
                 key: 'orderCode',
@@ -88,13 +88,13 @@ class OrderList extends React.Component {
                 key: 'orderWechatCode'
             }, {
                 title: '成单日期',
-                width: 100,
+                width: 150,
                 align: 'center',
                 dataIndex: 'orderDate',
                 key: 'orderDate'
             }, {
                 title: '发货日期',
-                width: 100,
+                width: 150,
                 align: 'center',
                 dataIndex: 'deliverDate',
                 key: 'deliverDate'
@@ -172,7 +172,7 @@ class OrderList extends React.Component {
                 )
             }, {
                 title: '快递单号',
-                width: 120,
+                width: 150,
                 align: 'center',
                 dataIndex: 'expressCode',
                 key: 'expressCode'
@@ -322,7 +322,7 @@ class OrderList extends React.Component {
             onOk: () => {
                 let param = {};
                 param.id = key;
-                ajax.postJSON(delLiveUrl, JSON.stringify(param), data => {
+                ajax.postJSON(delUrl, JSON.stringify(param), data => {
                     if (data.success) {
                         Notification.success({
                             message: '提示',

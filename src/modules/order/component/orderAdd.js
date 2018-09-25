@@ -27,7 +27,7 @@ import restUrl from 'RestUrl';
 import '../index.less';
 import {message} from "antd/lib/index";
 
-const orderAddUrl = restUrl.BASE_HOST + 'user/save';
+const orderAddUrl = restUrl.BASE_HOST + 'order/save';
 const getProuctListUrl = restUrl.BASE_HOST + 'product/queryList';
 
 const FormItem = Form.Item;
@@ -611,7 +611,7 @@ class Index extends React.Component {
                     {getFieldDecorator('incomlineTime', {
                       rules: [{required: true, message: '请输入进线时间'}],
                     })(
-                      <Input/>
+                      <DatePicker style={{width: '100%'}}/>
                     )}
                   </FormItem>
                 </Col>
@@ -771,6 +771,28 @@ class Index extends React.Component {
                         <Option key='3' value='3'>未妥投</Option>
                         <Option key='4' value='4'>退回</Option>
                         <Option key='5' value='5'>签收</Option>
+                      </Select>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="快递公司"
+                  >
+                    {getFieldDecorator('expressCompany', {
+                      rules: [{required: true, message: '请输入快递公司'}],
+                    })(
+                      <Select>
+                        <Option key='0' value='0'>顺丰</Option>
+                        <Option key='1' value='1'>申通</Option>
+                        <Option key='2' value='2'>中通</Option>
+                        <Option key='3' value='3'>圆通</Option>
+                        <Option key='4' value='4'>韵达</Option>
+                        <Option key='5' value='5'>百世汇通</Option>
+                        <Option key='6' value='6'>其他</Option>
                       </Select>
                     )}
                   </FormItem>
