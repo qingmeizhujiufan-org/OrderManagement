@@ -19,7 +19,7 @@ import {
   Message,
   Radio
 } from 'antd';
-
+import moment from 'moment';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
 import ajax from 'Utils/ajax';
@@ -300,13 +300,14 @@ class Index extends React.Component {
     });
   }
 
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        // values.orderDate = values.orderDate;
-        // values.deliverDate = values.deliverDate;
-        // values.incomlineTime = values.incomlineTime;
+        values.orderDate = new Date(values.orderDate.format('YYYY-MM-DD'));
+        values.deliverDate = new Date(values.deliverDate.format('YYYY-MM-DD'));
+        values.incomlineTime = new Date(values.incomlineTime.format('YYYY-MM-DD'));
 
         console.log('handleSubmit  param === ', values);
         this.setState({
@@ -407,6 +408,7 @@ class Index extends React.Component {
                     {getFieldDecorator('region', {
                       rules: [{
                         required: true, message: '请输入所属区域',
+                        initialValue: '四区'
                       }],
                     })(
                       <Input/>
@@ -422,8 +424,8 @@ class Index extends React.Component {
                       rules: [{required: true, message: '所属仓库不能为空!'}]
                     })(
                       <Select>
-                        <Option key='0' value='0'>武汉</Option>
-                        <Option key='1' value='1'>北京</Option>
+                        <Option key='0' value={0}>武汉</Option>
+                        <Option key='1' value={1}>北京</Option>
                       </Select>
                     )}
                   </FormItem>
@@ -533,8 +535,10 @@ class Index extends React.Component {
                   >
                     {getFieldDecorator('orderDate', {
                       rules: [{required: true, message: '请输入成单日期'}],
+                      initialValue: moment('2018-09-27')
+
                     })(
-                      <DatePicker style={{width: '100%'}}/>
+                      <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
                     )}
                   </FormItem>
                 </Col>
@@ -547,6 +551,8 @@ class Index extends React.Component {
                   >
                     {getFieldDecorator('deliverDate', {
                       rules: [{required: true, message: '请输入发货日期'}],
+                      initialValue: moment('2018-09-27')
+
                     })(
                       <DatePicker style={{width: '100%'}}/>
                     )}
@@ -613,6 +619,8 @@ class Index extends React.Component {
                   >
                     {getFieldDecorator('incomlineTime', {
                       rules: [{required: true, message: '请输入进线时间'}],
+                      initialValue: moment('2018-09-27')
+
                     })(
                       <DatePicker style={{width: '100%'}}/>
                     )}
@@ -729,8 +737,8 @@ class Index extends React.Component {
                     {getFieldDecorator('costAmount', {
                       rules: [{required: true, message: '请输入成本数据'}],
                     })(
-                      <Input/>
-                    )}
+                      <InputNumber/>
+                      )}
                   </FormItem>
                 </Col>
                 <Col span={12}>
@@ -741,7 +749,7 @@ class Index extends React.Component {
                     {getFieldDecorator('costRatio', {
                       rules: [{required: true, message: '请输入成本比例'}],
                     })(
-                      <Input/>
+                      <InputNumber/>
                     )}
                   </FormItem>
                 </Col>
@@ -768,12 +776,12 @@ class Index extends React.Component {
                       rules: [{required: true, message: '请选择快递状态'}],
                     })(
                       <Select>
-                        <Option key='0' value='0'>未发货</Option>
-                        <Option key='1' value='1'>已发货</Option>
-                        <Option key='2' value='2'>取消发货</Option>
-                        <Option key='3' value='3'>未妥投</Option>
-                        <Option key='4' value='4'>退回</Option>
-                        <Option key='5' value='5'>签收</Option>
+                        <Option key='0' value={0}>未发货</Option>
+                        <Option key='1' value={1}>已发货</Option>
+                        <Option key='2' value={2}>取消发货</Option>
+                        <Option key='3' value={3}>未妥投</Option>
+                        <Option key='4' value={4}>退回</Option>
+                        <Option key='5' value={5}>签收</Option>
                       </Select>
                     )}
                   </FormItem>
@@ -789,13 +797,13 @@ class Index extends React.Component {
                       rules: [{required: true, message: '请输入快递公司'}],
                     })(
                       <Select>
-                        <Option key='0' value='0'>顺丰</Option>
-                        <Option key='1' value='1'>申通</Option>
-                        <Option key='2' value='2'>中通</Option>
-                        <Option key='3' value='3'>圆通</Option>
-                        <Option key='4' value='4'>韵达</Option>
-                        <Option key='5' value='5'>百世汇通</Option>
-                        <Option key='6' value='6'>其他</Option>
+                        <Option key='0' value={0}>顺丰</Option>
+                        <Option key='1' value={1}>申通</Option>
+                        <Option key='2' value={2}>中通</Option>
+                        <Option key='3' value={3}>圆通</Option>
+                        <Option key='4' value={4}>韵达</Option>
+                        <Option key='5' value={5}>百世汇通</Option>
+                        <Option key='6' value={6}>其他</Option>
                       </Select>
                     )}
                   </FormItem>

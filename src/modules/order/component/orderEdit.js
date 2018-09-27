@@ -365,7 +365,7 @@ class Index extends React.Component {
                         initialValue: data.incomlineTime
 
                       })(
-                        <Input/>
+                        <DatePicker style={{width: '100%'}}/>
                       )}
                     </FormItem>
                   </Col>
