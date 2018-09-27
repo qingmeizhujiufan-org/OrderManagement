@@ -34,7 +34,7 @@ class ZZTable extends React.Component {
 
     setData = () => {
         const {dataSource, pagination} = this.props;
-        const total = pagination.total || 0;
+        const total = (pagination ? pagination.total : null) || 0;
         const _pagination = _.assign({}, this.state._pagination, {
             total,
             showTotal: total => `共 ${total} 条`
