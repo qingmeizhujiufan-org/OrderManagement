@@ -28,6 +28,7 @@ import '../index.less';
 const Search = Input.Search;
 
 const queryListUrl = restUrl.BASE_HOST + 'user/userList';
+const queryRoleUrl = restUrl.BASE_HOST + 'role/queryList';
 const resetPasswordUrl = restUrl.BASE_HOST + 'user/resetPassword';
 const frozenUserUrl = restUrl.BASE_HOST + 'user/frozenUser';
 const deleteUrl = restUrl.BASE_HOST + 'user/delete';
@@ -139,19 +140,7 @@ class Index extends React.Component {
             loading: false,
             dataSource: [],
             pagination: {},
-            roleList: [{
-                id: '4a347f25084654cf73a88d8dc7262990',
-                name: '管理员'
-            }, {
-                id: '7ed07b2360b38b78d8864df188f0b704',
-                name: '业务员'
-            }, {
-                id: 'a8d93d94b49d3b46fd2df429178c9454',
-                name: 'sys管理员'
-            }, {
-                id: 'b99514487e9004f63740643f0fe7523f',
-                name: '二级管理员'
-            }],
+            roleList: [],
             params: {
                 pageNumber: 1,
                 pageSize: 10,
@@ -164,7 +153,7 @@ class Index extends React.Component {
     }
 
     componentDidMount = () => {
-        this.queryList()
+        this.queryRole(this.queryList());
     }
 
     queryList = () => {
@@ -195,6 +184,32 @@ class Index extends React.Component {
                 Message.error('查询列表失败');
             }
             this.setState({loading: false});
+        });
+    }
+
+    //查询角色列表
+    queryRole = callback => {
+        this.setState({roleLoading: true});
+        ajax.getJSON(queryRoleUrl, null, data => {
+            if (data.success) {
+                let content = data.backData.content;
+                let roleList = [];
+                content.map(item => {
+                    roleList.push({
+                        id: item.id,
+                        name: item.roleName
+                    });
+                });
+
+                this.setState({
+                    roleList,
+                    roleLoading: false
+                }, () => {
+                    if(typeof callback === 'function') callback();
+                });
+            } else {
+                Message.error(data.backMsg);
+            }
         });
     }
 
