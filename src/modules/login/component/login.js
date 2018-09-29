@@ -38,6 +38,7 @@ class Login extends React.Component {
                         if(loginedUser) {
                             sessionStorage.setItem('expireDate', new Date(new Date().getTime() + 10000000));
                             sessionStorage.setItem('userId', loginedUser.id);
+                            sessionStorage.setItem('userName', loginedUser.userName);
                             sessionStorage.setItem('roleId', loginedUser.roleId);
                             if(loginedUser.assessorys && loginedUser.assessorys.length > 0){
                                 sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);

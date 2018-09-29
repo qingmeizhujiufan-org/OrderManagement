@@ -30,6 +30,10 @@ const Menu = [
                 key: '3_1',
                 link: '/frame/order/list',
                 label: '订单列表'
+            }, {
+                key: '3_2',
+                link: '/frame/order/sender',
+                label: '寄件信息列表'
             }
         ]
     }, {
@@ -44,17 +48,21 @@ const Menu = [
             }
         ]
     }, {
-    key: '5',
-    iconType: 'setting',
-    label: '个人设置',
-    children: [
-      {
-        key: '5_1',
-        link: '/frame/setting/list',
-        label: '个人中心'
-      }
-    ]
-  }
+        key: '5',
+        iconType: 'setting',
+        label: '个人设置',
+        children: [
+            {
+                key: '5_1',
+                link: '/frame/setting/list',
+                label: '个人中心'
+            }, {
+                key: '5_2',
+                link: '/frame/setting/resource',
+                label: '资源信息'
+            }
+        ]
+    }
 ];
 
 export default Menu;

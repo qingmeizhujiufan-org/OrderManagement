@@ -136,10 +136,9 @@ class ZZLeftSide extends React.Component {
             <Menu
                 theme="dark"
                 mode="inline"
-                // selectedKeys={[selectedKeys]}
+                selectedKeys={[selectedKeys]}
                 defaultSelectedKeys={['1_1']}
                 defaultOpenKeys={['1', '2', '3', '4', '5']}
-                // onClick={this.onClick}
             >{subMenuList}</Menu>
         );
     }

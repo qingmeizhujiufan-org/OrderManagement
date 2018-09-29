@@ -82,7 +82,7 @@ class ZZHeader extends React.Component {
                         </Badge>
                         <Divider type="vertical" style={{margin: '0 30px'}}/>
                         <Dropdown overlay={this.menu}>
-                            <a className="ant-dropdown-link">
+                            <a className="ant-dropdown-link" style={{color: 'rgba(0, 0, 0, 0.65)'}}>
                                 <Avatar
                                     style={{marginRight: 5, verticalAlign: '-6px', backgroundColor: '#fc5a59'}}
                                     size="small"

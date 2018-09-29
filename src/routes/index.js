@@ -20,56 +20,75 @@ import ProductAdd from "../modules/product/component/productAdd";
 import OrderList from "../modules/order/component/orderList";
 import OrderAdd from "../modules/order/component/orderAdd";
 import OrderEdit from "../modules/order/component/orderEdit";
+import SenderList from "../modules/order/component/sender";
 /* 个人设置 */
 import SettingList from "../modules/setting/component/userCenter";
 import MessageList from "../modules/setting/component/messageList";
-
+import ResourceList from "../modules/setting/component/resourceInfo";
 
 const requireAuth = (nextState, replace) => {
-  if (!sessionStorage.expireDate || new Date(sessionStorage.expireDate).getTime() <= new Date().getTime()) {
-    replace({pathname: '/'})
-  }
+    if (!sessionStorage.expireDate || new Date(sessionStorage.expireDate).getTime() <= new Date().getTime()) {
+        replace({pathname: '/'})
+    }
 }
 
 class PageRouter extends React.Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {};
-  }
+        this.state = {};
+    }
 
-  componentWillMount = () => {
-  }
+    componentWillMount = () => {
+    }
 
-  componentDidMount = () => {
-  }
+    componentDidMount = () => {
+    }
 
-  render() {
-    return (
-      <Router history={hashHistory}>
-        <Route path="/" component={App}>
-          <IndexRoute component={Login}/>
-          <Route path="login" component={Login}/>
-          <Route path="frame(/*)" component={Frame} onEnter={requireAuth}>
-            <IndexRoute component={UserList}/>
-            <Route path="user/list" component={UserList}/>
-            <Route path="user/list/add" component={UserAdd}/>
-            <Route path="user/list/detail/:id" component={UserDetail}/>
-            <Route path="user/list/edit/:id" component={UserEdit}/>
-            <Route path="product/list" component={ProductList}/>
-            <Route path="product/list/detail/:id" component={ProductDetail}/>
-            <Route path="product/list/edit/:id" component={ProductEdit}/>
-            <Route path="product/list/add" component={ProductAdd}/>
-            <Route path="order/list" component={OrderList}/>
-            <Route path="order/list/add" component={OrderAdd}/>
-            <Route path="order/list/edit/:id" component={OrderEdit}/>
-            <Route path="setting/list" component={SettingList}/>
-            <Route path="setting/list/message" component={MessageList}/>
-          </Route>
-        </Route>
-      </Router>
-    )
-  }
+    render() {
+        return (
+            <Router history={hashHistory}>
+                <Route path="/" component={App}>
+                    <IndexRoute component={Login}/>
+                    <Route path="login" component={Login}/>
+                    <Route path="frame(/*)" component={Frame} onEnter={requireAuth}>
+                        <IndexRoute component={UserList}/>
+                        {/* 用户管理 */}
+                        <Route path="user" component={App}>
+                            <IndexRoute component={UserList}/>
+                            <Route path="list" component={UserList}/>
+                            <Route path="list/add" component={UserAdd}/>
+                            <Route path="list/detail/:id" component={UserDetail}/>
+                            <Route path="list/edit/:id" component={UserEdit}/>
+                        </Route>
+                        {/* 产品管理 */}
+                        <Route path="product" component={App}>
+                            <IndexRoute component={ProductList}/>
+                            <Route path="list" component={ProductList}/>
+                            <Route path="list/detail/:id" component={ProductDetail}/>
+                            <Route path="list/edit/:id" component={ProductEdit}/>
+                            <Route path="list/add" component={ProductAdd}/>
+                        </Route>
+                        {/* 订单管理 */}
+                        <Route path="order" component={App}>
+                            <IndexRoute component={OrderList}/>
+                            <Route path="list" component={OrderList}/>
+                            <Route path="list/add" component={OrderAdd}/>
+                            <Route path="list/edit/:id" component={OrderEdit}/>
+                            <Route path="sender" component={SenderList}/>
+                        </Route>
+                        {/* 个人设置 */}
+                        <Route path="setting" component={App}>
+                            <IndexRoute component={SettingList}/>
+                            <Route path="list" component={SettingList}/>
+                            <Route path="list/message" component={MessageList}/>
+                            <Route path="resource" component={ResourceList}/>
+                        </Route>
+                    </Route>
+                </Route>
+            </Router>
+        )
+    }
 }
 
 export default PageRouter;
