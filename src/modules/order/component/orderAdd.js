@@ -370,18 +370,25 @@ class Index extends React.Component {
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
-                        <ZZCard
-                            extra={<Button type='dashed' icon='plus'
-                                           onClick={this.showModal}>选择产品</Button>
-                            }
-                        >
-                            <Table
-                                bordered
-                                dataSource={submitProduct}
-                                columns={this.orderColumns}
-                                pagination={false}
-                            />
-                        </ZZCard>
+                        <Divider>关联商品</Divider>
+                        <div style={{
+                            padding: '30px 0',
+                            textAlign: 'center'}}>
+                            <Button
+                                type='dashed'
+                                icon='plus'
+                                    onClick={this.showModal}
+                            style={{
+                                padding: '0 100px'}}
+                            >选择产品</Button>
+                        </div>
+
+                        <Table
+                            bordered
+                            dataSource={submitProduct}
+                            columns={this.orderColumns}
+                            pagination={false}
+                        />
                         <Modal
                             title="添加产品"
                             visible={showModal}
