@@ -8,6 +8,10 @@ const Menu = [
                 key: '1_1',
                 link: '/frame/user/list',
                 label: '用户列表'
+            }, {
+                key: '1_2',
+                link: '/frame/user/add',
+                label: '新增用户'
             }
         ]
     }, {
@@ -19,6 +23,10 @@ const Menu = [
                 key: '2_1',
                 link: '/frame/product/list',
                 label: '产品列表'
+            }, {
+                key: '2_2',
+                link: '/frame/product/add',
+                label: '新增产品'
             }
         ]
     }, {
@@ -32,6 +40,10 @@ const Menu = [
                 label: '订单列表'
             }, {
                 key: '3_2',
+                link: '/frame/order/add',
+                label: '新增订单'
+            }, {
+                key: '3_3',
                 link: '/frame/order/sender',
                 label: '寄件信息列表'
             }

@@ -71,7 +71,8 @@ class OrderList extends React.Component {
                 key: 'expressType'
             }, {
                 title: '寄件电话',
-                width: 100,
+                width: 110,
+                align: 'center',
                 dataIndex: 'serderPhone',
                 key: 'serderPhone'
             }, {
@@ -88,13 +89,13 @@ class OrderList extends React.Component {
                 key: 'orderWechatCode'
             }, {
                 title: '成单日期',
-                width: 150,
+                width: 100,
                 align: 'center',
                 dataIndex: 'orderDate',
                 key: 'orderDate'
             }, {
                 title: '发货日期',
-                width: 150,
+                width: 100,
                 align: 'center',
                 dataIndex: 'deliverDate',
                 key: 'deliverDate'
@@ -106,7 +107,7 @@ class OrderList extends React.Component {
                 key: 'receiverName'
             }, {
                 title: '收件人电话',
-                width: 120,
+                width: 110,
                 align: 'center',
                 dataIndex: 'ReceiverPhone',
                 key: 'ReceiverPhone'
@@ -190,14 +191,13 @@ class OrderList extends React.Component {
                 key: 'advertChannel channel'
             }, {
                 title: '进线时间',
-                width: 100,
+                width: 180,
                 align: 'center',
                 dataIndex: 'incomlineTime',
                 key: 'incomlineTime'
             }, {
                 title: '备注',
                 align: 'center',
-                width: 100,
                 dataIndex: 'remark',
                 key: 'remark'
             }, {
@@ -302,7 +302,7 @@ class OrderList extends React.Component {
     }
 
     addOrder = () => {
-        this.context.router.push('/frame/order/list/add');
+        this.context.router.push('/frame/order/add');
 
     }
 
@@ -390,7 +390,7 @@ class OrderList extends React.Component {
                             dataSource={dataSource}
                             pagination={pagination}
                             loading={loading}
-                            scroll={{x: 3000}}
+                            scroll={{x: 3500}}
                             handlePageChange={this.handlePageChange.bind(this)}
                         />
                     </ZZCard>

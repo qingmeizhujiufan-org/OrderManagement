@@ -190,7 +190,7 @@ class ProductList extends React.Component {
     }
 
     addProduct = () => {
-        return this.context.router.push('/frame/product/list/add');
+        return this.context.router.push('/frame/product/add');
     }
 
     onDetail = id => {

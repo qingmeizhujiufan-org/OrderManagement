@@ -21,6 +21,7 @@ class Login extends React.Component {
     }
 
     componentDidMount = () => {
+        sessionStorage.clear();
     }
 
     handleSubmit = (e) => {

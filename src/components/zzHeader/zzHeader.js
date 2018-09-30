@@ -64,13 +64,11 @@ class ZZHeader extends React.Component {
             <Header className="zui-header">
                 <Row type="flex" justify="space-between" align="middle" style={{height: '100%'}}>
                     <Col span={2}>
-                        <Tooltip placement="right" title={collapsed ? '点击张开左侧菜单栏' : '点击收缩左侧菜单栏'}>
-                            <Icon
-                                className="trigger"
-                                type={collapsed ? 'menu-unfold' : 'menu-fold'}
-                                onClick={onToggleClick}
-                            />
-                        </Tooltip>
+                        <Icon
+                            className="trigger"
+                            type={collapsed ? 'menu-unfold' : 'menu-fold'}
+                            onClick={onToggleClick}
+                        />
                     </Col>
                     <Col span={10}>
                     </Col>

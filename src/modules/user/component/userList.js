@@ -236,7 +236,7 @@ class Index extends React.Component {
     }
 
     addUser = () => {
-        return this.context.router.push('/frame/user/list/add');
+        return this.context.router.push('/frame/user/add');
     }
 
     resetPassword = (phone) => {

@@ -308,9 +308,23 @@ class Index extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                values.orderDate = new Date(values.orderDate.format('YYYY-MM-DD'));
-                values.deliverDate = new Date(values.deliverDate.format('YYYY-MM-DD'));
-                values.incomlineTime = new Date(values.incomlineTime.format('YYYY-MM-DD'));
+                const {submitProduct} = this.state;
+                values.orderDate = values.orderDate.format("YYYY-MM-DD");
+                values.deliverDate = values.deliverDate.format("YYYY-MM-DD");
+                values.incomlineTime = values.incomlineTime.format("YYYY-MM-DD HH:mm:ss");
+
+                values.childrenDetail = submitProduct.map(item => {
+                    return {
+                        productId: item.id,
+                        productName: item.name,
+                        pnumber: item.number,
+                        productUnit: item.unit,
+                        productBarCode: item.barCode,
+                        orderId: null,
+                        productCostPrice: item.costPrice,
+                        voState: 1
+                    }
+                });
 
                 console.log('handleSubmit  param === ', values);
                 this.setState({
@@ -540,7 +554,7 @@ class Index extends React.Component {
                                     >
                                         {getFieldDecorator('orderDate', {
                                             rules: [{required: true, message: '请输入成单日期'}],
-                                            initialValue: moment('2018-09-27')
+                                            initialValue: moment()
 
                                         })(
                                             <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
@@ -556,7 +570,7 @@ class Index extends React.Component {
                                     >
                                         {getFieldDecorator('deliverDate', {
                                             rules: [{required: true, message: '请输入发货日期'}],
-                                            initialValue: moment('2018-09-27')
+                                            initialValue: moment()
 
                                         })(
                                             <DatePicker style={{width: '100%'}}/>
@@ -628,10 +642,14 @@ class Index extends React.Component {
                                     >
                                         {getFieldDecorator('incomlineTime', {
                                             rules: [{required: true, message: '请输入进线时间'}],
-                                            initialValue: moment('2018-09-27')
+                                            initialValue: moment()
 
                                         })(
-                                            <DatePicker style={{width: '100%'}}/>
+                                            <DatePicker
+                                                showTime
+                                                format="YYYY-MM-DD HH:mm:ss"
+                                                style={{width: '100%'}}
+                                            />
                                         )}
                                     </FormItem>
                                 </Col>

@@ -57,7 +57,7 @@ class PageRouter extends React.Component {
                         <Route path="user" component={App}>
                             <IndexRoute component={UserList}/>
                             <Route path="list" component={UserList}/>
-                            <Route path="list/add" component={UserAdd}/>
+                            <Route path="add" component={UserAdd}/>
                             <Route path="list/detail/:id" component={UserDetail}/>
                             <Route path="list/edit/:id" component={UserEdit}/>
                         </Route>
@@ -65,15 +65,15 @@ class PageRouter extends React.Component {
                         <Route path="product" component={App}>
                             <IndexRoute component={ProductList}/>
                             <Route path="list" component={ProductList}/>
+                            <Route path="add" component={ProductAdd}/>
                             <Route path="list/detail/:id" component={ProductDetail}/>
                             <Route path="list/edit/:id" component={ProductEdit}/>
-                            <Route path="list/add" component={ProductAdd}/>
                         </Route>
                         {/* 订单管理 */}
                         <Route path="order" component={App}>
                             <IndexRoute component={OrderList}/>
                             <Route path="list" component={OrderList}/>
-                            <Route path="list/add" component={OrderAdd}/>
+                            <Route path="add" component={OrderAdd}/>
                             <Route path="list/edit/:id" component={OrderEdit}/>
                             <Route path="sender" component={SenderList}/>
                         </Route>
