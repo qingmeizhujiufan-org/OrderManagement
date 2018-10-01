@@ -40,6 +40,7 @@ class PageRouter extends React.Component {
     }
 
     componentWillMount = () => {
+
     }
 
     componentDidMount = () => {
