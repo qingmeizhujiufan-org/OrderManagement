@@ -675,6 +675,7 @@ class Index extends React.Component {
                                                 step={0.01}
                                                 precision={2}
                                                 min={0}
+                                                style={{width: '100%'}}
                                             />
                                         )}
                                     </FormItem>
@@ -692,6 +693,7 @@ class Index extends React.Component {
                                                 min={0}
                                                 step={0.01}
                                                 precision={2}
+                                                style={{width: '100%'}}
                                             />
                                         )}
                                     </FormItem>
@@ -711,6 +713,7 @@ class Index extends React.Component {
                                                 min={0}
                                                 step={0.1}
                                                 precision={2}
+                                                style={{width: '100%'}}
                                             />
                                         )}
                                     </FormItem>
@@ -778,7 +781,12 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入成本数据'}],
                                             initialValue: 30
                                         })(
-                                            <InputNumber/>
+                                            <InputNumber
+                                                min={0}
+                                                step={0.1}
+                                                precision={2}
+                                                style={{width: '100%'}}
+                                            />
                                         )}
                                     </FormItem>
                                 </Col>
@@ -791,7 +799,12 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入成本比例'}],
                                             initialValue: 0.3
                                         })(
-                                            <InputNumber/>
+                                            <InputNumber
+                                                min={0}
+                                                step={0.1}
+                                                precision={2}
+                                                style={{width: '100%'}}
+                                            />
                                         )}
                                     </FormItem>
                                 </Col>

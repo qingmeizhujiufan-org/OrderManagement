@@ -41,7 +41,10 @@ class OrderList extends React.Component {
                 align: 'center',
                 dataIndex: 'orderCode',
                 key: 'orderCode',
-                fixed: 'left'
+                fixed: 'left',
+                render: (text, record, index) => (
+                    <Link to={`/frame/order/list/edit/${record.id}`}>{text}</Link>
+                )
             }, {
                 title: '业务员姓名',
                 width: 120,
@@ -89,13 +92,13 @@ class OrderList extends React.Component {
                 key: 'orderWechatCode'
             }, {
                 title: '成单日期',
-                width: 100,
+                width: 120,
                 align: 'center',
                 dataIndex: 'orderDate',
                 key: 'orderDate'
             }, {
                 title: '发货日期',
-                width: 100,
+                width: 120,
                 align: 'center',
                 dataIndex: 'deliverDate',
                 key: 'deliverDate'
