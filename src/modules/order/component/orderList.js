@@ -8,24 +8,31 @@ import {
   Icon,
   Badge,
   Menu,
+  Form,
+  DatePicker,
   Breadcrumb,
   Dropdown,
   Notification,
-  Spin,
-  Tabs,
+  Select,
+  Divider,
   Message,
   Modal,
-  Radio,
+  Collapse,
   Button
 } from 'antd';
+import moment from 'moment';
 import _ from 'lodash';
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from "Utils/util";
+import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 
 const Search = Input.Search;
+const FormItem = Form.Item;
+const Option = Select.Option;
+const Panel = Collapse.Panel;
 
 const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
 const delUrl = restUrl.BASE_HOST + 'order/delete';
@@ -267,7 +274,7 @@ class OrderList extends React.Component {
         pageNumber: 1,
         pageSize: 10,
       },
-      keyWords: ''
+      searchKey: {}
     };
   }
 
@@ -279,8 +286,8 @@ class OrderList extends React.Component {
   }
 
   queryList = () => {
-    const {params, keyWords} = this.state;
-    const param = _.assign({}, params, {keyWords});
+    const {params, searchKey} = this.state;
+    const param = _.assign({}, params, searchKey);
     this.setState({loading: true});
     ajax.getJSON(queryListUrl, param, data => {
       if (data.success) {
@@ -318,14 +325,30 @@ class OrderList extends React.Component {
   }
 
   // 搜索
-  onSearch = (value, event) => {
-    console.log('onsearch value == ', value);
+  onSearch = (val, event) => {
+    const values = this.props.form.getFieldsValue();
+    const searchKey = {}
+
+    values.keyWords = val;
+    values.orderDate = values.orderDate ? values.orderDate.format("YYYY-MM-DD") : '';
+    values.deliverBeginDate = values.deliverBeginDate ? values.deliverBeginDate.format("YYYY-MM-DD") : '';
+    values.deliverEndDate = values.deliverEndDate ? values.deliverEndDate.format("YYYY-MM-DD") : '';
+    values.deliverDate = values.deliverDate ? values.deliverDate.format("YYYY-MM-DD") : '';
+
+    console.log('onsearch value == ', values);
+    for (let key in values) {
+      if (values[key] !== "" && values[key] !== undefined) {
+        searchKey[key] = values[key]
+      }
+    }
+    console.log('searchKey ===', searchKey)
+
     this.setState({
       params: {
         pageNumber: 1,
         pageSize: 10,
       },
-      keyWords: value
+      searchKey: searchKey
     }, () => {
       this.queryList();
     });
@@ -375,9 +398,23 @@ class OrderList extends React.Component {
     }
   }
 
-  render() {
-    const {dataSource, pagination, loading} = this.state;
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('values ===', values)
+      }
+    })
+  };
 
+  render() {
+    const {getFieldDecorator} = this.props.form;
+    const {dataSource, pagination, loading} = this.state;
+    const customPanelStyle = {
+      borderRadius: 4,
+      border: 0,
+      overflow: 'hidden',
+    };
     return (
       <div className="zui-content page-newsList">
         <div className='pageHeader'>
@@ -407,6 +444,147 @@ class OrderList extends React.Component {
                 >新增订单</Button>
               </Col>
             </Row>
+            <Collapse bordered={false} defaultActiveKey={['1']} style={{marginTop: 20}}>
+              <Panel header="查询条件" key="1" style={customPanelStyle}>
+                <Form onSubmit={this.handleSubmit}>
+                  <Row type='flex' justify="center" align="middle" >
+                    <Col {...itemGrid}>
+                      <FormItem
+                        {...formItemLayout}
+                        label="订单性质"
+                      >
+                        {getFieldDecorator('orderNature ', {
+                          rules: [{required: false}],
+                          initialValue: ''
+                        })(
+                          <Input/>
+                        )}
+                      </FormItem>
+                    </Col>
+                    <Col {...itemGrid} >
+                      <FormItem
+                        {...formItemLayout}
+                        label="成单日期"
+                      >
+                        {getFieldDecorator('orderDate', {
+                          rules: [{required: false}],
+                        })(
+                          <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
+                        )}
+                      </FormItem>
+                    </Col>
+                    <Col {...itemGrid}>
+                      <FormItem
+                        {...formItemLayout}
+                        label="发货开始日期"
+                      >
+                        {getFieldDecorator('deliverBeginDate', {
+                          rules: [{required: false}],
+                        })(
+                          <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
+                        )}
+                      </FormItem>
+                    </Col>
+                    <Col {...itemGrid}>
+                      <FormItem
+                        {...formItemLayout}
+                        label="发货结束日期"
+                      >
+                        {getFieldDecorator('deliverEndDate', {
+                          rules: [{required: false}],
+                        })(
+                          <DatePicker style={{width: '100%'}} onChange={this.getDate}
+                          />
+                        )}
+                      </FormItem>
+                    </Col>
+                    <Col {...itemGrid}>
+                      <FormItem
+                        {...formItemLayout}
+                        label="发货日期"
+                      >
+                        {getFieldDecorator('deliverDate', {
+                          rules: [{required: false}],
+                        })(
+                          <DatePicker style={{width: '100%'}} onChange={this.getDate}
+                          />
+                        )}
+                      </FormItem>
+                    </Col>
+                    <Col {...itemGrid} >
+                      <FormItem
+                        {...formItemLayout}
+                        label="仓库"
+                      >
+                        {getFieldDecorator('warehouse ', {
+                          rules: [{required: false}],
+                          initialValue: ''
+                        })(
+                          <Select>
+                            <Option key='0' value={0}>武汉</Option>
+                            <Option key='1' value={1}>北京</Option>
+                          </Select>
+                        )}
+                      </FormItem>
+                    </Col>
+                    <Col {...itemGrid}>
+                      <FormItem
+                        {...formItemLayout}
+                        label="快递状态"
+                      >
+                        {getFieldDecorator('expressState ', {
+                          rules: [{required: false}],
+                          initialValue: ''
+                        })(
+                          <Select>
+                            <Option key='0' value={0}>未发货</Option>
+                            <Option key='1' value={1}>已发货</Option>
+                            <Option key='2' value={2}>取消发货</Option>
+                            <Option key='3' value={3}>未妥投</Option>
+                            <Option key='4' value={4}>退回</Option>
+                            <Option key='5' value={5}>签收</Option>
+                          </Select>
+                        )}
+                      </FormItem>
+                    </Col> <Col {...itemGrid}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="是否超过成本"
+                    >
+                      {getFieldDecorator('isOverCost ', {
+                        rules: [{required: false}],
+                        initialValue: ''
+                      })(
+                        <Select>
+                          <Option key='0' value={0}>否</Option>
+                          <Option key='1' value={1}>是</Option>
+                        </Select>
+                      )}
+                    </FormItem>
+                  </Col>
+                    <Col {...itemGrid}>
+                      <FormItem
+                        {...formItemLayout}
+                        label="订单状态"
+                      >
+                        {getFieldDecorator('orderState ', {
+                          rules: [{required: false}],
+                          initialValue: ''
+                        })(
+                          <Select>
+                            <Option key='0' value={0}>编辑中</Option>
+                            <Option key='1' value={1}>已锁定</Option>
+                            <Option key='2' value={2}>已发货</Option>
+                            <Option key='3' value={3}>已成单</Option>
+                          </Select>
+                        )}
+                      </FormItem>
+                    </Col>
+                  </Row>
+                </Form>
+              </Panel>
+            </Collapse>
+
           </div>
         </div>
         <div className='pageContent'>
@@ -426,8 +604,10 @@ class OrderList extends React.Component {
   }
 }
 
+const orderList = Form.create()(OrderList);
+
 OrderList.contextTypes = {
   router: PropTypes.object
 }
 
-export default OrderList;
+export default orderList;

@@ -9,6 +9,7 @@ import {
   Select,
   Breadcrumb,
   Button,
+  Table,
   Modal,
   Divider,
   Spin,
@@ -38,11 +39,58 @@ class Index extends React.Component {
 
     this.state = {
       data: {},
+      proData: [],
       loading: false,
       region: sessionStorage.region,
       isOperator: false,
       submitLoading: false
     };
+
+    this.orderColumns = [
+      {
+        title: '产品名称',
+        dataIndex: 'productName',
+        align: 'center',
+        width: 250,
+        key: 'productName'
+      }, {
+        title: '产品条码',
+        dataIndex: 'productBarCode',
+        align: 'productBarCode',
+        width: 250,
+        key: 'productBarCode'
+      }, {
+        title: '数量',
+        dataIndex: 'pnumber',
+        align: 'center',
+        width: 150,
+        key: 'pnumber',
+        render: (text, record, index) => (
+          <InputNumber
+            style={{width: '50%'}}
+            defaultValue={1}
+            min={1}
+            step={1}
+            onChange={value => this.setEachProNumber(value, record, index)}
+          />
+        )
+      }, {
+        title: '单位',
+        dataIndex: 'productUnit',
+        key: 'productUnit',
+        width: 150,
+        align: 'center',
+      }, {
+        title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
+        key: 'operation',
+        width: 150,
+        align: 'center',
+        render: (text, record, index) => (
+          <div>
+            <a onClick={() => this.onDelete(index)}>删除</a>
+          </div>
+        )
+      }]
   }
 
   componentWillMount = () => {
@@ -71,6 +119,7 @@ class Index extends React.Component {
 
         this.setState({
           data: backData,
+          proData: backData.childrenDetail,
           loading: false
         });
       } else {
@@ -79,15 +128,70 @@ class Index extends React.Component {
     });
   }
 
+  onDelete = index => {
+    Modal.confirm({
+      title: '提示',
+      content: '确认要删除吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        let proData = this.state.proData;
+        proData.splice(index, 1);
+        this.setState({
+          proData: proData,
+        }, () => {
+          Notification.success({
+            message: '提示',
+            description: '删除成功！'
+          });
+        });
+      }
+    });
+  }
+
+  /* 处理定金 */
+  handleDepositAmoutChange = val => {
+    const values = this.props.form.getFieldsValue();
+    const {collectionAmout} = values;
+    if (!isNaN(collectionAmout) && !isNaN(val)) {
+      values.totalAmount = val + collectionAmout;
+      this.props.form.setFieldsValue(values);
+    }
+  }
+
+  /* 处理代收金额 */
+  handleCollectionAmoutChange = val => {
+    const values = this.props.form.getFieldsValue();
+    const {depositAmout} = values;
+    if (!isNaN(depositAmout) && !isNaN(val)) {
+      values.totalAmount = depositAmout + val;
+      this.props.form.setFieldsValue(values);
+    }
+  }
+
+  validatePhone = (rule, value, callback) => {
+    const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+    if (value && value !== '' && !reg.test(value)) {
+      callback(new Error('手机号格式不正确'));
+    } else {
+      callback();
+    }
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         values.id = this.props.params.id;
+        values.orderDate = values.orderDate.format("YYYY-MM-DD");
+        values.deliverDate = values.deliverDate.format("YYYY-MM-DD");
+        values.incomlineTime = values.incomlineTime.format("YYYY-MM-DD HH:mm:ss");
+        values.costRatio = this.state.data.costRatio;
         console.log('handleSubmit  param === ', values);
         this.setState({
           submitLoading: true
         });
+        values.childrenDetail = this.state.proData;
         ajax.postJSON(orderSaveUrl, JSON.stringify(values), (data) => {
           if (data.success) {
             Notification.success({
@@ -96,7 +200,7 @@ class Index extends React.Component {
             });
             return this.context.router.push('/frame/order/list');
           } else {
-            message.error(data.backMsg);
+            Message.error(data.backMsg);
           }
 
           this.setState({
@@ -109,7 +213,7 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {data, isOperator, loading, submitLoading} = this.state;
+    const {data, proData, isOperator, loading, submitLoading} = this.state;
 
     return (
       <div className="zui-content">
@@ -126,9 +230,22 @@ class Index extends React.Component {
         <div className='pageContent'>
           <div className='ibox-content'>
             <Spin spinning={loading} size='large'>
+              <Divider>产品信息</Divider>
+              <div style={{
+                paddingBottom: 30,
+                textAlign: 'center'
+              }}>
+                <Table
+                  bordered
+                  dataSource={proData}
+                  columns={this.orderColumns}
+                  pagination={false}
+                />
+              </div>
+              <Divider>订单信息</Divider>
               <Form onSubmit={this.handleSubmit}>
                 <Row>
-                  <Col {...itemGrid} style={{display: isOperator ? 'none': 'block'}}>
+                  <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                     <FormItem
                       {...formItemLayout}
                       label="所属区域"
@@ -141,7 +258,7 @@ class Index extends React.Component {
                       )}
                     </FormItem>
                   </Col>
-                  <Col {...itemGrid} style={{display: isOperator ? 'none': 'block'}}>
+                  <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                     <FormItem
                       label="所属仓库"
                       {...formItemLayout}
@@ -157,7 +274,7 @@ class Index extends React.Component {
                       )}
                     </FormItem>
                   </Col>
-                  <Col {...itemGrid} style={{display: isOperator ? 'none': 'block'}}>
+                  <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                     <FormItem
                       {...formItemLayout}
                       label="业务员id"
@@ -170,7 +287,7 @@ class Index extends React.Component {
                       )}
                     </FormItem>
                   </Col>
-                  <Col {...itemGrid} style={{display: isOperator ? 'none': 'block'}}>
+                  <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                     <FormItem
                       {...formItemLayout}
                       label="业务员姓名"
@@ -183,7 +300,7 @@ class Index extends React.Component {
                       )}
                     </FormItem>
                   </Col>
-                  <Col {...itemGrid} style={{display: isOperator ? 'none': 'block'}}>
+                  <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                     <FormItem
                       {...formItemLayout}
                       label="订单编号"
@@ -394,7 +511,7 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('totalAmount', {
                         rules: [{required: true, message: '请输入总金额'}],
-                        initialValue:data.totalAmount
+                        initialValue: data.totalAmount
                       })(
                         <InputNumber
                           min={0}
@@ -422,7 +539,7 @@ class Index extends React.Component {
                       )}
                     </FormItem>
                   </Col>
-                  <Col {...itemGrid} style={{display: isOperator ? 'none': 'block'}}>
+                  <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                     <FormItem
                       {...formItemLayout}
                       label="订单状态"
@@ -440,7 +557,7 @@ class Index extends React.Component {
                       )}
                     </FormItem>
                   </Col>
-                  <Col {...itemGrid} style={{display: isOperator ? 'none': 'block'}}>
+                  <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                     <FormItem
                       {...formItemLayout}
                       label="是否超过成本"
@@ -456,7 +573,7 @@ class Index extends React.Component {
                       )}
                     </FormItem>
                   </Col>
-                  <Col {...itemGrid} style={{display: isOperator ? 'none': 'block'}}>
+                  <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                     <FormItem
                       {...formItemLayout}
                       label="成本数据"
@@ -481,7 +598,7 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('costRatio', {
                         rules: [{required: true, message: '请输入成本比例'}],
-                        initialValue: data.costRatio ? '超过' :'不超过'
+                        initialValue: data.costRatio > 1? '超过' : '不超过'
                       })(
                         <Input disabled={isOperator}/>
                       )}
@@ -508,26 +625,26 @@ class Index extends React.Component {
                       )}
                     </FormItem>
                   </Col>
-                  <Col {...itemGrid} style={{display: isOperator ? 'none': 'block'}}>
+                  <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                     <FormItem
                       {...formItemLayout}
                       label="快递单号"
                     >
                       {getFieldDecorator('expressCode', {
-                        rules: [{required: true, message: '请输入快递单号'}],
+                        rules: [{required: !isOperator, message: '请输入快递单号'}],
                         initialValue: data.expressCode
                       })(
                         <Input disabled={isOperator}/>
                       )}
                     </FormItem>
                   </Col>
-                  <Col {...itemGrid} style={{display: isOperator ? 'none': 'block'}}>
+                  <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                     <FormItem
                       {...formItemLayout}
                       label="快递状态"
                     >
                       {getFieldDecorator('expressState', {
-                        rules: [{required: true, message: '请选择快递状态'}],
+                        rules: [{required: !isOperator , message: '请选择快递状态'}],
                         initialValue: data.expressState
                       })(
                         <Select disabled={isOperator}>
@@ -541,7 +658,18 @@ class Index extends React.Component {
                       )}
                     </FormItem>
                   </Col>
-
+                  <Col {...itemGrid} style={{display: 'none'}}>
+                    <FormItem
+                      {...formItemLayout}
+                      label="备注"
+                    >
+                      {getFieldDecorator('memo', {
+                        rules: [{required: false}],
+                      })(
+                        <Input />
+                      )}
+                    </FormItem>
+                  </Col>
                 </Row>
                 <Row type="flex" justify="center" style={{marginTop: 40}}>
                   <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
