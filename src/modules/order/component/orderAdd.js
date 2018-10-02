@@ -47,7 +47,6 @@ class Index extends React.Component {
       userId: sessionStorage.userId,
       region: sessionStorage.region,
       isOperator: false,
-      totalAmount: 0,
       submitLoading: false,
       selectedProduct: [],
       selectedRowKeys: [],
@@ -227,16 +226,25 @@ class Index extends React.Component {
     })
   }
 
-  setTotalAmount = () => {
-    console.log(this.props.form.depositAmout);
-    const depositAmout = this.props.form.depositAmout;
-    const collectionAmout = this.props.form.collectionAmout;
-
-    this.setState({
-      totalAmount: depositAmout + collectionAmout
-    });
+  /* 处理定金 */
+  handleDepositAmoutChange = val => {
+    const values = this.props.form.getFieldsValue();
+    const {collectionAmout} = values;
+    if(!isNaN(collectionAmout)){
+      values.totalAmount = val + collectionAmout;
+      this.props.form.setFieldsValue(values);
+    }
   }
 
+  /* 处理代收金额 */
+  handleCollectionAmoutChange = val => {
+    const values = this.props.form.getFieldsValue();
+    const {depositAmout} = values;
+    if(!isNaN(depositAmout)){
+      values.totalAmount = depositAmout + val;
+      this.props.form.setFieldsValue(values);
+    }
+  }
 
   validatePhone = (rule, value, callback) => {
     const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
@@ -276,7 +284,6 @@ class Index extends React.Component {
       }
     });
   }
-
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -324,7 +331,7 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {userId, region, isOperator, totalAmount, submitProduct, submitLoading, showModal, pagination, loading, allProduct, selectedRowKeys} = this.state;
+    const {userId, region, isOperator, submitProduct, submitLoading, showModal, pagination, loading, allProduct, selectedRowKeys} = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -345,25 +352,26 @@ class Index extends React.Component {
           <div className='ibox-content'>
             <Divider>关联产品</Divider>
             <div style={{
-              padding: '30px 0',
+              paddingBottom: 30,
               textAlign: 'center'
             }}>
+            <div style={{marginBottom: 15}}>
               <Button
                 type='dashed'
                 icon='plus'
                 onClick={this.showModal}
                 style={{
-                  padding: '0 100px'
+                  padding: '0 150px'
                 }}
               >选择产品</Button>
             </div>
-
             <Table
               bordered
               dataSource={submitProduct}
               columns={this.orderColumns}
               pagination={false}
             />
+            </div>
             <Modal
               title="添加产品"
               visible={showModal}
@@ -467,7 +475,6 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-
                 <Col {...itemGrid} style={{display: 'none'}}>
                   <FormItem
                     {...formItemLayout}
@@ -519,7 +526,6 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-
                 <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
@@ -624,14 +630,13 @@ class Index extends React.Component {
                   >
                     {getFieldDecorator('depositAmout', {
                       rules: [{required: true, message: '请输入定金'}],
-                      initialValue: 0
                     })(
                       <InputNumber
                         step={0.01}
                         precision={2}
                         min={0}
                         style={{width: '100%'}}
-                        onChange={this.setTotalAmount}
+                        onChange={this.handleDepositAmoutChange}
                       />
                     )}
                   </FormItem>
@@ -643,14 +648,13 @@ class Index extends React.Component {
                   >
                     {getFieldDecorator('collectionAmout', {
                       rules: [{required: true, message: '请输入代收金额'}],
-                      initialValue: 0
                     })(
                       <InputNumber
                         min={0}
                         step={0.01}
                         precision={2}
                         style={{width: '100%'}}
-                        onChange={this.setTotalAmount}
+                        onChange={this.handleCollectionAmoutChange}
                       />
                     )}
                   </FormItem>
@@ -662,9 +666,14 @@ class Index extends React.Component {
                   >
                     {getFieldDecorator('totalAmount', {
                       rules: [{required: true, message: '请输入总金额'}],
-                      initialValue: this.state.totalAmount
                     })(
-                     <InputNumber disabled/>
+                      <InputNumber
+                        min={0}
+                        step={0.01}
+                        precision={2}
+                        style={{width: '100%'}}
+                        disabled
+                      />
                     )}
                   </FormItem>
                 </Col>
@@ -770,7 +779,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col {...itemGrid}  style={{display: 'none'}}>
+                <Col {...itemGrid} style={{display: 'none'}}>
                   <FormItem
                     {...formItemLayout}
                     label="快递单号"
@@ -783,7 +792,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col {...itemGrid}  style={{display: 'none'}}>
+                <Col {...itemGrid} style={{display: 'none'}}>
                   <FormItem
                     {...formItemLayout}
                     label="快递状态"

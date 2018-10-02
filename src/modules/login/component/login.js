@@ -43,7 +43,7 @@ class Login extends React.Component {
                   const role = res.backData;
                   let type = null;
                   let initUrl = null;
-                  if(role.roleCode === '002') {
+                  if (role.roleCode === '002') {
                     type = 1;
                     initUrl = '/frame/user/list'
                   }

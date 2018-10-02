@@ -201,7 +201,6 @@ class OrderList extends React.Component {
       }, {
         title: '备注',
         align: 'center',
-        width: 180,
         dataIndex: 'remark',
         key: 'remark'
       }, {
@@ -387,7 +386,7 @@ class OrderList extends React.Component {
               dataSource={dataSource}
               pagination={pagination}
               loading={loading}
-              scroll={{x: 3500}}
+              scroll={{x: 3300}}
               handlePageChange={this.handlePageChange.bind(this)}
             />
           </ZZCard>
