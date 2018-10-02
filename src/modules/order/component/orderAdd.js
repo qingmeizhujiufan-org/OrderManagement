@@ -475,7 +475,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col {...itemGrid} style={{display: 'none'}}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="寄件电话"
@@ -490,13 +490,14 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col {...itemGrid} style={{display: 'none'}}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="寄件详细地址"
                   >
                     {getFieldDecorator('senderAddr', {
                       rules: [{required: true, message: '请输入寄件详细地址'}],
+                      initialValue: '武汉'
                     })(
                       <Input disabled={isOperator}/>
                     )}
@@ -534,7 +535,6 @@ class Index extends React.Component {
                     {getFieldDecorator('orderDate', {
                       rules: [{required: true, message: '请输入成单日期'}],
                       initialValue: moment()
-
                     })(
                       <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
                     )}
@@ -574,8 +574,7 @@ class Index extends React.Component {
                     {getFieldDecorator('receiverPhone', {
                       rules: [{required: true, message: '请输入收件人手机号'}, {
                         validator: this.validatePhone,
-                      }],
-                      initialValue: '18634348921'
+                      }]
                     })(
                       <Input/>
                     )}

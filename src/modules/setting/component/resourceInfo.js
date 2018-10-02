@@ -1,435 +1,207 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-    Row,
-    Col,
-    Form,
-    Input,
-    Select,
-    Breadcrumb,
-    Button,
-    Upload,
-    Icon,
-    Spin,
-    Tabs,
-    Message,
-    Notification
+  Row,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Breadcrumb,
+  Button,
+  Message,
+  Notification
 } from 'antd';
+
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 
-const userSaveUrl = restUrl.BASE_HOST + 'user/save';
-const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
-const queryRoleUrl = restUrl.BASE_HOST + 'role/queryList';
+const resourceSaveUrl = restUrl.BASE_HOST + 'user/saveUserOwnResources';
 const queryDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
-const updatePasswordUrl = restUrl.BASE_HOST + 'user/updatePassword';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
-const TabPane = Tabs.TabPane;
 
 const formItemLayout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 12},
+  labelCol: {span: 6},
+  wrapperCol: {span: 12},
 };
 
-class DetailForm extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            id: '',
-            data: {},
-            fileList: [],
-            loading: false,
-            roleList: [],
-            submitLoading: false
-        };
-    }
-
-    componentDidMount = () => {
-        this.queryDetail();
-        this.queryRole();
-    }
-
-    handleChange = ({fileList}) => this.setState({fileList})
-
-    normFile = (e) => {
-        console.log('Upload event:', e);
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e && e.fileList;
-    }
-
-    queryDetail = () => {
-        const id = sessionStorage.userId;
-        const param = {};
-        param.id = id;
-        this.setState({
-            loading: true
-        });
-        ajax.getJSON(queryDetailUrl, param, data => {
-            if (data.success) {
-                let backData = data.backData;
-                if (backData.assessorys) {
-                    backData.assessorys.map((item, index) => {
-                        backData.assessorys[index] = _.assign({}, item, {
-                            uid: item.id,
-                            status: 'done',
-                            url: restUrl.ADDR + item.path + item.name,
-                            response: {
-                                data: item
-                            }
-                        });
-                    });
-                } else {
-                    backData.assessorys = [];
-                }
-                const fileList = [].concat(backData.assessorys);
-
-                this.setState({
-                    data: backData,
-                    fileList,
-                    loading: false
-                });
-            } else {
-                Message.error('用户信息查询失败');
-            }
-        });
-    }
-
-    queryRole = () => {
-        this.setState({roleLoading: true});
-        ajax.getJSON(queryRoleUrl, null, data => {
-            if (data.success) {
-                let content = data.backData.content;
-                let roleList = [];
-                content.map(item => {
-                    roleList.push({
-                        id: item.id,
-                        name: item.roleName
-                    });
-                });
-
-                this.setState({
-                    roleList,
-                    roleLoading: false
-                });
-            } else {
-                Message.error(data.backMsg);
-            }
-        });
-    }
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                values.id = sessionStorage.userId;
-                values.assessorys = values.assessorys ? values.assessorys.map(item => {
-                    return item.response.backData;
-                }) : [];
-                console.log('handleSubmit  param === ', values);
-                this.setState({
-                    submitLoading: true
-                });
-                ajax.postJSON(userSaveUrl, JSON.stringify(values), (data) => {
-                    if (data.success) {
-                        Notification.success({
-                            message: '提示',
-                            description: '用户信息保存成功！'
-                        });
-
-                    } else {
-                        Message.error(data.backMsg);
-                    }
-
-                    this.setState({
-                        submitLoading: false
-                    });
-                });
-            }
-        });
-    }
-
-    render() {
-        const {getFieldDecorator} = this.props.form;
-        const {data, fileList, roleList, roleLoading, submitLoading} = this.state;
-        return (
-            <Form onSubmit={this.handleSubmit}>
-                <Row>
-                    <Col span={12}>
-                        <FormItem
-                            label="头像"
-                            {...formItemLayout}
-                        >
-                            {getFieldDecorator('assessorys', {
-                                valuePropName: 'fileList',
-                                getValueFromEvent: this.normFile,
-                                rules: [{required: false, message: '头像不能为空!'}],
-                                initialValue: data.assessorys
-                            })(
-                                <Upload
-                                    headers={{
-                                        'X-Auth-Token': sessionStorage.token
-                                    }}
-                                    name='bannerImage'
-                                    action={uploadUrl}
-                                    listType={'picture'}
-                                    onChange={this.handleChange}
-                                >
-                                    {fileList.length >= 1 ? null :
-                                        <Button><Icon type="upload"/> 上传</Button>}
-                                </Upload>
-                            )}
-                        </FormItem>
-                    </Col>
-                    <Col span={12}>
-                        <FormItem
-                            label="角色选择"
-                            {...formItemLayout}
-                        >
-                            <Spin spinning={roleLoading} indicator={<Icon type="loading"/>}>
-                                {getFieldDecorator('roleId', {
-                                    rules: [{required: true, message: '角色不能为空!'}],
-                                    initialValue: data.roleId
-                                })(
-                                    <Select disabled>
-                                        {
-                                            roleList.map(item => {
-                                                return (<Option key={item.id}
-                                                                value={item.id}>{item.name}</Option>)
-                                            })
-                                        }
-                                    </Select>
-                                )}
-                            </Spin>
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={12}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="用户编码"
-                        >
-                            {getFieldDecorator('userCode', {
-                                rules: [{required: true, message: '请输入用户编码'}],
-                                initialValue: data.userCode
-                            })(
-                                <Input disabled/>
-                            )}
-                        </FormItem>
-                    </Col>
-                    <Col span={12}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="用户名"
-                        >
-                            {getFieldDecorator('userName', {
-                                rules: [{required: true, message: '请输入用户名'}],
-                                initialValue: data.userName
-                            })(
-                                <Input/>
-                            )}
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={12}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="个人电话"
-                        >
-                            {getFieldDecorator('phone', {
-                                rules: [{required: true, message: '请输入个人电话'}],
-                                initialValue: data.phone
-                            })(
-                                <Input disabled/>
-                            )}
-                        </FormItem>
-                    </Col>
-                    <Col span={12}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="所属区域"
-                        >
-                            {getFieldDecorator('region', {
-                                rules: [{required: true, message: '请输入所属区域'}],
-                                initialValue: data.region
-                            })(
-                                <Input/>
-                            )}
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={12}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="创建时间"
-                        >
-                            {getFieldDecorator('createTime', {
-                                rules: [{required: false}],
-                                initialValue: data.createTime
-                            })(
-                                <Input disabled/>
-                            )}
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row type="flex" justify="center" style={{marginTop: 40}}>
-                    <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                            loading={submitLoading}>保存</Button>
-                </Row>
-            </Form>
-        )
-    }
-}
-
-DetailForm = Form.create({})(DetailForm);
-
-class PasswordForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            submitLoading: false
-        };
-    }
-
-    validatePhone = (rule, value, callback) => {
-        const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
-        if (value && value !== '' && !reg.test(value)) {
-            callback(new Error('手机号格式不正确'));
-        } else {
-            callback();
-        }
-    }
-
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('handleSubmit  param === ', values);
-                const val = {
-                    phone: values.phoneNumber,
-                    password: values.newPassword
-                }
-                this.setState({
-                    submitLoading: true
-                });
-                ajax.postJSON(updatePasswordUrl, JSON.stringify(val), (data) => {
-                    if (data.success) {
-                        Notification.success({
-                            message: '提示',
-                            description: '修改密码成功！'
-                        });
-                    } else {
-                        message.error(data.backMsg);
-                    }
-
-                    this.setState({
-                        submitLoading: false
-                    });
-                });
-            }
-        });
-    }
-
-    render() {
-        const {getFieldDecorator} = this.props.form;
-        const {submitLoading} = this.state;
-        return (
-            <Form onSubmit={this.handleSubmit} autoComplete="off">
-                <Row type="flex" justify="center" style={{marginTop: 40}}>
-                    <Col span={12}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="手机号"
-                        >
-                            {getFieldDecorator('phoneNumber', {
-                                initialValue: '',
-                                rules: [{required: true, message: '请输入个人电话'}, {
-                                    validator: this.validatePhone
-                                }],
-                            })(
-                                <Input autoComplete="off"/>
-                            )}
-                        </FormItem>
-
-                    </Col>
-                    <Col span={12}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="新密码"
-                        >
-                            {getFieldDecorator('newPassword', {
-                                initialValue: '',
-                                rules: [{required: true, message: '请输入新密码'}],
-                            })(
-                                <Input type='password' autoComplete="off"/>
-                            )}
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row type="flex" justify="center" style={{marginTop: 40}}>
-                    <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                            loading={submitLoading}>保存</Button>
-                </Row>
-            </Form>
-        )
-    }
-}
-
-PasswordForm = Form.create({})(PasswordForm);
-
 class Index extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            id: ''
-        };
+    this.state = {
+      userId: sessionStorage.userId,
+      submitLoading: false,
+      childrenDetail: []
+    };
+  }
+
+  componentDidMount = () => {
+    this.queryDetail();
+  }
+
+  queryDetail = () => {
+    const id = sessionStorage.userId;
+    const param = {};
+    param.id = id;
+    this.setState({
+      loading: true
+    });
+    ajax.getJSON(queryDetailUrl, param, data => {
+      if (data.success) {
+        const  childrenDetail = data.backData.childrenDetail;
+        this.setState({
+          childrenDetail: childrenDetail
+        });
+      } else {
+        Message.error('用户资源查询失败');
+      }
+    });
+  }
+
+  validatePhone = (rule, value, callback) => {
+    const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+    if (value && value !== '' && !reg.test(value)) {
+      callback(new Error('手机号格式不正确'));
+    } else {
+      callback();
     }
+  }
 
-    componentDidMount = () => {
+  handleSubmit = (e) => {
+    e.preventDefault();
+    let childrenDetail = this.state.childrenDetail;
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.setState({
+          submitLoading: true
+        });
+        const index = _.findIndex(childrenDetail, {resourceWechatCode: values.resourceWechatCode});
+        console.log('index ===',index)
 
-    }
+        if(index !== -1) {
+          childrenDetail[index] = Object.assign(childrenDetail[index], values)
+        } else {
+          childrenDetail.push(values)
+        }
+        console.log('childrenDetail ===',childrenDetail);
+        ajax.postJSON(resourceSaveUrl, JSON.stringify(childrenDetail), (data) => {
+          if (data.success) {
+            Notification.success({
+              message: '提示',
+              description: '资源信息保存成功！'
+            });
+            this.setState({
+              childrenDetail: data.backData.childrenDetail
+            });
 
-    render() {
-        const id = this.props.params.id;
-        return (
-            <div className="zui-content">
-                <div className='pageHeader'>
-                    <div className="breadcrumb-block">
-                        <Breadcrumb>
-                            <Breadcrumb.Item>个人管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>个人中心</Breadcrumb.Item>
-                        </Breadcrumb>
-                    </div>
-                    <h1 className='title'>个人中心</h1>
-                </div>
-                <div className='pageContent'>
-                    <div className='ibox-content'>
-                        <Tabs defaultActiveKey="1">
-                            <TabPane tab={<span><Icon type="setting"/>个人信息</span>} key="1">
-                                <DetailForm id={id}/>
-                            </TabPane>
-                            <TabPane tab={<span><Icon type="lock"/>修改密码</span>} key="2">
-                                <PasswordForm/>
-                            </TabPane>
-                        </Tabs>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+          } else {
+            Message.error(data.backMsg);
+          }
+
+          this.setState({
+            submitLoading: false
+          });
+        });
+      }
+    });
+  }
+
+
+  render() {
+    const {getFieldDecorator} = this.props.form;
+    const {submitLoading, userId} = this.state;
+    return (
+      <div className="zui-content">
+        <div className='pageHeader'>
+          <div className="breadcrumb-block">
+            <Breadcrumb>
+              <Breadcrumb.Item>个人管理</Breadcrumb.Item>
+              <Breadcrumb.Item>资源中心</Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+          <h1 className='title'>个人中心</h1>
+        </div>
+        <div className='pageContent'>
+          <div className='ibox-content'>
+            <Form onSubmit={this.handleSubmit}>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="用户ID"
+                  >
+                    {getFieldDecorator('userId', {
+                      rules: [{required: true, message: '请输入个人电话'}],
+                      initialValue: userId
+                    })(
+                      <Input disabled/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="用户微信"
+                  >
+                    {getFieldDecorator('resourceWechatCode', {
+                      rules: [{required: true, message: '请输入用户微信'}],
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="用户电话"
+                  >
+                    {getFieldDecorator('resourcePhone', {
+                      rules: [{required: true, message: '请输入用户手机号'}, {
+                        validator: this.validatePhone,
+                      }],
+                      initialValue: '18634348921'
+                    })(
+                      <Input/>
+                    )}
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem
+                    {...formItemLayout}
+                    label="用户粉丝数"
+                  >
+                    {getFieldDecorator('minFans', {
+                      rules: [{required: true, message: '请输入用户粉丝数'}],
+                      initialValue: 0
+                    })(
+                      <InputNumber
+                        min={0}
+                        step={1}
+                        precision={0}/>
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row type="flex" justify="center" style={{marginTop: 40}}>
+                <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
+                        loading={submitLoading}>保存</Button>
+              </Row>
+            </Form>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
+
+const resource = Form.create()(Index);
 
 Index.contextTypes = {
-    router: PropTypes.object
+  router: PropTypes.object
 }
 
-export default Index;
+export default resource;
