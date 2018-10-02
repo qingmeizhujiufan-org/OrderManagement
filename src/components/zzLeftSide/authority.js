@@ -20,7 +20,7 @@ const subAdmin = [{
   children: ['2_1', '2_2']
 }, {
   key: '3',
-  children: ['3_1', '3_2', '3_3']
+  children: ['3_1', '3_3']
 }, {
   key: '4',
   children: ['4_1']

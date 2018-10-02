@@ -252,7 +252,7 @@ class DetailForm extends React.Component {
                                 rules: [{required: true, message: '请输入用户名'}],
                                 initialValue: data.userName
                             })(
-                                <Input/>
+                                <Input disabled/>
                             )}
                         </FormItem>
                     </Col>
@@ -280,7 +280,7 @@ class DetailForm extends React.Component {
                                 rules: [{required: true, message: '请输入所属区域'}],
                                 initialValue: data.region
                             })(
-                                <Input/>
+                              <Input disabled/>
                             )}
                         </FormItem>
                     </Col>
