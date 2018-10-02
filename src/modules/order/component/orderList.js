@@ -48,11 +48,13 @@ class OrderList extends React.Component {
       }, {
         title: '业务员姓名',
         width: 120,
+        align: 'center',
         dataIndex: 'userName',
         key: 'userName'
       }, {
         title: '区域',
         width: 100,
+        align: 'center',
         dataIndex: 'region',
         key: 'region'
       }, {
@@ -60,28 +62,34 @@ class OrderList extends React.Component {
         width: 100,
         align: 'center',
         dataIndex: 'warehouse',
-        key: 'warehouse'
+        key: 'warehouse',
+        render: (text, record, index) => (
+          <div>{text === 0 ? '武汉' : '北京'}</div>
+        )
       }, {
         title: '订单性质',
         width: 100,
+        align: 'center',
         dataIndex: 'orderNature',
         key: 'orderNature'
       }, {
         title: '快递类别',
         width: 100,
         align: 'center',
-        dataIndex: 'expressType',
-        key: 'expressType'
+        dataIndex: 'expressCompany',
+        key: 'expressCompany',
+        render: (text, record, index) => (
+          <div>{text === 0 ? '顺丰' : '邮政'}</div>
+        )
       }, {
         title: '寄件电话',
-        width: 110,
+        width: 120,
         align: 'center',
         dataIndex: 'serderPhone',
         key: 'serderPhone'
       }, {
         title: '寄件地址',
-        width: 150,
-        align: 'center',
+        width: 250,
         dataIndex: 'senderAddr',
         key: 'senderAddr'
       }, {
@@ -110,7 +118,7 @@ class OrderList extends React.Component {
         key: 'receiverName'
       }, {
         title: '收件人电话',
-        width: 110,
+        width: 120,
         align: 'center',
         dataIndex: 'ReceiverPhone',
         key: 'ReceiverPhone'
@@ -152,19 +160,19 @@ class OrderList extends React.Component {
         width: 100,
         align: 'center',
         dataIndex: 'isForeignExpress',
-        key: 'isForeignExpress'
-      }, {
-        title: '订单状态',
-        width: 100,
-        align: 'center',
-        dataIndex: 'orderState',
-        key: 'orderState'
+        key: 'isForeignExpress',
+        render: (text, record, index) => (
+          <div>{text === 0 ? '不是' : '是'}</div>
+        )
       }, {
         title: '是否超过成本',
         width: 140,
         align: 'center',
         dataIndex: 'isOverCost',
-        key: 'isOverCost'
+        key: 'isOverCost',
+        render: (text, record, index) => (
+          <div>{text === 0 ? '不是' : '是'}</div>
+        )
       }, {
         title: '成本',
         width: 100,
@@ -180,12 +188,6 @@ class OrderList extends React.Component {
         align: 'center',
         dataIndex: 'expressCode',
         key: 'expressCode'
-      }, {
-        title: '快递状态',
-        width: 100,
-        align: 'center',
-        dataIndex: 'expressState',
-        key: 'expressState'
       }, {
         title: '广告渠道',
         width: 100,
@@ -203,6 +205,34 @@ class OrderList extends React.Component {
         align: 'center',
         dataIndex: 'remark',
         key: 'remark'
+      }, {
+        title: '订单状态',
+        width: 120,
+        align: 'center',
+        fixed: 'right',
+        dataIndex: 'orderState',
+        key: 'orderState',
+        render: (text, record, index) => {
+          if (text === 0) return <Badge status="default" text="编辑中"/>;
+          else if (text === 1) return <Badge status="warning" text="已锁定"/>;
+          else if (text === 2) return <Badge status="processing" text="已发快递"/>;
+          else if (text === 3) return <Badge status="success" text="成单"/>;
+        }
+      }, {
+        title: '快递状态',
+        width: 120,
+        fixed: 'right',
+        align: 'center',
+        dataIndex: 'expressState',
+        key: 'expressState',
+        render: (text, record, index) => {
+          if (text === 0) return <Badge status="default" text="未发货"/>;
+          else if (text === 1) return <Badge status="processing" text="已发货"/>;
+          else if (text === 2) return <Badge status="warning" text="取消发货"/>;
+          else if (text === 3) return <Badge status="warning" text="未妥投"/>;
+          else if (text === 4) return <Badge status="error" text="退回"/>;
+          else if (text === 5) return <Badge status="success" text="签收"/>;
+        }
       }, {
         title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
         key: 'operation',
@@ -386,7 +416,7 @@ class OrderList extends React.Component {
               dataSource={dataSource}
               pagination={pagination}
               loading={loading}
-              scroll={{x: 3300}}
+              scroll={{x: 3500}}
               handlePageChange={this.handlePageChange.bind(this)}
             />
           </ZZCard>

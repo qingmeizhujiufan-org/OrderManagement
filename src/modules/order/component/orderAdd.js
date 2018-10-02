@@ -547,10 +547,15 @@ class Index extends React.Component {
                   >
                     {getFieldDecorator('deliverDate', {
                       rules: [{required: true, message: '请输入发货日期'}],
-                      initialValue: moment()
+                      // initialValue: moment()
 
                     })(
-                      <DatePicker style={{width: '100%'}}/>
+                      <DatePicker
+                        disabledDate={currentDate => {
+                          return currentDate <= moment() ? true : false
+                        }}
+                        style={{width: '100%'}}
+                      />
                     )}
                   </FormItem>
                 </Col>
@@ -768,12 +773,7 @@ class Index extends React.Component {
                     })(
                       <Select>
                         <Option key='0' value={0}>顺丰</Option>
-                        <Option key='1' value={1}>申通</Option>
-                        <Option key='2' value={2}>中通</Option>
-                        <Option key='3' value={3}>圆通</Option>
-                        <Option key='4' value={4}>韵达</Option>
-                        <Option key='5' value={5}>百世汇通</Option>
-                        <Option key='6' value={6}>其他</Option>
+                        <Option key='1' value={1}>邮政</Option>
                       </Select>
                     )}
                   </FormItem>

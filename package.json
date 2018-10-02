@@ -71,16 +71,16 @@
     "webpack-visualizer-plugin": "^0.1.11"
   },
   "description": "* react15.6.1 react-router3 antd-mobile2 webpack3 superagent",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/qingmeizhujiufan/culture-admin.git"
+  "engines": {
+    "node": ">=8.0.0"
   },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ],
   "keywords": [
     "zz"
   ],
-  "author": "zhongzheng",
-  "bugs": {
-    "url": "https://github.com/qingmeizhujiufan/culture-admin/issues"
-  },
-  "homepage": "https://github.com/qingmeizhujiufan/culture-admin#readme"
+  "author": "zhongzheng"
 }
