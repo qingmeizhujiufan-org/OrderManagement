@@ -17,6 +17,7 @@ import {
 } from 'antd';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import ajax from 'Utils/ajax';
+import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import '../index.less';
 import {message} from "antd/lib/index";
@@ -27,11 +28,6 @@ const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const {TextArea} = Input;
-
-const formItemLayout = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 12},
-};
 
 class Index extends React.Component {
   state = {
@@ -93,7 +89,7 @@ class Index extends React.Component {
           <div className='ibox-content'>
             <Form onSubmit={this.handleSubmit}>
               <Row>
-                <Col span={12}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="所属仓库"
@@ -110,7 +106,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={12}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="产品条码"
@@ -122,9 +118,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-              </Row>
-              <Row>
-                <Col span={12}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="产品名称"
@@ -138,7 +132,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={12}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="产品单位"
@@ -152,9 +146,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-              </Row>
-              <Row>
-                <Col span={12}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="成本价格"
@@ -173,7 +165,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={12}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="备注"
