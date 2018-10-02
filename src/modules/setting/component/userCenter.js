@@ -21,6 +21,7 @@ import '../index.less';
 
 const userSaveUrl = restUrl.BASE_HOST + 'user/save';
 const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
+const delFileUrl = restUrl.BASE_HOST + 'assessory/delete';
 const queryRoleUrl = restUrl.BASE_HOST + 'role/queryList';
 const queryDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
 const updatePasswordUrl = restUrl.BASE_HOST + 'user/updatePassword';
@@ -53,14 +54,34 @@ class DetailForm extends React.Component {
         this.queryRole();
     }
 
-    handleChange = ({fileList}) => this.setState({fileList})
+    handleChange = ({file, fileList}) => {
+        console.log('file === ', file);
+        this.setState({fileList});
+        if(file.status === 'removed'){
+            this.delFile(file.id);
+        }
+    }
 
     normFile = (e) => {
-        console.log('Upload event:', e);
         if (Array.isArray(e)) {
             return e;
         }
         return e && e.fileList;
+    }
+
+    delFile = id => {
+        const param = {};
+        param.id = id;
+        ajax.postJSON(delFileUrl, JSON.stringify(param), data => {
+           if(data.success){
+               Notification.success({
+                   message: '提示',
+                   description: '删除成功！'
+               });
+           } else {
+               Message.error(data.backMsg);
+           }
+        });
     }
 
     queryDetail = () => {
@@ -141,7 +162,6 @@ class DetailForm extends React.Component {
                             message: '提示',
                             description: '用户信息保存成功！'
                         });
-
                     } else {
                         Message.error(data.backMsg);
                     }

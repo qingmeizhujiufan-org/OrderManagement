@@ -28,6 +28,7 @@ import restUrl from 'RestUrl';
 import '../index.less';
 import {message} from "antd/lib/index";
 import _ from "lodash";
+import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 
 const orderAddUrl = restUrl.BASE_HOST + 'order/save';
 const getProuctListUrl = restUrl.BASE_HOST + 'product/queryList';
@@ -37,11 +38,6 @@ const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const Search = Input.Search;
 const chance = new Chance();
-
-const formItemLayout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 12},
-};
 
 class Index extends React.Component {
     constructor(props) {
@@ -64,41 +60,42 @@ class Index extends React.Component {
 
         };
 
-        this.productColumns = [{
-            title: '产品名称',
-            dataIndex: 'name',
-            width: 250,
-            align: 'center',
-            key: 'name'
-        }, {
-            title: '所属仓库',
-            dataIndex: 'wareHouse',
-            width: 250,
-            align: 'center',
-            key: 'wareHouse',
-            render: (text, record, index) => (
-                <span>
-          {record.wareHouse == 1 ? '北京' : '武汉'}
-        </span>)
-        }, {
-            title: '成本价格',
-            dataIndex: 'costPrice',
-            width: 200,
-            align: 'center',
-            key: 'costPrice'
-        }, {
-            title: '单位',
-            dataIndex: 'unit',
-            key: 'unit',
-            align: 'center',
-            width: 100
-        }, {
-            title: '产品条码',
-            dataIndex: 'barCode',
-            align: 'center',
-            width: 250,
-            key: 'barCode'
-        }]
+        this.productColumns = [
+            {
+                title: '产品名称',
+                dataIndex: 'name',
+                width: 250,
+                align: 'center',
+                key: 'name'
+            }, {
+                title: '所属仓库',
+                dataIndex: 'wareHouse',
+                width: 250,
+                align: 'center',
+                key: 'wareHouse',
+                render: (text, record, index) => (
+                    <div>
+                        {record.wareHouse == 1 ? '北京' : '武汉'}
+                    </div>)
+            }, {
+                title: '成本价格',
+                dataIndex: 'costPrice',
+                width: 200,
+                align: 'center',
+                key: 'costPrice'
+            }, {
+                title: '单位',
+                dataIndex: 'unit',
+                key: 'unit',
+                align: 'center',
+                width: 100
+            }, {
+                title: '产品条码',
+                dataIndex: 'barCode',
+                align: 'center',
+                width: 250,
+                key: 'barCode'
+            }]
 
 
         this.orderColumns = [
@@ -370,16 +367,18 @@ class Index extends React.Component {
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
-                        <Divider>关联商品</Divider>
+                        <Divider>关联产品</Divider>
                         <div style={{
                             padding: '30px 0',
-                            textAlign: 'center'}}>
+                            textAlign: 'center'
+                        }}>
                             <Button
                                 type='dashed'
                                 icon='plus'
-                                    onClick={this.showModal}
-                            style={{
-                                padding: '0 100px'}}
+                                onClick={this.showModal}
+                                style={{
+                                    padding: '0 100px'
+                                }}
                             >选择产品</Button>
                         </div>
 
@@ -424,7 +423,7 @@ class Index extends React.Component {
                         <Divider>订单信息</Divider>
                         <Form onSubmit={this.handleSubmit}>
                             <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="所属区域"
@@ -437,7 +436,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         label="所属仓库"
                                         {...formItemLayout}
@@ -453,9 +452,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="业务员id"
@@ -468,7 +465,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="业务员姓名"
@@ -481,9 +478,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="订单编号"
@@ -496,7 +491,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="订单性质"
@@ -509,9 +504,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="寄件电话"
@@ -526,7 +519,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="寄件详细地址"
@@ -539,9 +532,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="成单微信号"
@@ -554,7 +545,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="成单日期"
@@ -568,9 +559,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="发货日期"
@@ -584,7 +573,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="收件人"
@@ -597,9 +586,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="收件人手机号"
@@ -614,7 +601,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="收件人详细地址"
@@ -627,9 +614,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="广告渠道"
@@ -642,7 +627,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="进线时间"
@@ -660,9 +645,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="定金"
@@ -680,7 +663,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="代收金额"
@@ -698,9 +681,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="总金额"
@@ -718,7 +699,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="是否国际件"
@@ -734,9 +715,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="订单状态"
@@ -754,7 +733,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="是否超过成本"
@@ -770,9 +749,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="成本数据"
@@ -790,7 +767,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="成本比例"
@@ -808,9 +785,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="快递单号"
@@ -823,7 +798,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="快递状态"
@@ -843,9 +818,7 @@ class Index extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                            </Row>
-                            <Row>
-                                <Col span={12}>
+                                <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
                                         label="快递公司"

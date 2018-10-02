@@ -24,11 +24,10 @@ class ZZLeftSide extends React.Component {
     }
 
     componentWillMount = () => {
-        this.setAuthMenu();
     }
 
     componentDidMount = () => {
-        this.selectActiveTab();
+        this.setAuthMenu(this.selectActiveTab);
 
         window.addEventListener('hashchange', () => {
             this.selectActiveTab();
@@ -38,7 +37,13 @@ class ZZLeftSide extends React.Component {
     componentWillReceiveProps = nextProps => {
     }
 
-    setAuthMenu = () => {
+    componentWillUnmount = () => {
+        window.removeEventListener('hashchange', () => {
+            this.selectActiveTab();
+        });
+    }
+
+    setAuthMenu = callback => {
         if (sessionStorage.type !== undefined && sessionStorage.type !== null) {
             const type = sessionStorage.type;
             let authority_menu = [];
@@ -67,7 +72,9 @@ class ZZLeftSide extends React.Component {
                 }
             });
             console.log("authMenu ===", _menu);
-            this.setState({authMenu: _menu});
+            this.setState({authMenu: _menu}, () => {
+                if(typeof callback === 'function') callback();
+            });
         }
     }
 
