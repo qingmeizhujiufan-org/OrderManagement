@@ -230,7 +230,7 @@ class Index extends React.Component {
   handleDepositAmoutChange = val => {
     const values = this.props.form.getFieldsValue();
     const {collectionAmout} = values;
-    if(!isNaN(collectionAmout)){
+    if(!isNaN(collectionAmout) && !isNaN(val)){
       values.totalAmount = val + collectionAmout;
       this.props.form.setFieldsValue(values);
     }
@@ -240,7 +240,7 @@ class Index extends React.Component {
   handleCollectionAmoutChange = val => {
     const values = this.props.form.getFieldsValue();
     const {depositAmout} = values;
-    if(!isNaN(depositAmout)){
+    if(!isNaN(depositAmout) && !isNaN(val)){
       values.totalAmount = depositAmout + val;
       this.props.form.setFieldsValue(values);
     }
