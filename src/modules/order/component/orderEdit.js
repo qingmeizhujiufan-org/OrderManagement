@@ -16,6 +16,7 @@ import {
   DatePicker,
   Notification,
   Message,
+  Alert,
   Radio
 } from 'antd';
 import moment from 'moment';
@@ -40,6 +41,8 @@ class Index extends React.Component {
     this.state = {
       data: {},
       proData: [],
+      showTips: false,
+      canEdit: true,
       loading: false,
       region: sessionStorage.region,
       isOperator: false,
@@ -124,11 +127,39 @@ class Index extends React.Component {
           data: backData,
           proData: backData.childrenDetail,
           loading: false
+        }, () => {
+          this.showTips();
         });
       } else {
         Message.error('订单信息查询失败');
       }
     });
+  }
+
+  showTips = () => {
+    const data = this.state.data;
+    const deliverDate = data.deliverDate;
+    const curDate = moment().format("YYYY-MM-DD");
+    console.log("deliverDate ===",deliverDate);
+    console.log("curDate ===",curDate);
+
+    if(deliverDate === curDate) {
+      this.setState({
+        showTips: true
+      });
+    }
+  }
+
+  canEdit = () => {
+    const data = this.state.data;
+    const deliverDate = data.deliverDate;
+    const curDate = moment();
+
+    if(data.orderState !== 0 || (curDate.hour() === 10 && curDate.format('YYYY-MM-DD') === deliverDate)) {
+      this.setState({
+        canEdit: false
+      });
+    }
   }
 
   onDelete = index => {
@@ -216,7 +247,7 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {data, proData, isOperator, loading, submitLoading} = this.state;
+    const {data, proData,canEdit, showTips, isOperator, loading, submitLoading} = this.state;
 
     return (
       <div className="zui-content">
@@ -232,6 +263,7 @@ class Index extends React.Component {
         </div>
         <div className='pageContent'>
           <div className='ibox-content'>
+            <Alert visible={showTips} message="该订单今日发货，上午十点以后不允许修改" type="warning" showIcon />,
             <Spin spinning={loading} size='large'>
               <Divider>产品信息</Divider>
               <div style={{
@@ -674,7 +706,7 @@ class Index extends React.Component {
                 </Row>
                 <Row type="flex" justify="center" style={{marginTop: 40}}>
                   <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                          loading={submitLoading}>提交</Button>
+                          loading={submitLoading} disabled={canEdit}>提交</Button>
                 </Row>
               </Form>
             </Spin>
