@@ -1,5 +1,5 @@
-const path = require('path')
-const webpack = require('webpack')
+const path = require('path');
+const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');//html模板
@@ -12,8 +12,13 @@ const postcssOpts = {
     autoprefixer({
       browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
     }),
-    // pxtorem({ rootValue: 100, propWhiteList: [] })
   ],
+  modifyVars: {
+    '@primary-color': '#fc5a59',
+    '@link-color': '#1DA57A',
+    '@border-radius-base': '2px',
+  },
+  javascriptEnabled: true,
 };
 
 module.exports = {
@@ -32,7 +37,6 @@ module.exports = {
     filename: '[name].[chunkhash:5].js',
     chunkFilename: '[id].chunk.js',
     path: path.join(__dirname, '/build'),
-    // publicPath: '/build/'
   },
 
   resolve: {
@@ -50,32 +54,59 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader',
-        options: {
-          plugins: [
-            'external-helpers', // why not work?
-            'transform-decorators-legacy',
-            ["transform-runtime", {polyfill: false}],
-            ["import", [{"style": "css", "libraryName": "antd"}]]
-          ],
-          presets: ['es2015', 'stage-0', 'react']
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            plugins: [
+              'external-helpers', // why not work?
+              'transform-decorators-legacy',
+              ["transform-runtime", {polyfill: false}],
+              ["import", [{"style": true, "libraryName": "antd"}]]
+            ],
+            presets: ['es2015', 'stage-0', 'react']
+          }
         }
-      },
-      {test: /\.(jpg|png|gif)$/, loader: "url-loader?limit=8192&name=img/[name]_[hash:5].[ext]"},
-      {test: /\.(woff|svg|eot|ttf)\??.*$/, loader: "url-loader?name=fonts/[name].[md5:hash:hex:7].[ext]"},
-      // 注意：如下不使用 ExtractTextPlugin 的写法，不能单独 build 出 css 文件
-      // { test: /\.less$/i, loaders: ['style-loader', 'css-loader', 'less-loader'] },
-      // { test: /\.css$/i, loaders: ['style-loader', 'css-loader'] },
-      {
-        test: /\.less$/i, use: ExtractTextPlugin.extract({
+      }, {
+        test: /\.(jpg|png|gif)$/,
+        loader: "url-loader?limit=8192&name=img/[name]_[hash:5].[ext]"
+      }, {
+        test: /\.(woff|svg|eot|ttf)\??.*$/,
+        loader: "url-loader?name=fonts/[name].[md5:hash:hex:7].[ext]"
+      }, {
+        test: /\.less$/i,
+        use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            'css-loader', {loader: 'postcss-loader', options: postcssOpts}, 'less-loader'
+            'css-loader',
+            {loader: 'postcss-loader', options: postcssOpts},
+            {
+              loader: 'less-loader',
+              options: {
+                modifyVars: {
+                  '@primary-color': '#5578DC',
+                  '@link-color': '#5578DC',
+                  '@border-radius-base': '2px',
+                },
+                javascriptEnabled: true,
+              }
+            },
           ]
         })
-      },
-      {
-        test: /\.css$/i, use: ExtractTextPlugin.extract({
+      }, {
+        test: /\.scss$/i,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            'css-loader',
+            {loader: 'postcss-loader', options: postcssOpts},
+            'sass-loader'
+          ]
+        })
+      }, {
+        test: /\.css$/i,
+        use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
             'css-loader', {loader: 'postcss-loader', options: postcssOpts}
@@ -98,10 +129,10 @@ module.exports = {
       filename: 'shared.[chunkhash:5].js'
     }),
     new ExtractTextPlugin({filename: '[name].[contenthash:5].css', allChunks: true}),
-      new HtmlWebpackPlugin({
-          template: './index.html',
-          favicon: './public/favicon.ico', // 添加小图标
-      }),
+    new HtmlWebpackPlugin({
+      template: './index.html',
+      favicon: './public/favicon.ico', // 添加小图标
+    }),
     new CleanWebpackPlugin(
       ['build/*'],　 //匹配删除的文件
       {

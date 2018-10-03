@@ -4,7 +4,7 @@
         margin: 0;
         padding: 0;
         line-height: 64px;
-        background: #fc5a59;
+        background: #5578DC;
         text-align: center;
         color: #fff;
         overflow: hidden;
@@ -25,13 +25,18 @@
         }
     }
 
+    .zui-menu {
+        height: calc(~'100vh - 64px') !important;
+        background: #303A5E;
+    }
+
     .ant-menu-dark, .ant-menu-dark .ant-menu-sub {
-        background: #373d47 !important;
+        background: #303A5E !important;
         box-shadow: none !important;
     }
 
     .ant-menu.ant-menu-dark .ant-menu-item-selected, .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
-        background-color: #24272d;
+        background-color: #5578DC;
 
         &:after {
         	position: absolute;
@@ -39,7 +44,7 @@
         	top: 0;
         	width:3px;
         	height: 100%;
-        	background-color: #fc5a59;
+        	//background-color: #fc5a59;
         }
     }
 

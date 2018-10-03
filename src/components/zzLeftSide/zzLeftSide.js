@@ -167,7 +167,7 @@ class ZZLeftSide extends React.Component {
                         <h1>ADMIN</h1>
                     </Link>
                 </div>
-                <Scrollbars style={{height: 'calc(100vh - 64px)'}}>
+                <Scrollbars className='zui-menu'>
                     {this.setMenuChildren()}
                 </Scrollbars>
             </Sider>
