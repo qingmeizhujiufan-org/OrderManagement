@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');//html模板
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const autoprefixer = require('autoprefixer');
 const pxtorem = require('postcss-pxtorem');
 
@@ -60,10 +61,12 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             plugins: [
-              'external-helpers', // why not work?
-              'transform-decorators-legacy',
-              ["transform-runtime", {polyfill: false}],
-              ["import", [{"style": true, "libraryName": "antd"}]]
+              ["import", [{"style": true, "libraryName": "antd"}]],
+              ["import", {
+                "libraryName": "lodash",
+                "libraryDirectory": "",
+                "camel2DashComponentName": false
+              }]
             ],
             presets: ['es2015', 'stage-0', 'react']
           }
@@ -142,5 +145,7 @@ module.exports = {
       favicon: './public/favicon.ico', // 添加小图标
     }),
     new webpack.NamedModulesPlugin(), // 打印日志信息时 webpack 默认使用模块的数字 ID 指代模块，不便于 debug，这个插件可以将其替换为模块的真实路径
+    /* 分析包的大小分布 */
+    new BundleAnalyzerPlugin(),
   ]
 }

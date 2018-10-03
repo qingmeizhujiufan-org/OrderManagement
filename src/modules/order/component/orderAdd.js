@@ -19,7 +19,6 @@ import {
   Radio
 } from 'antd';
 import moment from 'moment';
-import Chance from 'chance';
 import {ZZTable} from 'Comps/zz-antD';
 
 import ajax from 'Utils/ajax';
@@ -36,7 +35,6 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const Search = Input.Search;
-const chance = new Chance();
 
 class Index extends React.Component {
   constructor(props) {

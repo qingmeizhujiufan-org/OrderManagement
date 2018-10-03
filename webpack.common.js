@@ -60,10 +60,12 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             plugins: [
-              'external-helpers', // why not work?
-              'transform-decorators-legacy',
-              ["transform-runtime", {polyfill: false}],
-              ["import", [{"style": true, "libraryName": "antd"}]]
+              ["import", [{"style": true, "libraryName": "antd"}]],
+              ["import", {
+                "libraryName": "lodash",
+                "libraryDirectory": "",
+                "camel2DashComponentName": false
+              }]
             ],
             presets: ['es2015', 'stage-0', 'react']
           }
