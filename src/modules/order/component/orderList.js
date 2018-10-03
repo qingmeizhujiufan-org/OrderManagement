@@ -631,7 +631,7 @@ class OrderList extends React.Component {
         <div className='pageContent'>
           <ZZCard>
             <Button
-              icon='arrow-down'
+              icon='download'
               onClick={this.outOrderList}
               style={{marginBottom: 15}}
             >导出订单</Button>

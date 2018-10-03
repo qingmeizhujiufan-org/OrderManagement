@@ -4,12 +4,10 @@ import PropTypes from 'prop-types';
 import {
   Row,
   Col,
+  Tabs,
   Input,
   Icon,
-  Badge,
   Menu,
-  Form,
-  DatePicker,
   Breadcrumb,
   Dropdown,
   Notification,
@@ -26,12 +24,8 @@ import ajax from 'Utils/ajax';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from "Utils/util";
-import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 
-const Search = Input.Search;
-const FormItem = Form.Item;
-const Option = Select.Option;
-const Panel = Collapse.Panel;
+const TabPane = Tabs.TabPane;
 
 const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
 const delUrl = restUrl.BASE_HOST + 'order/delete';
@@ -41,203 +35,148 @@ class OrderList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.columns = [
-     {
-        title: '区域',
-        width: 100,
-        align: 'center',
-        dataIndex: 'region',
-        key: 'region'
-      }, {
-        title: '订单性质',
-        width: 100,
-        align: 'center',
-        dataIndex: 'orderNature',
-        key: 'orderNature'
-      }, {
-        title: '快递类别',
-        width: 100,
-        align: 'center',
-        dataIndex: 'expressCompany',
-        key: 'expressCompany',
-        render: (text, record, index) => (
-          <div>{text === 0 ? '顺丰' : '邮政'}</div>
-        )
-      }, {
-        title: '寄件电话',
-        width: 120,
-        align: 'center',
-        dataIndex: 'serderPhone',
-        key: 'serderPhone'
-      }, {
-        title: '寄件地址',
-        width: 250,
-        dataIndex: 'senderAddr',
-        key: 'senderAddr'
-      }, {
-        title: '成单微信号',
-        width: 120,
-        align: 'center',
-        dataIndex: 'orderWechatCode',
-        key: 'orderWechatCode'
-      }, {
-        title: '成单日期',
-        width: 120,
-        align: 'center',
-        dataIndex: 'orderDate',
-        key: 'orderDate'
-      }, {
-        title: '发货日期',
-        width: 120,
-        align: 'center',
-        dataIndex: 'deliverDate',
-        key: 'deliverDate'
-      }, {
-        title: '收件人',
-        width: 100,
-        align: 'center',
-        dataIndex: 'receiverName',
-        key: 'receiverName'
-      }, {
-        title: '收件人电话',
-        width: 120,
-        align: 'center',
-        dataIndex: 'ReceiverPhone',
-        key: 'ReceiverPhone'
-      }, {
-        title: '收件人地址',
-        width: 150,
-        align: 'center',
-        dataIndex: 'receiverAddr',
-        key: 'receiverAddr'
-      }, {
-        title: '定金',
-        width: 100,
-        align: 'right',
-        dataIndex: 'depositAmout',
-        key: 'depositAmout',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )
-      }, {
-        title: '代收金额',
-        width: 100,
-        align: 'right',
-        dataIndex: 'collectionAmout',
-        key: 'collectionAmout',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )
-      }, {
-        title: '总金额',
-        width: 100,
-        align: 'right',
-        dataIndex: 'totalAmount',
-        key: 'totalAmount',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )
-      }, {
-        title: '国际件',
-        width: 100,
-        align: 'center',
-        dataIndex: 'isForeignExpress',
-        key: 'isForeignExpress',
-        render: (text, record, index) => (
-          <div>{text === 0 ? '不是' : '是'}</div>
-        )
-      }, {
-        title: '是否超过成本',
-        width: 140,
-        align: 'center',
-        dataIndex: 'isOverCost',
-        key: 'isOverCost',
-        render: (text, record, index) => (
-          <div>{text === 0 ? '不是' : '是'}</div>
-        )
-      }, {
-        title: '成本',
-        width: 100,
-        align: 'right',
-        dataIndex: 'costAmount',
-        key: 'costAmount',
-        render: (text, record, index) => (
-          <span>{Util.shiftThousands(text)}</span>
-        )
-      }, {
-        title: '快递单号',
-        width: 150,
-        align: 'center',
-        dataIndex: 'expressCode',
-        key: 'expressCode'
-      }, {
-        title: '广告渠道',
-        width: 100,
-        align: 'center',
-        dataIndex: 'advertChannel',
-        key: 'advertChannel channel'
-      }, {
-        title: '进线时间',
-        width: 180,
-        align: 'center',
-        dataIndex: 'incomlineTime',
-        key: 'incomlineTime'
-      }, {
-        title: '备注',
-        align: 'center',
-        dataIndex: 'remark',
-        key: 'remark'
-      }, {
-        title: '订单状态',
-        width: 120,
-        align: 'center',
-        fixed: 'right',
-        dataIndex: 'orderState',
-        key: 'orderState',
-        render: (text, record, index) => {
-          if (text === 0) return <Badge status="default" text="编辑中"/>;
-          else if (text === 1) return <Badge status="warning" text="已锁定"/>;
-          else if (text === 2) return <Badge status="processing" text="已发快递"/>;
-          else if (text === 3) return <Badge status="success" text="成单"/>;
-        }
-      }, {
-        title: '快递状态',
-        width: 120,
-        fixed: 'right',
-        align: 'center',
-        dataIndex: 'expressState',
-        key: 'expressState',
-        render: (text, record, index) => {
-          if (text === 0) return <Badge status="default" text="未发货"/>;
-          else if (text === 1) return <Badge status="processing" text="已发货"/>;
-          else if (text === 2) return <Badge status="warning" text="取消发货"/>;
-          else if (text === 3) return <Badge status="warning" text="未妥投"/>;
-          else if (text === 4) return <Badge status="error" text="退回"/>;
-          else if (text === 5) return <Badge status="success" text="签收"/>;
-        }
-      }, {
-        title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
-        key: 'operation',
-        fixed: 'right',
-        width: 120,
-        align: 'center',
-        render: (text, record, index) => (
-          <Dropdown
-            placement="bottomCenter"
-            overlay={
-              <Menu>
-                {/*<Menu.Item>*/}
-                  {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
-                {/*</Menu.Item>*/}
-                {/*<Menu.Item>*/}
-                  {/*<a onClick={() => this.onDelete(record)}>删除</a>*/}
-                {/*</Menu.Item>*/}
-              </Menu>
+    this.dateColumns = [
+      {
+        title: '时间段: 9.1-9.10',
+        align: 'left',
+        children: [{
+          title: '区域',
+          width: 100,
+          align: 'center',
+          dataIndex: 'region',
+          key: 'region',
+          render: (value, row, index) => {
+            const obj = {
+              children: value,
+              props: {},
+            };
+            console.log('index ===', index)
+            if (index % 3 === 0) {
+              obj.props.rowSpan = 3;
+            } else {
+              obj.props.rowSpan = 0;
             }
-          >
-            <a className="ant-dropdown-link">操作</a>
-          </Dropdown>
-        )
+            return obj;
+          }
+        }, {
+          title: '订单性质',
+          width: 100,
+          align: 'center',
+          dataIndex: 'orderNature',
+          key: 'orderNature'
+        }, {
+          title: '单数',
+          width: 100,
+          align: 'center',
+          dataIndex: 'count',
+          key: 'count',
+        }, {
+          title: '定金',
+          width: 100,
+          align: 'center',
+          dataIndex: 'depositAmout',
+          key: 'depositAmout',
+          render: (text, record, index) => (
+            <span>{Util.shiftThousands(text)}</span>
+          )
+        }, {
+          title: '代收金额',
+          width: 100,
+          align: 'center',
+          dataIndex: 'collectionAmout',
+          key: 'collectionAmout',
+          render: (text, record, index) => (
+            <span>{Util.shiftThousands(text)}</span>
+          )
+        }, {
+          title: '总金额',
+          width: 100,
+          align: 'center',
+          dataIndex: 'totalAmount',
+          key: 'totalAmount',
+          render: (text, record, index) => (
+            <span>{Util.shiftThousands(text)}</span>
+          )
+        }, {
+          title: '货物成本',
+          width: 100,
+          align: 'center',
+          dataIndex: 'costAmount',
+          key: 'costAmount',
+          render: (text, record, index) => (
+            <span>{Util.shiftThousands(text)}</span>
+          )
+        }]
+      }
+    ];
+
+    this.twoTimesColumns = [
+      {
+        title: '一个月内两次购买客户档案',
+        align: 'left',
+        children: [{
+          title: '区域',
+          width: 100,
+          align: 'center',
+          dataIndex: 'region',
+          key: 'region'
+        }, {
+          title: '业务员',
+          width: 100,
+          align: 'center',
+          dataIndex: 'orderNature',
+          key: 'orderNature'
+        }, {
+          title: '客户',
+          width: 100,
+          align: 'center',
+          dataIndex: 'count',
+          key: 'count',
+        }, {
+          title: '两次总金额',
+          width: 100,
+          align: 'center',
+          dataIndex: 'depositAmout',
+          key: 'depositAmout',
+          render: (text, record, index) => (
+            <span>{Util.shiftThousands(text)}</span>
+          )
+        }]
+      }
+    ];
+
+    this.threeTimesColumns = [
+      {
+        title: '一个月内三次购买客户档案',
+        align: 'left',
+        children: [{
+          title: '区域',
+          width: 100,
+          align: 'center',
+          dataIndex: 'region',
+          key: 'region'
+        }, {
+          title: '业务员',
+          width: 100,
+          align: 'center',
+          dataIndex: 'userName',
+          key: 'userName'
+        }, {
+          title: '客户',
+          width: 100,
+          align: 'center',
+          dataIndex: 'receiverName',
+          key: 'receiverName',
+        }, {
+          title: '三次总金额',
+          width: 100,
+          align: 'center',
+          dataIndex: 'depositAmout',
+          key: 'depositAmout',
+          render: (text, record, index) => (
+            <span>{Util.shiftThousands(text)}</span>
+          )
+        }]
       }
     ];
 
@@ -292,60 +231,8 @@ class OrderList extends React.Component {
     });
   }
 
-  // 处理分页变化
-  handlePageChange = param => {
-    const params = _.assign({}, this.state.params, param);
-    this.setState({params}, () => {
-      this.queryList();
-    });
-  }
-
-  onDelete = (record) => {
-    if (record.orderState === 0)
-      Message.warning('当前订单无法删除');
-    else {
-      Modal.confirm({
-        title: '提示',
-        content: '确认要删除吗？',
-        okText: '确认',
-        cancelText: '取消',
-        onOk: () => {
-          let param = {};
-          param.id = record.id;
-          ajax.postJSON(delUrl, JSON.stringify(param), data => {
-            if (data.success) {
-              Notification.success({
-                message: '提示',
-                description: '删除成功！'
-              });
-
-              this.setState({
-                params: {
-                  pageNumber: 1
-                },
-              }, () => {
-                this.queryList();
-              });
-            } else {
-              Message.error(data.backMsg);
-            }
-          });
-        }
-      });
-    }
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('values ===', values)
-      }
-    })
-  };
-
   render() {
-    const {getFieldDecorator} = this.props.form;
+
     const {dataSource, pagination, loading, keyWords} = this.state;
 
     return (
@@ -360,31 +247,102 @@ class OrderList extends React.Component {
           <h1 className='title'>报表</h1>
         </div>
         <div className='pageContent'>
-          <ZZCard>
-            <Button
-              icon='arrow-down'
-              onClick={this.outOrderList}
-              style={{marginBottom: 15}}
-            >导出订单</Button>
-            <ZZTable
-              columns={this.columns}
-              dataSource={dataSource}
-              pagination={pagination}
-              loading={loading}
-              scroll={{x: 3500}}
-              handlePageChange={this.handlePageChange.bind(this)}
-            />
-          </ZZCard>
+          <div className='ibox-content'>
+            <Tabs defaultActiveKey="1">
+              <TabPane tab={<span><Icon type="clock-circle"/>时间段</span>} key="1">
+                <Row>
+                  <Col span={14}>
+                    <ZZCard>
+                      <Button
+                        icon='download'
+                        onClick={this.outOrderList}
+                        style={{marginBottom: 15}}
+                      >导出表格</Button>
+                      <ZZTable
+                        columns={this.dateColumns}
+                        dataSource={dataSource}
+                        loading={loading}
+                      />
+                    </ZZCard>
+                  </Col>
+                  <Col span={8}>
+                    <ZZCard>
+                      <Button
+                        icon='download'
+                        onClick={this.outOrderList}
+                        style={{marginBottom: 15}}
+                      >导出图表</Button>
+                      <div>是是是</div>
+                    </ZZCard>
+                  </Col>
+                </Row>
+              </TabPane>
+              <TabPane tab={<span><Icon type="dollar"/>购买两次</span>} key="2">
+                <Row>
+                  <Col span={14}>
+                    <ZZCard>
+                      <Button
+                        icon='download'
+                        onClick={this.outOrderList}
+                        style={{marginBottom: 15}}
+                      >导出表格</Button>
+                      <ZZTable
+                        columns={this.twoTimesColumns}
+                        dataSource={dataSource}
+                        loading={loading}
+                      />
+                    </ZZCard>
+                  </Col>
+                  <Col span={8}>
+                    <ZZCard>
+                      <Button
+                        icon='download'
+                        onClick={this.outOrderList}
+                        style={{marginBottom: 15}}
+                      >导出图表</Button>
+                      <div>是是是</div>
+                    </ZZCard>
+                  </Col>
+                </Row>
+              </TabPane>
+              <TabPane tab={<span><Icon type="pound"/>购买三次</span>} key="3">
+                <Row>
+                  <Col span={14}>
+                    <ZZCard>
+                      <Button
+                        icon='download'
+                        onClick={this.outOrderList}
+                        style={{marginBottom: 15}}
+                      >导出表格</Button>
+                      <ZZTable
+                        columns={this.threeTimesColumns}
+                        dataSource={dataSource}
+                        loading={loading}
+                      />
+                    </ZZCard>
+                  </Col>
+                  <Col span={8}>
+                    <ZZCard>
+                      <Button
+                        icon='download'
+                        onClick={this.outOrderList}
+                        style={{marginBottom: 15}}
+                      >导出图表</Button>
+                      <div>是是是</div>
+                    </ZZCard>
+                  </Col>
+                </Row>
+              </TabPane>
+            </Tabs>
+          </div>
         </div>
       </div>
     );
   }
 }
 
-const orderList = Form.create()(OrderList);
-
 OrderList.contextTypes = {
   router: PropTypes.object
 }
 
-export default orderList;
+export default OrderList;
