@@ -446,13 +446,13 @@ class OrderList extends React.Component {
             <Collapse bordered={false} defaultActiveKey={['1']} style={{marginTop: 20}}>
               <Panel header="查询条件" key="1" style={customPanelStyle}>
                 <Form onSubmit={this.handleSubmit}>
-                  <Row type='flex' justify="center" align="middle" >
+                  <Row type='flex' justify="center" align="middle">
                     <Col {...itemGrid}>
                       <FormItem
                         {...formItemLayout}
                         label="订单性质"
                       >
-                        {getFieldDecorator('orderNature ', {
+                        {getFieldDecorator('orderNature', {
                           rules: [{required: false}],
                           initialValue: ''
                         })(
@@ -515,7 +515,7 @@ class OrderList extends React.Component {
                         {...formItemLayout}
                         label="仓库"
                       >
-                        {getFieldDecorator('warehouse ', {
+                        {getFieldDecorator('warehouse', {
                           rules: [{required: false}],
                           initialValue: ''
                         })(
@@ -531,7 +531,7 @@ class OrderList extends React.Component {
                         {...formItemLayout}
                         label="快递状态"
                       >
-                        {getFieldDecorator('expressState ', {
+                        {getFieldDecorator('expressState', {
                           rules: [{required: false}],
                           initialValue: ''
                         })(
@@ -550,7 +550,7 @@ class OrderList extends React.Component {
                       {...formItemLayout}
                       label="是否超过成本"
                     >
-                      {getFieldDecorator('isOverCost ', {
+                      {getFieldDecorator('isOverCost', {
                         rules: [{required: false}],
                         initialValue: ''
                       })(
@@ -566,7 +566,7 @@ class OrderList extends React.Component {
                         {...formItemLayout}
                         label="订单状态"
                       >
-                        {getFieldDecorator('orderState ', {
+                        {getFieldDecorator('orderState', {
                           rules: [{required: false}],
                           initialValue: ''
                         })(
