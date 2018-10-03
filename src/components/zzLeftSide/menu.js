@@ -55,7 +55,7 @@ const Menu = [
         children: [
             {
                 key: '4_1',
-                link: '/frame/order/list',
+                link: '/frame/report/list',
                 label: '报表'
             }
         ]

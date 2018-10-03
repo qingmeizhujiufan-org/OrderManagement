@@ -35,6 +35,7 @@ const Panel = Collapse.Panel;
 
 const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
 const delUrl = restUrl.BASE_HOST + 'order/delete';
+const exportOrderUrl = restUrl.BASE_HOST + 'order/exportOrder';
 
 class OrderList extends React.Component {
   constructor(props) {
@@ -273,6 +274,7 @@ class OrderList extends React.Component {
         pageNumber: 1,
         pageSize: 10,
       },
+      keyWords: '',
       searchKey: {}
     };
   }
@@ -323,11 +325,52 @@ class OrderList extends React.Component {
     });
   }
 
+  exportOrderList = () => {
+    const {searchKey} = this.state;
+    console.log("searchKey2 ===",searchKey)
+    ajax.postJSON(exportOrderUrl, JSON.stringify(searchKey), data => {
+      console.log("data ===",data)
+      // if (data.success) {
+      //   if (data.backData) {
+      //     const backData = data.backData;
+      //     const dataSource = backData.content;
+      //     const total = backData.totalElements;
+      //     dataSource.map(item => {
+      //       item.key = item.id;
+      //     });
+      //
+      //     this.setState({
+      //       dataSource,
+      //       pagination: {total}
+      //     });
+      //   } else {
+      //     this.setState({
+      //       dataSource: [],
+      //       pagination: {total: 0}
+      //     });
+      //   }
+      // } else {
+      //   Message.error('查询列表失败');
+      // }
+    });
+  }
+
   // 搜索
   onSearch = (val, event) => {
+    this.getSearchKey(val, this.queryList)
+  }
+
+  //导出订单列表
+  outOrderList = () => {
+    let keyWords = this.state.keyWords;
+    this.getSearchKey(keyWords, this.exportOrderList)
+  }
+
+  //获取查询参数
+  getSearchKey = (val, callback) => {
+    console.log('val == ', val);
     const values = this.props.form.getFieldsValue();
     const searchKey = {}
-
     values.keyWords = val;
     values.orderDate = values.orderDate ? values.orderDate.format("YYYY-MM-DD") : '';
     values.deliverBeginDate = values.deliverBeginDate ? values.deliverBeginDate.format("YYYY-MM-DD") : '';
@@ -340,16 +383,12 @@ class OrderList extends React.Component {
         searchKey[key] = values[key]
       }
     }
-    console.log('searchKey ===', searchKey)
+    console.log('searchKey1 == ', searchKey);
 
     this.setState({
-      params: {
-        pageNumber: 1,
-        pageSize: 10,
-      },
       searchKey: searchKey
     }, () => {
-      this.queryList();
+      if(typeof callback === 'function') callback();
     });
   }
 
@@ -408,7 +447,7 @@ class OrderList extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {dataSource, pagination, loading} = this.state;
+    const {dataSource, pagination, loading, keyWords} = this.state;
     const customPanelStyle = {
       borderRadius: 4,
       border: 0,
@@ -428,9 +467,13 @@ class OrderList extends React.Component {
             <Row type='flex' justify="center" align="middle">
               <Col span={8}>
                 <Search
+                  id="keyWords"
                   placeholder="搜索订单名称关键字"
                   enterButton='搜索'
                   size="large"
+                  value={keyWords}
+                  onChange={e => this.setState({keyWords: e.target.value})}
+                  ref={ val => this.keyWords = val}
                   onSearch={this.onSearch}
                 />
               </Col>
@@ -583,11 +626,15 @@ class OrderList extends React.Component {
                 </Form>
               </Panel>
             </Collapse>
-
           </div>
         </div>
         <div className='pageContent'>
           <ZZCard>
+            <Button
+              icon='arrow-down'
+              onClick={this.outOrderList}
+              style={{marginBottom: 15}}
+            >导出订单</Button>
             <ZZTable
               columns={this.columns}
               dataSource={dataSource}

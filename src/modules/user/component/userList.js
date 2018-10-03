@@ -153,7 +153,7 @@ class Index extends React.Component {
     }
 
     componentDidMount = () => {
-        this.queryRole(this.queryList());
+        this.queryRole(this.queryList);
     }
 
     queryList = () => {

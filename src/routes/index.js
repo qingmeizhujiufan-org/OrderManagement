@@ -21,6 +21,9 @@ import OrderList from "../modules/order/component/orderList";
 import OrderAdd from "../modules/order/component/orderAdd";
 import OrderEdit from "../modules/order/component/orderEdit";
 import SenderList from "../modules/order/component/sender";
+/* 报表管理 */
+import ReportList from "../modules/report/component/reportList";
+
 /* 个人设置 */
 import SettingList from "../modules/setting/component/userCenter";
 import MessageList from "../modules/setting/component/messageList";
@@ -78,6 +81,10 @@ class PageRouter extends React.Component {
                             <Route path="list/edit/:id" component={OrderEdit}/>
                             <Route path="sender" component={SenderList}/>
                         </Route>
+                          <Route path="report" component={App}>
+                            <IndexRoute component={ReportList}/>
+                            <Route path="list" component={ReportList}/>
+                          </Route>
                         {/* 个人设置 */}
                         <Route path="setting" component={App}>
                             <IndexRoute component={SettingList}/>
