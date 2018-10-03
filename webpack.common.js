@@ -123,12 +123,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'shared',
-      filename: 'shared.[chunkhash:5].js'
-    }),
-    new ExtractTextPlugin({filename: '[name].[contenthash:5].css', allChunks: true}),
     new CleanWebpackPlugin(
       ['build/*'],　                    //匹配删除的文件
       {
@@ -141,6 +135,5 @@ module.exports = {
       template: './index.html',
       favicon: './public/favicon.ico', // 添加小图标
     }),
-    new webpack.NamedModulesPlugin(), // 打印日志信息时 webpack 默认使用模块的数字 ID 指代模块，不便于 debug，这个插件可以将其替换为模块的真实路径
   ]
 }

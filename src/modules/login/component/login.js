@@ -91,7 +91,7 @@ class Login extends React.Component {
         <div className="backup"></div>
         <div className="login-box">
           <Row>
-            <Col span={13} style={{height: '400px', backgroundColor: 'rgba(101, 116, 154, .65)'}}>
+            <Col span={13} style={{height: '400px', backgroundColor: 'rgba(85, 120, 220, .65)'}}>
               <div style={{margin: '85px 0 40px', textAlign: 'center'}}>
                 <Icon type="windows" theme='filled' style={{fontSize: 90, color: '#fff'}}/>
               </div>
@@ -122,10 +122,13 @@ class Login extends React.Component {
                   )}
                 </FormItem>
                 <FormItem>
-                  <Button type="primary" htmlType="submit" className="login-form-button"
-                          loading={this.state.loading}>
-                    登录
-                  </Button>
+                  <Button
+                    type="primary"
+                    size='large'
+                    htmlType="submit"
+                    className="login-form-button"
+                    loading={this.state.loading}
+                  >登录</Button>
                 </FormItem>
               </Form>
             </Col>

@@ -4,8 +4,9 @@
   "main": "lib/index",
   "scripts": {
     "start": "webpack-dev-server --host 0.0.0.0 --port 8888",
-    "buildwithstats": "webpack -p --display-optimization-bailout --progress --colors",
-    "build": "webpack -p --progress --colors"
+    "build": "cross-env NODE_ENV=production webpack -p",
+    "build:dev": "webpack-dev-server --open --config webpack.dev.js",
+    "build:prod": "webpack --progress --colors --config webpack.prod.js"
   },
   "license": "MIT",
   "dependencies": {
@@ -46,6 +47,7 @@
     "bundle-loader": "^0.5.6",
     "chance": "^1.0.16",
     "clean-webpack-plugin": "^0.1.19",
+    "cross-env": "^5.2.0",
     "css-loader": "^0.19.0",
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
@@ -70,9 +72,10 @@
     "webpack": "^3.12.0",
     "webpack-bundle-analyzer": "^2.12.0",
     "webpack-dev-server": "^2.11.2",
+    "webpack-merge": "^4.1.4",
     "webpack-visualizer-plugin": "^0.1.11"
   },
-  "description": "* react15.6.1 react-router3 antd-mobile2 webpack3 superagent",
+  "description": "* react16.0.0 react-router3 antd webpack3 superagent",
   "engines": {
     "node": ">=8.0.0"
   },
