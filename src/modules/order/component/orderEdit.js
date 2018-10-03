@@ -9,7 +9,6 @@ import {
   Select,
   Breadcrumb,
   Button,
-  Table,
   Modal,
   Divider,
   Spin,
@@ -23,6 +22,7 @@ import moment from 'moment';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
+import {ZZTable} from 'Comps/zz-antD';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 
 const orderSaveUrl = restUrl.BASE_HOST + 'order/save';
@@ -116,6 +116,9 @@ class Index extends React.Component {
     ajax.getJSON(queryDetailUrl, param, data => {
       if (data.success) {
         let backData = data.backData;
+        backData.childrenDetail.map(item => {
+          item.key = item.id;
+        });
 
         this.setState({
           data: backData,
@@ -235,11 +238,9 @@ class Index extends React.Component {
                 paddingBottom: 30,
                 textAlign: 'center'
               }}>
-                <Table
-                  bordered
+                <ZZTable
                   dataSource={proData}
                   columns={this.orderColumns}
-                  pagination={false}
                 />
               </div>
               <Divider>订单信息</Divider>
@@ -598,7 +599,7 @@ class Index extends React.Component {
                     >
                       {getFieldDecorator('costRatio', {
                         rules: [{required: true, message: '请输入成本比例'}],
-                        initialValue: data.costRatio > 1? '超过' : '不超过'
+                        initialValue: data.costRatio > 1 ? '超过' : '不超过'
                       })(
                         <Input disabled={isOperator}/>
                       )}
@@ -644,7 +645,7 @@ class Index extends React.Component {
                       label="快递状态"
                     >
                       {getFieldDecorator('expressState', {
-                        rules: [{required: !isOperator , message: '请选择快递状态'}],
+                        rules: [{required: !isOperator, message: '请选择快递状态'}],
                         initialValue: data.expressState
                       })(
                         <Select disabled={isOperator}>
@@ -666,7 +667,7 @@ class Index extends React.Component {
                       {getFieldDecorator('memo', {
                         rules: [{required: false}],
                       })(
-                        <Input />
+                        <Input/>
                       )}
                     </FormItem>
                   </Col>

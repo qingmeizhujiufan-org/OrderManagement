@@ -17,7 +17,7 @@ const postcssOpts = {
 };
 
 module.exports = {
-  devtool: 'source-map', // or 'inline-source-map'
+  devtool: 'inline-source-map',
   devServer: {
     disableHostCheck: true
   },

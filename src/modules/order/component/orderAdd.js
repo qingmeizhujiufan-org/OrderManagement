@@ -11,7 +11,6 @@ import {
   Button,
   Modal,
   Divider,
-  Table,
   Spin,
   Icon,
   DatePicker,
@@ -21,7 +20,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 import Chance from 'chance';
-import {ZZCard, ZZTable} from 'Comps/zz-antD';
+import {ZZTable} from 'Comps/zz-antD';
 
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
@@ -230,7 +229,7 @@ class Index extends React.Component {
   handleDepositAmoutChange = val => {
     const values = this.props.form.getFieldsValue();
     const {collectionAmout} = values;
-    if(!isNaN(collectionAmout) && !isNaN(val)){
+    if (!isNaN(collectionAmout) && !isNaN(val)) {
       values.totalAmount = val + collectionAmout;
       this.props.form.setFieldsValue(values);
     }
@@ -240,7 +239,7 @@ class Index extends React.Component {
   handleCollectionAmoutChange = val => {
     const values = this.props.form.getFieldsValue();
     const {depositAmout} = values;
-    if(!isNaN(depositAmout) && !isNaN(val)){
+    if (!isNaN(depositAmout) && !isNaN(val)) {
       values.totalAmount = depositAmout + val;
       this.props.form.setFieldsValue(values);
     }
@@ -355,22 +354,20 @@ class Index extends React.Component {
               paddingBottom: 30,
               textAlign: 'center'
             }}>
-            <div style={{marginBottom: 15}}>
-              <Button
-                type='dashed'
-                icon='plus'
-                onClick={this.showModal}
-                style={{
-                  padding: '0 150px'
-                }}
-              >选择产品</Button>
-            </div>
-            <Table
-              bordered
-              dataSource={submitProduct}
-              columns={this.orderColumns}
-              pagination={false}
-            />
+              <div style={{marginBottom: 15}}>
+                <Button
+                  type='dashed'
+                  icon='plus'
+                  onClick={this.showModal}
+                  style={{
+                    padding: '0 150px'
+                  }}
+                >选择产品</Button>
+              </div>
+              <ZZTable
+                dataSource={submitProduct}
+                columns={this.orderColumns}
+              />
             </div>
             <Modal
               title="添加产品"

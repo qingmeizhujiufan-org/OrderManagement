@@ -20,7 +20,6 @@ import {
   Collapse,
   Button
 } from 'antd';
-import moment from 'moment';
 import _ from 'lodash';
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
