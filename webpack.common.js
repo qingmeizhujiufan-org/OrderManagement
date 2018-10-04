@@ -29,8 +29,8 @@ module.exports = {
 
   entry: {
     "index": path.resolve(__dirname, 'src/index'),
-    //添加要打包在vendors.js里面的库
-    vendor: ['react', 'react-dom']
+    //添加要打包在vendor.js里面的库
+    vendor: ['react', 'react-dom', 'react-router']
   },
 
   output: {

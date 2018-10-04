@@ -8,8 +8,8 @@ module.exports = Merge(CommonConfig, {
   plugins: [
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'shared',
-      filename: 'shared.[chunkhash:5].js'
+      name: 'common',
+      filename: 'common.[chunkhash:5].js'
     }),
     new ExtractTextPlugin({
       filename: '[name].[contenthash:5].css',
