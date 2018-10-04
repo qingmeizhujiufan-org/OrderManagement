@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');//html模板
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const pxtorem = require('postcss-pxtorem');
 
@@ -31,7 +30,7 @@ module.exports = {
   entry: {
     "index": path.resolve(__dirname, 'src/index'),
     //添加要打包在vendors.js里面的库
-    vendors: ['react', 'react-dom']
+    vendor: ['react', 'react-dom']
   },
 
   output: {
@@ -116,7 +115,6 @@ module.exports = {
   },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new LodashModuleReplacementPlugin,
     new CleanWebpackPlugin(
       ['build/*'],　                    //匹配删除的文件
       {
