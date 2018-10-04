@@ -18,6 +18,7 @@ class ZZLeftSide extends React.Component {
     this.state = {
       defaultSelectedKeys: '',
       authMenu: [],
+      collapsed: this.props.collapsed,
       subMenuList: null
     };
   }
@@ -34,6 +35,7 @@ class ZZLeftSide extends React.Component {
   }
 
   componentWillReceiveProps = nextProps => {
+    console.log('nextProps ===',nextProps)
   }
 
   componentWillUnmount = () => {
@@ -148,6 +150,11 @@ class ZZLeftSide extends React.Component {
     });
   }
 
+  onBreakpoint = broken => {
+    console.log('broken ===',broken)
+
+  }
+
   render() {
     const {selectedKeys, subMenuList} = this.state;
     const {collapsed} = this.props;
@@ -155,8 +162,10 @@ class ZZLeftSide extends React.Component {
     return (
       <Sider
         breakpoint="lg"
+        onBreakpoint={this.onBreakpoint}
         trigger={null}
         collapsible
+        collapsed={collapsed}
         width={256}
         className="left-side"
       >
