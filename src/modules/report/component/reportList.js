@@ -50,7 +50,6 @@ class OrderList extends React.Component {
               children: value,
               props: {},
             };
-            console.log('index ===', index)
             if (index % 3 === 0) {
               obj.props.rowSpan = 3;
             } else {

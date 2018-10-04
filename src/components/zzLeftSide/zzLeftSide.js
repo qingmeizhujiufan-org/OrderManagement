@@ -154,18 +154,9 @@ class ZZLeftSide extends React.Component {
 
     return (
       <Sider
-        breakpoint={{
-          xs: '480px',
-          sm: '576px',
-          md: '768px',
-          lg: '992px',
-          xl: '1200px',
-          xxl: '1600px',
-        }}
-        onBreakpoint={broken => console.log('broken == ', broken)}
+        breakpoint="lg"
         trigger={null}
         collapsible
-        collapsed={collapsed}
         width={256}
         className="left-side"
       >

@@ -15,16 +15,12 @@ import {
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
-
-const resourceSaveUrl = restUrl.BASE_HOST + 'user/saveUserOwnResources';
-const queryDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
+import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 
 const FormItem = Form.Item;
 
-const formItemLayout = {
-  labelCol: {span: 6},
-  wrapperCol: {span: 12},
-};
+const resourceSaveUrl = restUrl.BASE_HOST + 'user/saveUserOwnResources';
+const queryDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
 
 class Index extends React.Component {
   constructor(props) {
@@ -127,7 +123,7 @@ class Index extends React.Component {
           <div className='ibox-content'>
             <Form onSubmit={this.handleSubmit}>
               <Row>
-                <Col span={12}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="用户ID"
@@ -140,7 +136,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={12}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="用户微信"
@@ -152,9 +148,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-              </Row>
-              <Row>
-                <Col span={12}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="用户电话"
@@ -169,7 +163,7 @@ class Index extends React.Component {
                     )}
                   </FormItem>
                 </Col>
-                <Col span={12}>
+                <Col {...itemGrid}>
                   <FormItem
                     {...formItemLayout}
                     label="用户粉丝数"

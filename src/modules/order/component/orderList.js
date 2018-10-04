@@ -473,7 +473,6 @@ class OrderList extends React.Component {
                   size="large"
                   value={keyWords}
                   onChange={e => this.setState({keyWords: e.target.value})}
-                  ref={ val => this.keyWords = val}
                   onSearch={this.onSearch}
                 />
               </Col>

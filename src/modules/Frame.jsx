@@ -16,7 +16,19 @@ export default class App extends React.Component {
         };
     }
 
+    collapse = (broken) => {
+        console.log("broken ===",broken)
+    }
+
     render() {
+        const breakpoint  ={
+          xs: '480px',
+          sm: '576px',
+          md: '768px',
+          lg: '992px',
+          xl: '1200px',
+          xxl: '1600px',
+        }
         return (
             <LocaleProvider locale={zh_CN}>
                 <Layout>
