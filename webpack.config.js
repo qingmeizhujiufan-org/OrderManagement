@@ -117,8 +117,9 @@ module.exports = {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'shared',
-      filename: 'shared.[chunkhash:5].js'
+      name: 'vendor',
+      filename: 'vendor.[chunkhash:5].js',
+      minChunks: Infinity
     }),
     new ExtractTextPlugin({filename: '[name].[contenthash:5].css', allChunks: true}),
     new CleanWebpackPlugin(
