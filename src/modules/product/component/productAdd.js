@@ -8,22 +8,16 @@ import {
   Select,
   Breadcrumb,
   Button,
-  Upload,
-  Icon,
-  Spin,
   Notification,
   Message,
   InputNumber
 } from 'antd';
-import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import ajax from 'Utils/ajax';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import '../index.less';
-import {message} from "antd/lib/index";
 
 const productAddUrl = restUrl.BASE_HOST + 'product/save';
-const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -58,7 +52,7 @@ class Index extends React.Component {
 
             return this.context.router.push('/frame/product/list');
           } else {
-            message.error(data.backMsg);
+            Message.error(data.backMsg);
           }
           this.setState({
             submitLoading: false

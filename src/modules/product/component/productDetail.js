@@ -13,7 +13,6 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const AutoCompleteOption = AutoComplete.Option;
 
-
 class Index extends React.Component {
 
     constructor(props) {

@@ -4,11 +4,11 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');//html模板
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const autoprefixer = require('autoprefixer');
-const pxtorem = require('postcss-pxtorem');
 
 const postcssOpts = {
-  ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
+  ident: 'postcss',
   plugins: () => [
     autoprefixer({
       browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
@@ -30,8 +30,8 @@ module.exports = {
 
   entry: {
     "index": path.resolve(__dirname, 'src/index'),
-    //添加要打包在vendors.js里面的库
-    vendors: ['react', 'react-dom']
+    //添加要打包在vendor.js里面的库
+    vendor: ['react', 'react-dom', 'react-router']
   },
 
   output: {
@@ -59,17 +59,6 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: {
-            plugins: [
-              ["import", [{"style": true, "libraryName": "antd"}]],
-              ["import", {
-                "libraryName": "lodash",
-                "libraryDirectory": "",
-                "camel2DashComponentName": false
-              }]
-            ],
-            presets: ['es2015', 'stage-0', 'react']
-          }
         }
       }, {
         test: /\.(jpg|png|gif)$/,
@@ -119,13 +108,15 @@ module.exports = {
         test: /\.svg$/i,
         use: 'svg-sprite-loader',
         include: [
-          require.resolve('antd').replace(/warn\.js$/, ''),  // antd-mobile使用的svg目录
-          path.resolve(__dirname, './src/'),  // 个人的svg文件目录，如果自己有svg需要在这里配置
+          require.resolve('antd').replace(/warn\.js$/, ''),
+          path.resolve(__dirname, './src/'),
         ]
       }
     ]
   },
   plugins: [
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new LodashModuleReplacementPlugin,
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'shared',

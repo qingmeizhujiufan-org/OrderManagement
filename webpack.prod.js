@@ -11,10 +11,21 @@ module.exports = Merge(CommonConfig, {
       name: 'shared',
       filename: 'shared.[chunkhash:5].js'
     }),
-    new ExtractTextPlugin({filename: '[name].[contenthash:5].css', allChunks: true}),
+    new ExtractTextPlugin({
+      filename: '[name].[contenthash:5].css',
+      allChunks: true
+    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
-    new webpack.optimize.UglifyJsPlugin()
+    new webpack.optimize.UglifyJsPlugin({
+      output: {
+        comments: false,  // remove all comments
+      },
+      compress: {
+        warnings: false
+      }
+    }),//最小化一切
+    new webpack.optimize.AggressiveMergingPlugin(),//合并块
   ]
 });

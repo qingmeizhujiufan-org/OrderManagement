@@ -1,6 +1,6 @@
 import React from 'react';
 import {Table} from 'antd';
-import _ from 'lodash';
+import assign from "lodash.assign";
 import './index.less';
 
 class ZZTable extends React.Component {
@@ -35,7 +35,7 @@ class ZZTable extends React.Component {
   setData = () => {
     const {dataSource, pagination} = this.props;
     const total = (pagination ? pagination.total : null) || 0;
-    const _pagination = _.assign({}, this.state._pagination, {
+    const _pagination = assign({}, this.state._pagination, {
       total,
       showTotal: total => `共 ${total} 条`
     });

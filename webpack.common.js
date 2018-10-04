@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');//html模板
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const pxtorem = require('postcss-pxtorem');
 
@@ -58,17 +59,6 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: {
-            plugins: [
-              ["import", [{"style": true, "libraryName": "antd"}]],
-              ["import", {
-                "libraryName": "lodash",
-                "libraryDirectory": "",
-                "camel2DashComponentName": false
-              }]
-            ],
-            presets: ['es2015', 'stage-0', 'react']
-          }
         }
       }, {
         test: /\.(jpg|png|gif)$/,
@@ -125,6 +115,8 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new LodashModuleReplacementPlugin,
     new CleanWebpackPlugin(
       ['build/*'],　                    //匹配删除的文件
       {
