@@ -11,8 +11,6 @@ const mapStateToProps = (state) => {
 
 //将动作写入属性
 const mapDispatchToProps = (dispatch) => {
-    // return bindActionCreators(actions, dispatch)
-    // console.log('mapDispatchToProps  actions ==== ', actions.toggle());
     return {
         onToggleClick: () => dispatch(actions.toggle())
     }

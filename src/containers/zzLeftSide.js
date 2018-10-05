@@ -4,9 +4,16 @@ import ZZLeftSide from '../components/zzLeftSide/zzLeftSide';
 
 //将状态写入属性
 const mapStateToProps = (state) => {
-    return {
-        collapsed: state.toggleMenuReducer.collapsed
-    }
+  return {
+    collapsed: state.toggleMenuReducer.collapsed
+  }
 }
 
-export default connect(mapStateToProps)(ZZLeftSide)
+//将动作写入属性
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onToggleClick: () => dispatch(actions.toggle())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ZZLeftSide)
