@@ -14,7 +14,7 @@ var ajax = {
      * @param cookies 请求是否携带cookies
      */
     getJSON: function getJSON(url, data, success, error, complete, cookies) {
-        if (_.isFunction(data)) {
+        if (isFunction(data)) {
             //此时的data实际是success函数
             this.request({
                 url: url,
@@ -30,7 +30,7 @@ var ajax = {
     //通过post方法请求json数据
     ,
     postJSON: function postJSON(url, data, success, error, complete, cookies) {
-        if (_.isFunction(data)) {
+        if (isFunction(data)) {
             this.request({
                 url: url,
                 success: arguments[1],
@@ -53,7 +53,7 @@ var ajax = {
     }
     ,
     getText: function getText(url, data, success, error, complete, cookies) {
-        if (_.isFunction(data)) {
+        if (isFunction(data)) {
             this.request({
                 url: url,
                 success: arguments[1],
@@ -77,7 +77,7 @@ var ajax = {
     //通过post方法请求text数据
     ,
     postText: function postText(url, data, success, error, complete, cookies) {
-        if (_.isFunction(data)) {
+        if (isFunction(data)) {
             this.request({
                 url: url,
                 success: arguments[1],
@@ -135,7 +135,7 @@ var ajax = {
             error: null, // 请求失败的回调函数，包括http客户端错误、服务端错误、以及接口调用成功但存在业务错误
             complete: null // 请求完成的回调函数(不管成功还是失败)
         };
-        _.assign(_defaults, options);
+        assign(_defaults, options);
         // 禁用token
         if (options.query && options.query.noToken !== undefined) {
             _defaults.noToken = options.query.noToken;

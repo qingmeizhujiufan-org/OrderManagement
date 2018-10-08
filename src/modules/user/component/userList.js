@@ -18,7 +18,8 @@ import {
 } from 'antd';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
-import _ from 'lodash';
+import assign from 'lodash/assign';
+import find from 'lodash/find';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
@@ -68,7 +69,7 @@ class Index extends React.Component {
                 dataIndex: 'roleId',
                 key: 'roleId',
                 render: (text, record, index) => {
-                    let role = _.find(this.state.roleList, {id: text});
+                    let role = find(this.state.roleList, {id: text});
                     return (<span>{role ? role.name : null}</span>)
                 }
             }, {
@@ -156,7 +157,7 @@ class Index extends React.Component {
 
     queryList = () => {
         const {params, keyWords} = this.state;
-        const param = _.assign({}, params, {keyWords});
+        const param = assign({}, params, {keyWords});
         this.setState({loading: true});
         ajax.getJSON(queryListUrl, param, data => {
             if (data.success) {
@@ -213,7 +214,7 @@ class Index extends React.Component {
 
     // 处理分页变化
     handlePageChange = param => {
-        const params = _.assign({}, this.state.params, param);
+        const params = assign({}, this.state.params, param);
         this.setState({params}, () => {
             this.queryList();
         });

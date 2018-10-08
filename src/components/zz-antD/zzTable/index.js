@@ -1,81 +1,82 @@
 import React from 'react';
 import {Table} from 'antd';
-import assign from "lodash.assign";
+import assign from "lodash/assign";
+import isEqual from 'lodash/isEqual';
 import './index.less';
 
 class ZZTable extends React.Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      _dataSource: [],
-      _pagination: {
-        showSizeChanger: true,
-        showQuickJumper: true,
-        onChange: this.onChange,
-        onShowSizeChange: this.onShowSizeChange
-      }
-    };
-  }
-
-  componentDidMount = () => {
-    this.setData();
-  }
-
-  componentWillReceiveProps = nextProps => {
-    if (('dataSource' in nextProps && nextProps.dataSource.length !== this.props.dataSource.length)
-      || ('pagination' in nextProps && _.isEqual(nextProps.pagination, this.props.pagination) !== true)) {
-      this.setState({
-        _dataSource: nextProps.dataSource,
-        _pagination: nextProps.pagination
-      });
+        this.state = {
+            _dataSource: [],
+            _pagination: {
+                showSizeChanger: true,
+                showQuickJumper: true,
+                onChange: this.onChange,
+                onShowSizeChange: this.onShowSizeChange
+            }
+        };
     }
-  }
 
-  setData = () => {
-    const {dataSource, pagination} = this.props;
-    const total = (pagination ? pagination.total : null) || 0;
-    const _pagination = assign({}, this.state._pagination, {
-      total,
-      showTotal: total => `共 ${total} 条`
-    });
+    componentDidMount = () => {
+        this.setData();
+    }
 
-    this.setState({
-      _dataSource: dataSource,
-      _pagination
-    });
-  }
+    componentWillReceiveProps = nextProps => {
+        if (('dataSource' in nextProps && nextProps.dataSource.length !== this.props.dataSource.length)
+            || ('pagination' in nextProps && isEqual(nextProps.pagination, this.props.pagination) !== true)) {
+            this.setState({
+                _dataSource: nextProps.dataSource,
+                _pagination: nextProps.pagination
+            });
+        }
+    }
 
-  onChange = (page, pageSize) => {
-    this.props.handlePageChange({
-      pageNumber: page,
-      pageSize: pageSize
-    });
-  }
+    setData = () => {
+        const {dataSource, pagination} = this.props;
+        const total = (pagination ? pagination.total : null) || 0;
+        const _pagination = assign({}, this.state._pagination, {
+            total,
+            showTotal: total => `共 ${total} 条`
+        });
 
-  onShowSizeChange = (current, size) => {
-    this.props.handlePageChange({
-      pageNumber: 1,
-      pageSize: size
-    });
-  }
+        this.setState({
+            _dataSource: dataSource,
+            _pagination
+        });
+    }
 
-  render() {
-    const {_dataSource, _pagination} = this.state;
-    const {className, dataSource, pagination, handlePageChange, ...restProps} = this.props;
-    return (
-      <Table
-        className={`zzTable ${className}`}
-        dataSource={_dataSource}
-        pagination={pagination ? _pagination : false}
-        {...restProps}
-      />
-    );
-  }
+    onChange = (page, pageSize) => {
+        this.props.handlePageChange({
+            pageNumber: page,
+            pageSize: pageSize
+        });
+    }
+
+    onShowSizeChange = (current, size) => {
+        this.props.handlePageChange({
+            pageNumber: 1,
+            pageSize: size
+        });
+    }
+
+    render() {
+        const {_dataSource, _pagination} = this.state;
+        const {className, dataSource, pagination, handlePageChange, ...restProps} = this.props;
+        return (
+            <Table
+                className={`zzTable ${className}`}
+                dataSource={_dataSource}
+                pagination={pagination ? _pagination : false}
+                {...restProps}
+            />
+        );
+    }
 }
 
 ZZTable.defaultProps = {
-  bordered: true,
+    bordered: true,
 };
 
 export default ZZTable;
