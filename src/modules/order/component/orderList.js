@@ -19,7 +19,7 @@ import {
     Collapse,
     Button
 } from 'antd';
-import _ from 'lodash';
+import assign from 'lodash/assign';
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
 import '../index.less';
@@ -287,7 +287,7 @@ class OrderList extends React.Component {
 
     queryList = () => {
         const {params, searchKey} = this.state;
-        const param = _.assign({}, params, searchKey);
+        const param = assign({}, params, searchKey);
         this.setState({loading: true});
         ajax.getJSON(queryListUrl, param, data => {
             if (data.success) {
@@ -318,7 +318,7 @@ class OrderList extends React.Component {
 
     // 处理分页变化
     handlePageChange = param => {
-        const params = _.assign({}, this.state.params, param);
+        const params = assign({}, this.state.params, param);
         this.setState({params}, () => {
             this.queryList();
         });
