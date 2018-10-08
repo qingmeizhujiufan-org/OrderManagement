@@ -1,9 +1,7 @@
 import React from 'react';
-import {Link} from 'react-router';
 import PropTypes from 'prop-types';
-import {Layout, Row, Col, Affix, Icon, Badge, Dropdown, Menu, Avatar, Tooltip, Notification, Divider} from 'antd';
+import {Layout, Row, Col, Icon, Badge, Dropdown, Menu, Avatar, Notification, Divider} from 'antd';
 import restUrl from 'RestUrl';
-import ajax from 'Utils/ajax';
 import './zzHeader.less';
 
 const {Header} = Layout;

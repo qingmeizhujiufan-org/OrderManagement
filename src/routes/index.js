@@ -1,33 +1,91 @@
 import React from 'react';
 import {Route, IndexRoute, hashHistory, Router} from 'react-router';
+import Loadable from 'react-loadable';
 
-import App from '../modules/App';
-import Frame from '../modules/Frame';
+const App = Loadable({
+    loader: () => import('../modules/App'),
+    loading: () => null
+});
+const Frame = Loadable({
+    loader: () => import('../modules/Frame'),
+    loading: () => null
+});
 
 /* 登录 */
-import Login from '../modules/login/component/login';
+const Login = Loadable({
+    loader: () => import('../modules/login/component/login'),
+    loading: () => null
+});
 /* 用户管理 */
-import UserList from "../modules/user/component/userList";
-import UserDetail from "../modules/user/component/userDetail";
-import UserEdit from "../modules/user/component/userEdit";
-import UserAdd from "../modules/user/component/userAdd";
+const UserList = Loadable({
+    loader: () => import("../modules/user/component/userList"),
+    loading: () => null
+});
+const UserDetail = Loadable({
+    loader: () => import("../modules/user/component/userDetail"),
+    loading: () => null
+});
+const UserEdit = Loadable({
+    loader: () => import("../modules/user/component/userEdit"),
+    loading: () => null
+});
+const UserAdd = Loadable({
+    loader: () => import("../modules/user/component/userAdd"),
+    loading: () => null
+});
 /* 商品管理 */
-import ProductList from "../modules/product/component/productList";
-import ProductDetail from "../modules/product/component/productDetail";
-import ProductEdit from "../modules/product/component/productEdit";
-import ProductAdd from "../modules/product/component/productAdd";
+const ProductList = Loadable({
+    loader: () => import("../modules/product/component/productList"),
+    loading: () => null
+});
+const ProductDetail = Loadable({
+    loader: () => import("../modules/product/component/productDetail"),
+    loading: () => null
+});
+const ProductEdit = Loadable({
+    loader: () => import("../modules/product/component/productEdit"),
+    loading: () => null
+});
+const ProductAdd = Loadable({
+    loader: () => import("../modules/product/component/productAdd"),
+    loading: () => null
+});
 /* 订单管理 */
-import OrderList from "../modules/order/component/orderList";
-import OrderAdd from "../modules/order/component/orderAdd";
-import OrderEdit from "../modules/order/component/orderEdit";
-import SenderList from "../modules/order/component/sender";
+const OrderList = Loadable({
+    loader: () => import("../modules/order/component/orderList"),
+    loading: () => null
+});
+const OrderAdd = Loadable({
+    loader: () => import("../modules/order/component/orderAdd"),
+    loading: () => null
+});
+const OrderEdit = Loadable({
+    loader: () => import("../modules/order/component/orderEdit"),
+    loading: () => null
+});
+const SenderList = Loadable({
+    loader: () => import("../modules/order/component/sender"),
+    loading: () => null
+});
 /* 报表管理 */
-import ReportList from "../modules/report/component/reportList";
+const ReportList = Loadable({
+    loader: () => import("../modules/report/component/reportList"),
+    loading: () => null
+});
 
 /* 个人设置 */
-import SettingList from "../modules/setting/component/userCenter";
-import MessageList from "../modules/setting/component/messageList";
-import ResourceList from "../modules/setting/component/resourceInfo";
+const SettingList = Loadable({
+    loader: () => import("../modules/setting/component/userCenter"),
+    loading: () => null
+});
+const MessageList = Loadable({
+    loader: () => import("../modules/setting/component/messageList"),
+    loading: () => null
+});
+const ResourceList = Loadable({
+    loader: () => import("../modules/setting/component/resourceInfo"),
+    loading: () => null
+});
 
 const requireAuth = (nextState, replace) => {
     if (!sessionStorage.expireDate || new Date(sessionStorage.expireDate).getTime() <= new Date().getTime()) {
@@ -81,10 +139,10 @@ class PageRouter extends React.Component {
                             <Route path="list/edit/:id" component={OrderEdit}/>
                             <Route path="sender" component={SenderList}/>
                         </Route>
-                          <Route path="report" component={App}>
+                        <Route path="report" component={App}>
                             <IndexRoute component={ReportList}/>
                             <Route path="list" component={ReportList}/>
-                          </Route>
+                        </Route>
                         {/* 个人设置 */}
                         <Route path="setting" component={App}>
                             <IndexRoute component={SettingList}/>

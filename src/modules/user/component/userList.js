@@ -5,9 +5,7 @@ import {
     Notification,
     Icon,
     Divider,
-    Pagination,
     Breadcrumb,
-    Spin,
     Button,
     Message,
     Dropdown,
@@ -16,7 +14,7 @@ import {
     Row,
     Col,
     Input,
-    Modal, Table
+    Modal
 } from 'antd';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 
@@ -162,7 +160,7 @@ class Index extends React.Component {
         this.setState({loading: true});
         ajax.getJSON(queryListUrl, param, data => {
             if (data.success) {
-                if(data.backData){
+                if (data.backData) {
                     const backData = data.backData;
                     const dataSource = backData.content;
                     const total = backData.totalElements;
@@ -174,7 +172,7 @@ class Index extends React.Component {
                         dataSource,
                         pagination: {total}
                     });
-                }else {
+                } else {
                     this.setState({
                         dataSource: [],
                         pagination: {total: 0}
@@ -205,7 +203,7 @@ class Index extends React.Component {
                     roleList,
                     roleLoading: false
                 }, () => {
-                    if(typeof callback === 'function') callback();
+                    if (typeof callback === 'function') callback();
                 });
             } else {
                 Message.error(data.backMsg);

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Icon, Divider, Breadcrumb, Spin, Radio} from 'antd';
-import {ZZCard, ZZTable} from 'Comps/zz-antD';
+import {Breadcrumb, Spin, Radio} from 'antd';
+import {ZZCard} from 'Comps/zz-antD';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import {
@@ -34,7 +34,7 @@ class Index extends React.Component {
         param.type = this.state.type;
         this.setState({loading: true});
         ajax.getJSON(getNewlyUrl, param, data => {
-            if(data.success){
+            if (data.success) {
                 data = data.backData;
                 const chartData = [];
                 data.map(item => {
@@ -46,7 +46,7 @@ class Index extends React.Component {
                 this.setState({
                     data: chartData
                 });
-            }else {
+            } else {
                 message.error(data.backMsg);
             }
             this.setState({loading: false});
@@ -55,7 +55,7 @@ class Index extends React.Component {
 
     changeType = e => {
         console.log('e === ', e.target);
-        if(this.state.type === e.target.value) return;
+        if (this.state.type === e.target.value) return;
         this.setState({type: e.target.value}, () => {
             this.getNewlyData();
         });
@@ -87,7 +87,7 @@ class Index extends React.Component {
                         )}
                     >
                         <Spin spinning={loading} size='large'>
-                            <Bar height={400} title="最近一周注册用户统计" data={data} />
+                            <Bar height={400} title="最近一周注册用户统计" data={data}/>
                         </Spin>
                     </ZZCard>
                 </div>

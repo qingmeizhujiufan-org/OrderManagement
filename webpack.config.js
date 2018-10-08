@@ -30,12 +30,12 @@ module.exports = {
     entry: {
         "index": path.resolve(__dirname, 'src/index'),
         //添加要打包在vendor.js里面的库
-        vendor: ['react', 'react-dom', 'react-router']
+        vendor: ['react', 'react-dom', 'react-router', 'react-router-redux', 'react-redux', 'redux']
     },
 
     output: {
         filename: '[name].[chunkhash:5].js',
-        chunkFilename: '[id].chunk.js',
+        chunkFilename: 'chunk.[chunkhash:5].js',
         path: path.join(__dirname, '/build'),
     },
 
@@ -117,8 +117,9 @@ module.exports = {
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
         new webpack.optimize.ModuleConcatenationPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
-            name: 'common',
-            filename: 'common.[chunkhash:5].js'
+            name: 'vendor',
+            filename: 'vendor.[chunkhash:5].js',
+            minChunks: Infinity,
         }),
         new ExtractTextPlugin({filename: '[name].[contenthash:5].css', allChunks: true}),
         new CleanWebpackPlugin(

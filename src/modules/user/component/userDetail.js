@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Form, Input, Select, Breadcrumb, Icon, Button, AutoComplete, Modal} from 'antd';
-import {ZZCard, ZZTable} from 'Comps/zz-antD';
+import {ZZCard} from 'Comps/zz-antD';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';

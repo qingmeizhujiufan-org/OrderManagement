@@ -6,17 +6,12 @@ import {
     Col,
     Input,
     Icon,
-    Badge,
     Menu,
     Breadcrumb,
     Dropdown,
-    Divider,
     Notification,
-    Spin,
-    Tabs,
     Message,
     Modal,
-    Radio,
     Button
 } from 'antd';
 import _ from 'lodash';
@@ -25,7 +20,6 @@ import ajax from 'Utils/ajax';
 import Util from 'Utils/util';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
-
 
 const Search = Input.Search;
 
@@ -142,7 +136,7 @@ class ProductList extends React.Component {
         this.setState({loading: true});
         ajax.getJSON(queryListUrl, param, data => {
             if (data.success) {
-                if(data.backData){
+                if (data.backData) {
                     const backData = data.backData;
                     const dataSource = backData.content;
                     const total = backData.totalElements;
@@ -154,7 +148,7 @@ class ProductList extends React.Component {
                         dataSource,
                         pagination: {total}
                     });
-                }else {
+                } else {
                     this.setState({
                         dataSource: [],
                         pagination: {total: 0}
