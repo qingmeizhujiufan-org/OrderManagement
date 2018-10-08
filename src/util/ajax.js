@@ -1,5 +1,6 @@
 // 'use strict';
-import _ from 'lodash';
+import assign from 'lodash/assign';
+import isFunction from 'lodash/isFunction';
 import sa from 'superagent';
 //封装ajax的相关方法
 var ajax = {
@@ -161,9 +162,9 @@ var ajax = {
         }
         //存在token则携带全局token到header里面
         var token = sessionStorage.token;
-        if(token){
+        if (token) {
             req.set('X-Auth-Token', token);
-        }else {
+        } else {
             window.location.hash = '/login';
         }
         req.query(_defaults.query).send(_defaults.send).end(function (err, res) {

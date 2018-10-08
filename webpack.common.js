@@ -22,11 +22,6 @@ const postcssOpts = {
 };
 
 module.exports = {
-    devtool: 'inline-source-map',
-    devServer: {
-        disableHostCheck: true
-    },
-
     entry: {
         "index": path.resolve(__dirname, 'src/index'),
         //添加要打包在vendor.js里面的库
@@ -58,6 +53,25 @@ module.exports = {
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            "es2015",
+                            "stage-0",
+                            "react"
+                        ],
+                        plugins: [
+                            "transform-runtime",
+                            "transform-decorators-legacy",
+                            [
+                                "import",
+                                {
+                                    "libraryName": "antd",
+                                    "style": true
+                                }
+                            ],
+                            "lodash"
+                        ]
+                    }
                 }
             }, {
                 test: /\.(jpg|png|gif)$/,

@@ -58,6 +58,25 @@ module.exports = {
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            "env",
+                            "stage-0",
+                            "react"
+                        ],
+                        plugins: [
+                            "transform-runtime",
+                            "transform-decorators-legacy",
+                            [
+                                "import",
+                                {
+                                    "libraryName": "antd",
+                                    "style": true
+                                }
+                            ],
+                            "lodash"
+                        ]
+                    }
                 }
             }, {
                 test: /\.(jpg|png|gif)$/,

@@ -6,7 +6,11 @@ const CommonConfig = require('./webpack.common.js');
 
 module.exports = Merge(CommonConfig, {
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('production')
+        }),
         new webpack.optimize.ModuleConcatenationPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             filename: 'vendor.[chunkhash:5].js',
@@ -16,15 +20,16 @@ module.exports = Merge(CommonConfig, {
             filename: '[name].[contenthash:5].css',
             allChunks: true
         }),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production')
-        }),
         new webpack.optimize.UglifyJsPlugin({
-            output: {
-                comments: false,  // remove all comments
-            },
-            compress: {
-                warnings: false
+            uglifyOptions: {
+                ecma: 8,
+                compress: {
+                    comparisons: false
+                },
+                output: {
+                    ascii_only: true
+                },
+                warnings: true
             }
         }),//最小化一切
         new webpack.optimize.AggressiveMergingPlugin(),//合并块
