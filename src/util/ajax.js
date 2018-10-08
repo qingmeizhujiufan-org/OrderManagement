@@ -51,6 +51,31 @@ var ajax = {
             });
         }
     }
+    //通过post方法请求FormData数据
+    ,
+    postForm: function postForm(url, data, success, error, complete, cookies) {
+      if (isFunction(data)) {
+        this.request({
+          url: url,
+          type: 'multipart/form-data',
+          success: arguments[1],
+          error: arguments[2],
+          complete: arguments[3],
+          cookies: arguments[4],
+          method: 'POST'
+        });
+      } else {
+        this.request({
+          url: url,
+          send: data,
+          success: success,
+          error: error,
+          complete: complete,
+          cookies: cookies,
+          method: 'POST'
+        });
+      }
+    }
     ,
     getText: function getText(url, data, success, error, complete, cookies) {
         if (isFunction(data)) {
