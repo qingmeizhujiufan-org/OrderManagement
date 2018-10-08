@@ -15,6 +15,8 @@ import {
     Message,
     Notification
 } from 'antd';
+import assign from 'lodash/assign';
+
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
@@ -92,7 +94,7 @@ class DetailForm extends React.Component {
                 let backData = data.backData;
                 if (backData.assessorys) {
                     backData.assessorys.map((item, index) => {
-                        backData.assessorys[index] = _.assign({}, item, {
+                        backData.assessorys[index] = assign({}, item, {
                             uid: item.id,
                             status: 'done',
                             url: restUrl.ADDR + item.path + item.name,
