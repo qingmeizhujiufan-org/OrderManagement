@@ -54,27 +54,28 @@ var ajax = {
     //通过post方法请求FormData数据
     ,
     postForm: function postForm(url, data, success, error, complete, cookies) {
-      if (isFunction(data)) {
-        this.request({
-          url: url,
-          type: 'multipart/form-data',
-          success: arguments[1],
-          error: arguments[2],
-          complete: arguments[3],
-          cookies: arguments[4],
-          method: 'POST'
-        });
-      } else {
-        this.request({
-          url: url,
-          send: data,
-          success: success,
-          error: error,
-          complete: complete,
-          cookies: cookies,
-          method: 'POST'
-        });
-      }
+        if (isFunction(data)) {
+            this.request({
+                url: url,
+                type: 'form',
+                success: arguments[1],
+                error: arguments[2],
+                complete: arguments[3],
+                cookies: arguments[4],
+                method: 'POST'
+            });
+        } else {
+            this.request({
+                url: url,
+                type: 'form',
+                send: data,
+                success: success,
+                error: error,
+                complete: complete,
+                cookies: cookies,
+                method: 'POST'
+            });
+        }
     }
     ,
     getText: function getText(url, data, success, error, complete, cookies) {
@@ -168,7 +169,7 @@ var ajax = {
         // 发送ajax请求
         var contentType = 'application/json;charset=UTF-8';
         if (_defaults.type === 'form') {
-            contentType = 'application/x-www-form-urlencoded;charset=UTF-8';
+            contentType = 'multipart/form-data;charset=UTF-8';
         }
         var req = sa(_defaults.method, _defaults.url).set('Content-Type', contentType);
         //设置全局的header信息

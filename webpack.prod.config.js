@@ -25,7 +25,7 @@ module.exports = {
     entry: {
         "index": path.resolve(__dirname, 'src/index'),
         //添加要打包在vendor.js里面的库
-        vendor: ['react', 'react-dom', 'react-router', 'react-router-redux', 'react-redux', 'redux']
+        vendor: ['babel-polyfill', 'antd', 'react', 'react-dom', 'react-router', 'react-router-redux', 'react-redux', 'redux']
     },
 
     output: {
