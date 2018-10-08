@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');//html模板
+const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const autoprefixer = require('autoprefixer');
 
@@ -30,7 +31,7 @@ module.exports = {
     entry: {
         "index": path.resolve(__dirname, 'src/index'),
         //添加要打包在vendor.js里面的库
-        vendor: ['react', 'react-dom', 'react-router', 'react-router-redux', 'react-redux', 'redux']
+        // vendor: ['react', 'react-dom', 'react-router', 'react-router-redux', 'react-redux', 'redux']
     },
 
     output: {
@@ -40,7 +41,10 @@ module.exports = {
     },
 
     resolve: {
-        modules: [path.resolve(__dirname, 'node_modules'), path.join(__dirname, 'src')],
+        modules: [
+            path.resolve(__dirname, 'node_modules'),
+            path.join(__dirname, 'src')
+        ],
         extensions: ['.web.js', '.jsx', '.js', '.json'],
         //设置别名方便引用
         alias: {
@@ -133,14 +137,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-        new webpack.optimize.ModuleConcatenationPlugin(),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            filename: 'vendor.[chunkhash:5].js',
-            minChunks: Infinity,
-        }),
-        new ExtractTextPlugin({filename: '[name].[contenthash:5].css', allChunks: true}),
         new CleanWebpackPlugin(
             ['build/*'],　                    //匹配删除的文件
             {
@@ -149,10 +145,18 @@ module.exports = {
                 dry: false        　　　　　　　　 //启用删除文件
             }
         ),
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        new webpack.DllReferencePlugin({
+            context: path.join(__dirname, '.', 'dll'),
+            manifest: require('./dll/vendor-manifest.json')
+        }),
+        new ExtractTextPlugin({filename: '[name].[contenthash:5].css', allChunks: true}),
         new HtmlWebpackPlugin({
             template: './index.html',
             favicon: './public/favicon.ico', // 添加小图标
         }),
+        new HtmlWebpackIncludeAssetsPlugin({assets: ['../dll/vendor.dll.js'], append: false}),
         /* 分析包的大小分布 */
         new BundleAnalyzerPlugin(),
     ]
