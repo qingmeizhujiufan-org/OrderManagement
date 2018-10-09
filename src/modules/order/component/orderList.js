@@ -328,13 +328,45 @@ class OrderList extends React.Component {
         const {searchKey} = this.state;
         console.log("searchKey2 ===", searchKey)
 
-        ajax.postForm(exportOrderUrl, JSON.stringify(searchKey), data => {
-            console.log("data ===", data)
-            if (data.success) {
-            } else {
+        ajax.postText(exportOrderUrl, JSON.stringify(searchKey), data => {
+            // console.log("data ===", data)
+            if (!data) {
                 Message.error('导出订单失败');
+                return
+            }
+            const content = data;
+            const blob = new Blob([content], {type: 'application/ms-excel'});
+            const fileName = '测试表格123.xlsx';
+            if ('download' in document.createElement('a')) { // 非IE下载
+                const elink = document.createElement('a');
+                elink.download = fileName;
+                elink.style.display = 'none';
+                elink.href = URL.createObjectURL(blob);
+                document.body.appendChild(elink);
+                elink.click();
+                URL.revokeObjectURL(elink.href); // 释放URL 对象
+                document.body.removeChild(elink);
+            } else { // IE10+下载
+                navigator.msSaveBlob(blob, fileName);
             }
         });
+
+        // const xhr = new XMLHttpRequest();
+        // xhr.open('POST', exportOrderUrl);
+        // xhr.setRequestHeader('X-Auth-Token', sessionStorage.token);
+        //
+        // const data = new FormData();
+        // data.append('orderNature', 1);
+        // xhr.send(data);
+        //
+        // xhr.addEventListener('load', () => {
+        //     const response = JSON.parse(xhr.responseText);
+        //     console.log('response == ', response);
+        // });
+        // xhr.addEventListener('error', () => {
+        //     const error = JSON.parse(xhr.responseText);
+        //     console.log('error ===', error);
+        // });
     }
 
     // 搜索
@@ -471,7 +503,7 @@ class OrderList extends React.Component {
                                 >新增订单</Button>
                             </Col>
                         </Row>
-                        <Collapse bordered={false} defaultActiveKey={['1']} style={{marginTop: 20}}>
+                        <Collapse bordered={false} style={{marginTop: 20}}>
                             <Panel header="查询条件" key="1" style={customPanelStyle}>
                                 <Form onSubmit={this.handleSubmit}>
                                     <Row type='flex' justify="center" align="middle">
