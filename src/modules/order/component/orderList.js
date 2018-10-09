@@ -335,8 +335,8 @@ class OrderList extends React.Component {
                 return
             }
             const content = data;
-            const blob = new Blob([content], {type: 'application/ms-excel'});
-            const fileName = '测试表格123.xlsx';
+            const blob = new Blob([content], {type: 'application/octet-stream'});
+            const fileName = '测试表格123.xls';
             if ('download' in document.createElement('a')) { // 非IE下载
                 const elink = document.createElement('a');
                 elink.download = fileName;
