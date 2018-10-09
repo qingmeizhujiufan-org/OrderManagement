@@ -141,7 +141,7 @@ module.exports = {
             }
         ),
         new HtmlWebpackPlugin({
-            template: './index.html',
+            template: './public/index.html',
             favicon: './public/favicon.ico', // 添加小图标
         }),
         new webpack.optimize.ModuleConcatenationPlugin(),

@@ -153,7 +153,7 @@ module.exports = {
         }),
         new ExtractTextPlugin({filename: '[name].[contenthash:5].css', allChunks: true}),
         new HtmlWebpackPlugin({
-            template: './index.html',
+            template: './public/index.html',
             favicon: './public/favicon.ico', // 添加小图标
         }),
         new HtmlWebpackIncludeAssetsPlugin({assets: ['../dll/vendor.dll.js'], append: false}),
