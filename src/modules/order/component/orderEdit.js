@@ -129,6 +129,7 @@ class Index extends React.Component {
           loading: false
         }, () => {
           this.showTips();
+          this.canEdit();
         });
       } else {
         Message.error('订单信息查询失败');
@@ -140,10 +141,10 @@ class Index extends React.Component {
     const data = this.state.data;
     const deliverDate = data.deliverDate;
     const curDate = moment().format("YYYY-MM-DD");
-    console.log("deliverDate ===",deliverDate);
-    console.log("curDate ===",curDate);
+    console.log("deliverDate ===", deliverDate);
+    console.log("curDate ===", curDate);
 
-    if(deliverDate === curDate) {
+    if (deliverDate === curDate) {
       this.setState({
         showTips: true
       });
@@ -154,8 +155,8 @@ class Index extends React.Component {
     const data = this.state.data;
     const deliverDate = data.deliverDate;
     const curDate = moment();
-
-    if(data.orderState !== 0 || (curDate.hour() === 10 && curDate.format('YYYY-MM-DD') === deliverDate)) {
+    let canEdit = (data.orderState !== 0 || (curDate.hour() === 10 && curDate.format('YYYY-MM-DD') === deliverDate));
+    if (!canEdit) {
       this.setState({
         canEdit: false
       });
@@ -247,7 +248,7 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {data, proData,canEdit, showTips, isOperator, loading, submitLoading} = this.state;
+    const {data, proData, canEdit, showTips, isOperator, loading, submitLoading} = this.state;
 
     return (
       <div className="zui-content">
@@ -263,7 +264,7 @@ class Index extends React.Component {
         </div>
         <div className='pageContent'>
           <div className='ibox-content'>
-            <Alert visible={showTips} message="该订单今日发货，上午十点以后不允许修改" type="warning" showIcon />,
+            <Alert visible={showTips} message="该订单今日发货，上午十点以后不允许修改" type="warning" showIcon/>,
             <Spin spinning={loading} size='large'>
               <Divider>产品信息</Divider>
               <div style={{
@@ -625,17 +626,31 @@ class Index extends React.Component {
                     </FormItem>
                   </Col>
                   <Col {...itemGrid}>
-                    <FormItem
-                      {...formItemLayout}
-                      label="成本比例"
-                    >
-                      {getFieldDecorator('costRatio', {
-                        rules: [{required: true, message: '请输入成本比例'}],
-                        initialValue: data.costRatio > 1 ? '超过' : '不超过'
-                      })(
-                        <Input disabled={isOperator}/>
-                      )}
-                    </FormItem>
+                    {
+                      isOperator ?
+                        (<FormItem
+                          {...formItemLayout}
+                          label="成本比例"
+                        >
+                          {getFieldDecorator('costRatio', {
+                            rules: [{required: true, message: '请输入成本比例'}],
+                            initialValue: data.costRatio > 1 ? '超过' : '不超过'
+                          })(
+                            <Input disabled={isOperator}/>
+                          )}
+                        </FormItem>) :
+                        (<FormItem
+                          {...formItemLayout}
+                          label="成本比例"
+                        >
+                          {getFieldDecorator('costRatio', {
+                            rules: [{required: true, message: '请输入成本比例'}],
+                            initialValue: data.costRatio
+                          })(
+                            <Input disabled={isOperator}/>
+                          )}
+                        </FormItem>)
+                    }
                   </Col>
                   <Col {...itemGrid}>
                     <FormItem
