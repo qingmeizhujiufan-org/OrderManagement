@@ -36,7 +36,8 @@ const Panel = Collapse.Panel;
 const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
 const delUrl = restUrl.BASE_HOST + 'order/delete';
 const exportOrderUrl = restUrl.BASE_HOST + 'order/exportMultiPurchase';
-const uploadUrl = restUrl.BASE_HOST + 'order/importWarehouseReceipt';
+//仓库回执信息导入接口地址
+const importWarehouseReceiptUrl = restUrl.BASE_HOST + 'order/importWarehouseReceipt';
 
 class OrderList extends React.Component {
     constructor(props) {
@@ -332,13 +333,13 @@ class OrderList extends React.Component {
         const {searchKey} = this.state;
         console.log("searchKey2 ===", searchKey)
 
-        fetch(exportOrderUrl,{
+        fetch(exportOrderUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Auth-Token': sessionStorage.token
             },
-            body:JSON.stringify({orderNature: '热线', deliverMonth: '2018-09'})
+            body: JSON.stringify({orderNature: '热线', deliverMonth: '2018-09'})
         }).then((response) => response.blob()).then((blob) => {
             const objectUrl = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -408,7 +409,6 @@ class OrderList extends React.Component {
 
     addOrder = () => {
         this.context.router.push('/frame/order/add');
-
     }
 
     onEdit = id => {
@@ -694,8 +694,9 @@ class OrderList extends React.Component {
                         headers={{
                             'X-Auth-Token': sessionStorage.token
                         }}
-                        name='bannerImage'
-                        listType={'text'}
+                        name='file'
+                        action={importWarehouseReceiptUrl}
+                        data={{warehouse: 1}}
                         onChange={this.handleUpload}
                     >
                         <Button>
