@@ -36,13 +36,18 @@ const Panel = Collapse.Panel;
 const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
 const delUrl = restUrl.BASE_HOST + 'order/delete';
 //订单信息导出
-const exportOrderUrl = restUrl.BASE_HOST + 'order/exportMultiPurchase';
+const exportOrderUrl = restUrl.BASE_HOST + 'order/exportOrder';
 //仓库回执信息导入接口地址
 const importWarehouseReceiptUrl = restUrl.BASE_HOST + 'order/importWarehouseReceipt';
+//订单快递状态更新信息导入
+const importOrderExpressUrl = restUrl.BASE_HOST + 'order/importOrderExpress';
 //Excel模板导出接口
 const exportExcelTemplateUrl = restUrl.BASE_HOST + 'order/exportTemplate';
 //客户信息信息导出
-const exportUserinfoUrl = restUrl.BASE_HOST + 'order/exportMultiPurchase';
+const exportMultiPurchaseUrl = restUrl.BASE_HOST + 'order/exportMultiPurchase';
+//区域订单数据导出
+const exportRegionOrderUrl = restUrl.BASE_HOST + 'order/exportRegionOrder';
+
 
 class OrderList extends React.Component {
   constructor(props) {
@@ -367,7 +372,7 @@ class OrderList extends React.Component {
         'Content-Type': 'application/json',
         'X-Auth-Token': sessionStorage.token
       },
-      body: JSON.stringify({orderNature: '热线', deliverMonth: '2018-09'})
+      body: JSON.stringify(searchKey)
     }).then((response) => response.blob()).then((blob) => {
       const objectUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -401,15 +406,52 @@ class OrderList extends React.Component {
   }
 
 
-
   //不同订单性质的客户信息导出
+  exportMultiPurchase = () => {
+    fetch(exportMultiPurchaseUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Token': sessionStorage.token
+      },
+      body: JSON.stringify({orderNature: '热线', deliverMonth: '2018-09'})
+    }).then((response) => response.blob()).then((blob) => {
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display:none');
+      a.setAttribute('href', objectUrl);
+      a.setAttribute('download', '客户信息.xlsx');
+      a.click();
+      URL.revokeObjectURL(objectUrl);
+    });
+  }
 
   //数据段内各区域订单数据导出
+  exportRegionOrder = () => {
+    fetch(exportRegionOrderUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Token': sessionStorage.token
+      },
+      body: JSON.stringify({ deliverBeginDate: '2018-09-01', deliverEndDate : '2018-09-30'})
+    }).then((response) => response.blob()).then((blob) => {
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display:none');
+      a.setAttribute('href', objectUrl);
+      a.setAttribute('download', '区域订单数据.xlsx');
+      a.click();
+      URL.revokeObjectURL(objectUrl);
+    });
+  }
 
   //回执弹框
   showUploadModal = () => {
     this.setState({
-      showUpload: true
+      showUpload: !this.state.showUpload
     });
   }
 
@@ -694,17 +736,17 @@ class OrderList extends React.Component {
                       </FormItem>
                     </Col>
                   </Row>
-                  <Row>
+                  <Row style={{textAlign: 'center'}}>
                     <Button
                       icon='check'
                       type="primary"
                       onClick={this.filter}
-                      style={{marginBottom: 15, marginLeft: 10, float: 'right'}}
+                      style={{marginBottom: 15, marginRight: 10}}
                     >筛选</Button>
                     <Button
                       icon='reload'
                       onClick={this.resetSearchKey}
-                      style={{marginBottom: 15, float: 'right'}}
+                      style={{marginBottom: 15}}
                     >重置</Button>
                   </Row>
                 </Form>
@@ -726,12 +768,12 @@ class OrderList extends React.Component {
             >Excel模板</Button>
             <Button
               icon='download'
-              onClick={this.showUploadModal}
+              onClick={this.exportMultiPurchase}
               style={{marginBottom: 15, marginRight: 10}}
             >客户信息</Button>
             <Button
               icon='download'
-              onClick={this.showUploadModal}
+              onClick={this.exportRegionOrder}
               style={{marginBottom: 15, marginRight: 10}}
             >区域订单数据</Button>
             <Button
@@ -739,11 +781,19 @@ class OrderList extends React.Component {
               onClick={this.showUploadModal}
               style={{marginBottom: 15, marginRight: 10}}
             >仓库回执信息</Button>
-            <Button
-              icon='upload'
-              onClick={this.showUploadModal}
-              style={{marginBottom: 15, marginRight: 10}}
-            >订单快递状态</Button>
+            <Upload
+              headers={{
+                'X-Auth-Token': sessionStorage.token
+              }}
+              name='file'
+              accept='.xlsx,.xls'
+              action={importOrderExpressUrl}
+              onChange={this.handleUpload}
+            >
+              <Button>
+                <Icon type="upload"/> 订单快递状态
+              </Button>
+            </Upload>
 
             <ZZTable
               columns={this.columns}
@@ -760,6 +810,7 @@ class OrderList extends React.Component {
           visible={showUpload}
           onOk={this.handleOk}
           onCancel={this.showUploadModal}
+          footer={null}
         >
           <Row style={{marginBottom: 10}}>
             <Col span={12}>
@@ -783,7 +834,6 @@ class OrderList extends React.Component {
             action={importWarehouseReceiptUrl}
             data={{warehouse: warehouse}}
             onChange={this.handleUpload}
-            footer={null}
           >
             <Button>
               <Icon type="upload"/> 上传文件
