@@ -35,9 +35,14 @@ const Panel = Collapse.Panel;
 
 const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
 const delUrl = restUrl.BASE_HOST + 'order/delete';
+//订单信息导出
 const exportOrderUrl = restUrl.BASE_HOST + 'order/exportMultiPurchase';
 //仓库回执信息导入接口地址
 const importWarehouseReceiptUrl = restUrl.BASE_HOST + 'order/importWarehouseReceipt';
+//Excel模板导出接口
+const exportExcelTemplateUrl = restUrl.BASE_HOST + 'order/exportTemplate';
+//客户信息信息导出
+const exportUserinfoUrl = restUrl.BASE_HOST + 'order/exportMultiPurchase';
 
 class OrderList extends React.Component {
   constructor(props) {
@@ -330,6 +335,28 @@ class OrderList extends React.Component {
     });
   }
 
+  //简单搜索
+  onSearch = (val) => {
+    const searchKey = {
+      keyWords: val
+    };
+    this.setState({
+      searchKey: searchKey
+    }, () => {
+      this.queryList();
+    });
+  }
+
+  //高级筛选
+  filter = () => {
+    this.getSearchKey(this.queryList)
+  }
+
+  //导出订单列表
+  outOrderList = () => {
+    this.getSearchKey(this.exportOrderList)
+  }
+
   exportOrderList = () => {
     const {searchKey} = this.state;
     console.log("filterKey ===", searchKey)
@@ -353,6 +380,33 @@ class OrderList extends React.Component {
     });
   }
 
+  //Excel模板导出
+  exportExcelTemplate = () => {
+    fetch(exportExcelTemplateUrl+'?type=2', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Token': sessionStorage.token
+      },
+    }).then((response) => response.blob()).then((blob) => {
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display:none');
+      a.setAttribute('href', objectUrl);
+      a.setAttribute('download', 'Excel模板.xlsx');
+      a.click();
+      URL.revokeObjectURL(objectUrl);
+    });
+  }
+
+
+
+  //不同订单性质的客户信息导出
+
+  //数据段内各区域订单数据导出
+
+  //回执弹框
   showUploadModal = () => {
     this.setState({
       showUpload: true
@@ -377,29 +431,8 @@ class OrderList extends React.Component {
     }
   }
 
-  //简单搜索
-  onSearch = (val) => {
-    const searchKey = {
-      keyWords: val
-    };
-    this.setState({
-      searchKey: searchKey
-    }, () => {
-      this.queryList();
-    });
-  }
+  //订单快递状态更新信息导入弹框
 
-  //高级筛选
-  filter = () => {
-    this.getSearchKey(this.queryList)
-  }
-
-  //导出订单列表
-  outOrderList = () => {
-    this.getSearchKey(this.exportOrderList)
-  }
-
-  //
 
   //获取查询参数
   getSearchKey = (callback) => {
@@ -688,7 +721,7 @@ class OrderList extends React.Component {
             >订单信息</Button>
             <Button
               icon='download'
-              onClick={this.showUploadModal}
+              onClick={this.exportExcelTemplate}
               style={{marginBottom: 15, marginRight: 10}}
             >Excel模板</Button>
             <Button
