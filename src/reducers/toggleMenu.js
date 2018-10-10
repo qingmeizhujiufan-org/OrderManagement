@@ -5,8 +5,6 @@ export default function toggleMenu(state = {collapsed: false}, action) {
     const {type, payload} = action;
     switch (type) {
         case TOGGLE_MENU:
-            console.log('state === ', state);
-            console.log('action === ', action);
             window.dispatchEvent(new Event('resize'));
             if (payload && payload.collapsed !== undefined) {
                 return assign({}, state, {collapsed: !action.payload.collapsed});

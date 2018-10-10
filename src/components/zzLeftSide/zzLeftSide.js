@@ -150,7 +150,6 @@ class ZZLeftSide extends React.Component {
     }
 
     onBreakpoint = broken => {
-        console.log('broken ===', broken)
         this.props.onToggleClick(broken ? false : true);
     }
 
