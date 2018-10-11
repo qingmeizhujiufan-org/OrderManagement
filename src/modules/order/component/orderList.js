@@ -19,7 +19,8 @@ import {
     Collapse,
     Button,
     Upload,
-    Tabs
+    Tabs,
+    Drawer,
 } from 'antd';
 import assign from 'lodash/assign';
 import restUrl from 'RestUrl';
@@ -292,7 +293,8 @@ class OrderList extends React.Component {
                 pageSize: 10,
             },
             keyWords: '',
-            searchKey: {}
+            searchKey: {},
+            drawerVisible: false
         };
     }
 
@@ -352,11 +354,6 @@ class OrderList extends React.Component {
         }, () => {
             this.queryList();
         });
-    }
-
-    //高级筛选
-    filter = () => {
-        this.getSearchKey(this.queryList)
     }
 
     //导出订单列表
@@ -457,10 +454,6 @@ class OrderList extends React.Component {
         });
     }
 
-    resetSearchKey = () => {
-        this.props.form.resetFields();
-    }
-
     addOrder = () => {
         this.context.router.push('/frame/order/add');
     }
@@ -504,18 +497,28 @@ class OrderList extends React.Component {
         }
     }
 
+    showDrawer = () => this.setState({drawerVisible: true})
+
+    onClose = () => this.setState({drawerVisible: false})
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('values ===', values)
+                console.log('values ===', values);
+                this.setState({drawerVisible: false});
+                this.queryList();
             }
         })
     };
 
+    resetForm = () => {
+        this.props.form.resetFields();
+    }
+
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {dataSource, pagination, loading, keyWords, showUpload, warehouse} = this.state;
+        const {dataSource, pagination, loading, keyWords, showUpload, warehouse, drawerVisible} = this.state;
         const customPanelStyle = {
             borderRadius: 4,
             border: 0,
@@ -544,7 +547,7 @@ class OrderList extends React.Component {
                                     onSearch={this.onSearch}
                                 />
                             </Col>
-                            <Col span={3}>
+                            <Col>
                                 <Button
                                     icon='plus'
                                     size="large"
@@ -552,161 +555,171 @@ class OrderList extends React.Component {
                                     style={{marginLeft: 25}}
                                 >新增订单</Button>
                             </Col>
+                            <Col>
+                                <Button
+                                    type='primary'
+                                    icon='plus'
+                                    size="large"
+                                    onClick={this.showDrawer}
+                                    style={{marginLeft: 25}}
+                                >高级搜索</Button>
+                            </Col>
                         </Row>
-                        <Collapse bordered={false} style={{marginTop: 20}}>
-                            <Panel header="筛选条件" key="1" style={customPanelStyle}>
-                                <Form onSubmit={this.handleSubmit}>
-                                    <Row type='flex' justify="center" align="middle">
-                                        <Col {...itemGrid}>
-                                            <FormItem
-                                                {...formItemLayout}
-                                                label="订单性质"
-                                            >
-                                                {getFieldDecorator('orderNature', {
-                                                    rules: [{required: false}],
-                                                    initialValue: ''
-                                                })(
-                                                    <Input/>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                        <Col {...itemGrid} >
-                                            <FormItem
-                                                {...formItemLayout}
-                                                label="成单日期"
-                                            >
-                                                {getFieldDecorator('orderDate', {
-                                                    rules: [{required: false}],
-                                                })(
-                                                    <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                        <Col {...itemGrid}>
-                                            <FormItem
-                                                {...formItemLayout}
-                                                label="发货开始日期"
-                                            >
-                                                {getFieldDecorator('deliverBeginDate', {
-                                                    rules: [{required: false}],
-                                                })(
-                                                    <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                        <Col {...itemGrid}>
-                                            <FormItem
-                                                {...formItemLayout}
-                                                label="发货结束日期"
-                                            >
-                                                {getFieldDecorator('deliverEndDate', {
-                                                    rules: [{required: false}],
-                                                })(
-                                                    <DatePicker style={{width: '100%'}} onChange={this.getDate}
-                                                    />
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                        <Col {...itemGrid}>
-                                            <FormItem
-                                                {...formItemLayout}
-                                                label="发货日期"
-                                            >
-                                                {getFieldDecorator('deliverDate', {
-                                                    rules: [{required: false}],
-                                                })(
-                                                    <DatePicker style={{width: '100%'}} onChange={this.getDate}
-                                                    />
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                        <Col {...itemGrid} >
-                                            <FormItem
-                                                {...formItemLayout}
-                                                label="仓库"
-                                            >
-                                                {getFieldDecorator('warehouse', {
-                                                    rules: [{required: false}],
-                                                    initialValue: ''
-                                                })(
-                                                    <Select>
-                                                        <Option key='0' value={0}>武汉</Option>
-                                                        <Option key='1' value={1}>北京</Option>
-                                                    </Select>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                        <Col {...itemGrid}>
-                                            <FormItem
-                                                {...formItemLayout}
-                                                label="快递状态"
-                                            >
-                                                {getFieldDecorator('expressState', {
-                                                    rules: [{required: false}],
-                                                    initialValue: ''
-                                                })(
-                                                    <Select>
-                                                        <Option key='0' value={0}>未发货</Option>
-                                                        <Option key='1' value={1}>已发货</Option>
-                                                        <Option key='2' value={2}>取消发货</Option>
-                                                        <Option key='3' value={3}>未妥投</Option>
-                                                        <Option key='4' value={4}>退回</Option>
-                                                        <Option key='5' value={5}>签收</Option>
-                                                    </Select>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                        <Col {...itemGrid}>
-                                            <FormItem
-                                                {...formItemLayout}
-                                                label="是否超过成本"
-                                            >
-                                                {getFieldDecorator('isOverCost', {
-                                                    rules: [{required: false}],
-                                                    initialValue: ''
-                                                })(
-                                                    <Select>
-                                                        <Option key='0' value={0}>否</Option>
-                                                        <Option key='1' value={1}>是</Option>
-                                                    </Select>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                        <Col {...itemGrid}>
-                                            <FormItem
-                                                {...formItemLayout}
-                                                label="订单状态"
-                                            >
-                                                {getFieldDecorator('orderState', {
-                                                    rules: [{required: false}],
-                                                    initialValue: ''
-                                                })(
-                                                    <Select>
-                                                        <Option key='0' value={0}>编辑中</Option>
-                                                        <Option key='1' value={1}>已锁定</Option>
-                                                        <Option key='2' value={2}>已发货</Option>
-                                                        <Option key='3' value={3}>已成单</Option>
-                                                    </Select>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-                                    <Row style={{textAlign: 'center'}}>
+                        <Drawer
+                            title="筛选条件"
+                            width={500}
+                            placement="right"
+                            onClose={this.onClose}
+                            visible={drawerVisible}
+                        >
+                            <Form layout="vertical" hideRequiredMark onSubmit={this.handleSubmit}>
+                                <Row gutter={24}>
+                                    <Col span={12}>
+                                        <FormItem
+                                            label="订单性质"
+                                        >
+                                            {getFieldDecorator('orderNature', {
+                                                rules: [{required: false}],
+                                                initialValue: ''
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            label="成单日期"
+                                        >
+                                            {getFieldDecorator('orderDate', {
+                                                rules: [{required: false}],
+                                            })(
+                                                <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            label="发货开始日期"
+                                        >
+                                            {getFieldDecorator('deliverBeginDate', {
+                                                rules: [{required: false}],
+                                            })(
+                                                <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            label="发货结束日期"
+                                        >
+                                            {getFieldDecorator('deliverEndDate', {
+                                                rules: [{required: false}],
+                                            })(
+                                                <DatePicker style={{width: '100%'}} onChange={this.getDate}
+                                                />
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            label="发货日期"
+                                        >
+                                            {getFieldDecorator('deliverDate', {
+                                                rules: [{required: false}],
+                                            })(
+                                                <DatePicker style={{width: '100%'}} onChange={this.getDate}
+                                                />
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            label="仓库"
+                                        >
+                                            {getFieldDecorator('warehouse', {
+                                                rules: [{required: false}],
+                                                initialValue: ''
+                                            })(
+                                                <Select>
+                                                    <Option key='0' value={0}>武汉</Option>
+                                                    <Option key='1' value={1}>北京</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            label="快递状态"
+                                        >
+                                            {getFieldDecorator('expressState', {
+                                                rules: [{required: false}],
+                                                initialValue: ''
+                                            })(
+                                                <Select>
+                                                    <Option key='0' value={0}>未发货</Option>
+                                                    <Option key='1' value={1}>已发货</Option>
+                                                    <Option key='2' value={2}>取消发货</Option>
+                                                    <Option key='3' value={3}>未妥投</Option>
+                                                    <Option key='4' value={4}>退回</Option>
+                                                    <Option key='5' value={5}>签收</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            label="是否超过成本"
+                                        >
+                                            {getFieldDecorator('isOverCost', {
+                                                rules: [{required: false}],
+                                                initialValue: ''
+                                            })(
+                                                <Select>
+                                                    <Option key='0' value={0}>否</Option>
+                                                    <Option key='1' value={1}>是</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col span={12}>
+                                        <FormItem
+                                            label="订单状态"
+                                        >
+                                            {getFieldDecorator('orderState', {
+                                                rules: [{required: false}],
+                                                initialValue: ''
+                                            })(
+                                                <Select>
+                                                    <Option key='0' value={0}>编辑中</Option>
+                                                    <Option key='1' value={1}>已锁定</Option>
+                                                    <Option key='2' value={2}>已发货</Option>
+                                                    <Option key='3' value={3}>已成单</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Row gutter={24}>
+                                    <Col offset={4} span={8}>
                                         <Button
+                                            block
+                                            icon='reload'
+                                            size='large'
+                                            onClick={this.resetForm}
+                                        >重置</Button>
+                                    </Col>
+                                    <Col span={8}>
+                                        <Button
+                                            block
                                             icon='check'
                                             type="primary"
-                                            onClick={this.filter}
-                                            style={{marginBottom: 15, marginRight: 10}}
+                                            size='large'
+                                            htmlType="submit"
                                         >筛选</Button>
-                                        <Button
-                                            icon='reload'
-                                            onClick={this.resetSearchKey}
-                                            style={{marginBottom: 15}}
-                                        >重置</Button>
-                                    </Row>
-                                </Form>
-                            </Panel>
-                        </Collapse>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Drawer>
                     </div>
                 </div>
                 <div className='pageContent'>

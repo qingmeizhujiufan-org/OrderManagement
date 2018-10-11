@@ -19,6 +19,9 @@ const options = {
         '@table-padding-horizontal': '10px',
         // 徽标
         '@badge-height': '16px',
+        // 卡片
+        '@card-padding-base': '15px',
+        '@card-padding-wider': '15px',
     },
     javascriptEnabled: true,
 }
