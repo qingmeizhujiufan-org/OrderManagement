@@ -141,8 +141,7 @@ class Index extends React.Component {
     const data = this.state.data;
     const deliverDate = data.deliverDate;
     const curDate = moment().format("YYYY-MM-DD");
-    console.log("deliverDate ===", deliverDate);
-    console.log("curDate ===", curDate);
+    console.log(deliverDate === curDate);
 
     if (deliverDate === curDate) {
       this.setState({
