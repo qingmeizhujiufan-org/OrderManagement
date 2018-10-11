@@ -25,7 +25,9 @@ export default class App extends React.Component {
                         <ZZHeader/>
                         <Content>
                             <Scrollbars style={{height: 'calc(100vh - 64px)'}}>
-                                {this.props.children}
+                                <div style={{minHeight: 'calc(100vh - 133px)'}}>
+                                    {this.props.children}
+                                </div>
                                 <ZZFooter/>
                             </Scrollbars>
                         </Content>
