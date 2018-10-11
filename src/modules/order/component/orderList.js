@@ -18,16 +18,18 @@ import {
     Modal,
     Collapse,
     Button,
-    Upload
+    Upload,
+    Tabs
 } from 'antd';
 import assign from 'lodash/assign';
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
-import Util from "Utils/util";
+import Util from 'Utils/util';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 
+const TabPane = Tabs.TabPane;
 const Search = Input.Search;
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -364,108 +366,40 @@ class OrderList extends React.Component {
 
     exportOrderList = () => {
         const {searchKey} = this.state;
-        console.log("filterKey ===", searchKey)
+        console.log("filterKey ===", searchKey);
 
-        fetch(exportOrderUrl, {
+        Util.exportExcel({
+            url: exportOrderUrl,
             method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Auth-Token': sessionStorage.token
-            },
             body: JSON.stringify({orderNature: '热线', deliverMonth: '2018-09'})
-        }).then(response => {
-            console.log('response == ', response);
-            const disposition = response.headers.get('Content-Disposition');
-            console.log('disposition == ', disposition);
-            if (disposition && disposition.match(/attachment/)) {
-                let filename = disposition.replace(/attachment;.*filename=/, '').replace(/"/g, '');
-                filename = filename && filename !== '' ? filename : 'file';
-                response.blob().then(blob => {
-                    const fileUrl = URL.createObjectURL(blob);
-                    const saveLink = document.createElement('a');
-                    saveLink.href = fileUrl;
-                    saveLink.download = filename;
-                    let e = new MouseEvent('click');
-                    saveLink.dispatchEvent(e);
-                    // 使用完ObjectURL后需要及时释放, 否则会浪费浏览器存储区资源.
-                    URL.revokeObjectURL(fileUrl);
-                });
-            }
         });
-        // return response.blob();
-        // }).then((blob) => {
-        //     const objectUrl = URL.createObjectURL(blob);
-        //     const a = document.createElement('a');
-        //     document.body.appendChild(a);
-        //     a.setAttribute('style', 'display:none');
-        //     a.setAttribute('href', objectUrl);
-        //     a.setAttribute('download', '订单表.xlsx');
-        //     a.click();
-        //     URL.revokeObjectURL(objectUrl);
-        // });
     }
 
     //Excel模板导出
     exportExcelTemplate = () => {
-        fetch(exportExcelTemplateUrl + '?type=2', {
+        Util.exportExcel({
+            url: exportExcelTemplateUrl + '?type=2',
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Auth-Token': sessionStorage.token
-            },
-        }).then((response) => response.blob()).then((blob) => {
-            const objectUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            document.body.appendChild(a);
-            a.setAttribute('style', 'display:none');
-            a.setAttribute('href', objectUrl);
-            a.setAttribute('download', 'Excel模板.xlsx');
-            a.click();
-            URL.revokeObjectURL(objectUrl);
+            body: null
         });
     }
 
 
     //不同订单性质的客户信息导出
     exportMultiPurchase = () => {
-        fetch(exportMultiPurchaseUrl, {
+        Util.exportExcel({
+            url: exportMultiPurchaseUrl,
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Auth-Token': sessionStorage.token
-            },
             body: JSON.stringify({orderNature: '热线', deliverMonth: '2018-09'})
-        }).then((response) => response.blob()).then((blob) => {
-            const objectUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            document.body.appendChild(a);
-            a.setAttribute('style', 'display:none');
-            a.setAttribute('href', objectUrl);
-            a.setAttribute('download', '客户信息.xlsx');
-            a.click();
-            URL.revokeObjectURL(objectUrl);
         });
     }
 
     //数据段内各区域订单数据导出
     exportRegionOrder = () => {
-        fetch(exportRegionOrderUrl, {
+        Util.exportExcel({
+            url: exportRegionOrderUrl,
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Auth-Token': sessionStorage.token
-            },
             body: JSON.stringify({deliverBeginDate: '2018-09-01', deliverEndDate: '2018-09-30'})
-        }).then((response) => response.blob()).then((blob) => {
-            const objectUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            document.body.appendChild(a);
-            a.setAttribute('style', 'display:none');
-            a.setAttribute('href', objectUrl);
-            a.setAttribute('download', '区域订单数据.xlsx');
-            a.click();
-            URL.revokeObjectURL(objectUrl);
         });
     }
 
@@ -777,53 +711,59 @@ class OrderList extends React.Component {
                 </div>
                 <div className='pageContent'>
                     <ZZCard>
-                        <Button
-                            icon='download'
-                            onClick={this.outOrderList}
-                            style={{marginBottom: 15, marginRight: 10}}
-                        >订单信息</Button>
-                        <Button
-                            icon='download'
-                            onClick={this.exportExcelTemplate}
-                            style={{marginBottom: 15, marginRight: 10}}
-                        >Excel模板</Button>
-                        <Button
-                            icon='download'
-                            onClick={this.exportMultiPurchase}
-                            style={{marginBottom: 15, marginRight: 10}}
-                        >客户信息</Button>
-                        <Button
-                            icon='download'
-                            onClick={this.exportRegionOrder}
-                            style={{marginBottom: 15, marginRight: 10}}
-                        >区域订单数据</Button>
-                        <Button
-                            icon='upload'
-                            onClick={this.showUploadModal}
-                            style={{marginBottom: 15, marginRight: 10}}
-                        >仓库回执信息</Button>
-                        <Upload
-                            headers={{
-                                'X-Auth-Token': sessionStorage.token
-                            }}
-                            name='file'
-                            accept='.xlsx,.xls'
-                            action={importOrderExpressUrl}
-                            onChange={this.handleUpload}
-                        >
-                            <Button>
-                                <Icon type="upload"/> 订单快递状态
-                            </Button>
-                        </Upload>
+                        <Tabs defaultActiveKey="1">
+                            <TabPane tab="订单列表" key="1">
+                                <Button
+                                    icon='download'
+                                    onClick={this.outOrderList}
+                                    style={{marginBottom: 15, marginRight: 10}}
+                                >订单信息</Button>
+                                <Button
+                                    icon='upload'
+                                    onClick={this.showUploadModal}
+                                    style={{marginBottom: 15, marginRight: 10}}
+                                >仓库回执信息</Button>
+                                <Upload
+                                    headers={{
+                                        'X-Auth-Token': sessionStorage.token
+                                    }}
+                                    name='file'
+                                    accept='.xlsx,.xls'
+                                    action={importOrderExpressUrl}
+                                    onChange={this.handleUpload}
+                                >
+                                    <Button>
+                                        <Icon type="upload"/> 订单快递状态
+                                    </Button>
+                                </Upload>
 
-                        <ZZTable
-                            columns={this.columns}
-                            dataSource={dataSource}
-                            pagination={pagination}
-                            loading={loading}
-                            scroll={{x: 3500}}
-                            handlePageChange={this.handlePageChange.bind(this)}
-                        />
+                                <ZZTable
+                                    columns={this.columns}
+                                    dataSource={dataSource}
+                                    pagination={pagination}
+                                    loading={loading}
+                                    scroll={{x: 3500}}
+                                    handlePageChange={this.handlePageChange.bind(this)}
+                                />
+                            </TabPane>
+                            <TabPane tab="导出管理" key="2">
+                                <Button
+                                    icon='download'
+                                    onClick={this.exportExcelTemplate}
+                                    style={{marginBottom: 15, marginRight: 10}}
+                                >Excel模板</Button>
+                                <Button
+                                    icon='download'
+                                    onClick={this.exportMultiPurchase}
+                                    style={{marginBottom: 15, marginRight: 10}}
+                                >客户信息</Button>
+                                <Button
+                                    icon='download'
+                                    onClick={this.exportRegionOrder}
+                                    style={{marginBottom: 15, marginRight: 10}}
+                                >区域订单数据</Button>
+                            </TabPane>
+                        </Tabs>
                     </ZZCard>
                 </div>
                 <Modal

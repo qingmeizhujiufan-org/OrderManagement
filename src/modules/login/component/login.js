@@ -38,7 +38,21 @@ class Login extends React.Component {
                         sessionStorage.setItem('token', backData.token);
                         const loginedUser = backData.loginedUser;
                         if (loginedUser) {
+                            sessionStorage.setItem('expireDate', new Date(new Date().getTime() + 10000000));
+                            sessionStorage.setItem('userId', loginedUser.id);
+                            sessionStorage.setItem('region', loginedUser.region);
+
+                            sessionStorage.setItem('userName', loginedUser.userName);
+                            sessionStorage.setItem('roleId', loginedUser.roleId);
+                            if (loginedUser.assessorys && loginedUser.assessorys.length > 0) {
+                                sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);
+                            }
+
                             ajax.getJSON(roleDetailUrl, {id: loginedUser.roleId}, res => {
+                                this.setState({
+                                    loading: false
+                                });
+
                                 if (res.success) {
                                     const role = res.backData;
                                     let type = null;
@@ -61,22 +75,13 @@ class Login extends React.Component {
                                     Message.error('获取用户权限失败');
                                 }
                             })
-                            sessionStorage.setItem('expireDate', new Date(new Date().getTime() + 10000000));
-                            sessionStorage.setItem('userId', loginedUser.id);
-                            sessionStorage.setItem('region', loginedUser.region);
-
-                            sessionStorage.setItem('userName', loginedUser.userName);
-                            sessionStorage.setItem('roleId', loginedUser.roleId);
-                            if (loginedUser.assessorys && loginedUser.assessorys.length > 0) {
-                                sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);
-                            }
                         }
                     } else {
+                        this.setState({
+                            loading: false
+                        });
                         Message.error('登录失败，请检查用户名及密码！');
                     }
-                    this.setState({
-                        loading: false
-                    });
                 });
             }
         });

@@ -121,5 +121,37 @@ export default {
             return null;
         }
         return val.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');//使用正则替换，每隔三个数加一个','
+    },
+
+    //导出excel文件
+    exportExcel: options => {
+        const {url, method, body} = options;
+        fetch(url, {
+            method: method,
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Auth-Token': sessionStorage.token
+            },
+            body: body
+        }).then(response => {
+            const disposition = response.headers.get('Content-Disposition');
+            let filename;
+            if (disposition && disposition.match(/attachment/)) {
+                filename = disposition.replace(/attachment;filename=/, '').replace(/"/g, '');
+                filename = decodeURIComponent(filename);
+            }
+            filename = filename || 'file.xls';
+            response.blob().then(blob => {
+                const fileUrl = URL.createObjectURL(blob);
+                const saveLink = document.createElement('a');
+                saveLink.href = fileUrl;
+                saveLink.download = filename;
+                let e = new MouseEvent('click');
+                saveLink.dispatchEvent(e);
+                // 使用完ObjectURL后需要及时释放, 否则会浪费浏览器存储区资源.
+                URL.revokeObjectURL(fileUrl);
+            });
+        });
     }
 };
