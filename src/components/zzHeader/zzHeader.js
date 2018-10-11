@@ -71,7 +71,7 @@ class ZZHeader extends React.Component {
                     <Col span={10}>
                     </Col>
                     <Col span={12} style={{textAlign: 'right'}}>
-                        <Badge count={5} title='个人消息' style={{backgroundColor: '#FFC32D'}}>
+                        <Badge dot>
               <span onClick={this.checkMessage}>
                 <Icon type="bell" theme="outlined" style={{fontSize: 20, color: '#fff', verticalAlign: 'text-bottom'}}/>
               </span>

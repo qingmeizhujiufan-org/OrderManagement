@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import assign from 'lodash/assign';
 
 export default {
 
@@ -78,7 +78,7 @@ export default {
     listToTree: (list) => {
         if(list.length === 0) return;
         const _list = [];
-        list.map(item => _list.push(_.assign({}, item)));
+        list.map(item => _list.push(assign({}, item)));
         let arr = [];
         //首先状态顶层节点
         _list.map(item => {

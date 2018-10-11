@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');//html模板
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const autoprefixer = require('autoprefixer');
+const CustomTheme = require('./src/util/customTheme');
 
 const postcssOpts = {
     ident: 'postcss',
@@ -13,13 +14,7 @@ const postcssOpts = {
         autoprefixer({
             browsers: ['last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 8', 'iOS >= 8', 'Android >= 4'],
         }),
-    ],
-    modifyVars: {
-        '@primary-color': '#fc5a59',
-        '@link-color': '#1DA57A',
-        '@border-radius-base': '2px',
-    },
-    javascriptEnabled: true,
+    ]
 };
 
 module.exports = {
@@ -97,14 +92,7 @@ module.exports = {
                         {loader: 'postcss-loader', options: postcssOpts},
                         {
                             loader: 'less-loader',
-                            options: {
-                                modifyVars: {
-                                    '@primary-color': '#5578DC',
-                                    '@link-color': '#5578DC',
-                                    '@border-radius-base': '2px',
-                                },
-                                javascriptEnabled: true,
-                            }
+                            options: CustomTheme
                         },
                     ]
                 })

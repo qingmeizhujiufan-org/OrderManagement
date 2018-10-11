@@ -164,7 +164,7 @@ class ZZLeftSide extends React.Component {
                 trigger={null}
                 collapsible
                 collapsed={collapsed}
-                width={256}
+                width={200}
                 className="left-side"
             >
                 <div className="logo">
