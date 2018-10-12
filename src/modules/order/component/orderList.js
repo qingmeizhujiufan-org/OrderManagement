@@ -69,7 +69,10 @@ class ExcelTemplate extends React.Component {
         Util.exportExcel({
           url: exportExcelTemplateUrl + '?type=2',
           method: 'GET',
-          body: null
+          body: null,
+          error: function() {
+            Message.error('Excel模板导出失败');
+          }
         });
       }
     })
@@ -109,7 +112,10 @@ class MultiPurchase extends React.Component {
         Util.exportExcel({
           url: exportMultiPurchaseUrl,
           method: 'POST',
-          body: JSON.stringify(values)
+          body: JSON.stringify(values),
+          error: function() {
+            Message.error('客户信息导出失败');
+          }
         });
       }
     })
@@ -178,7 +184,10 @@ class RegionOrder extends React.Component {
         Util.exportExcel({
           url: exportRegionOrderUrl,
           method: 'POST',
-          body: JSON.stringify(values)
+          body: JSON.stringify(values),
+          error: function() {
+            Message.error('区域订单数据导出失败');
+          }
         });
       }
     })
@@ -549,7 +558,10 @@ class OrderList extends React.Component {
     Util.exportExcel({
       url: exportOrderUrl,
       method: 'POST',
-      body: JSON.stringify({orderNature: '热线', deliverMonth: '2018-09'})
+      body: JSON.stringify(values),
+      error: function() {
+        Message.error('导出订单失败');
+      }
     });
   }
 
