@@ -95,9 +95,6 @@ class ProductList extends React.Component {
                         overlay={
                             <Menu>
                                 <Menu.Item>
-                                    <Link to={this.onDetail(record.id)}>查看</Link>
-                                </Menu.Item>
-                                <Menu.Item>
                                     <Link to={this.onEdit(record.id)}>编辑</Link>
                                 </Menu.Item>
                                 <Menu.Item>

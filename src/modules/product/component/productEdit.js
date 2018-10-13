@@ -14,6 +14,7 @@ import {
     InputNumber
 } from 'antd';
 import ajax from 'Utils/ajax';
+import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
 import '../index.less';
 
@@ -22,11 +23,6 @@ const queryDetailUrl = restUrl.BASE_HOST + 'product/findbyid';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-
-const formItemLayout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 12},
-};
 
 class Index extends React.Component {
     constructor(props) {
@@ -82,7 +78,7 @@ class Index extends React.Component {
 
                         return this.context.router.push('/frame/product/list');
                     } else {
-                        message.error(data.backMsg);
+                        Message.error(data.backMsg);
                     }
 
                     this.setState({
@@ -114,7 +110,7 @@ class Index extends React.Component {
                         <Spin spinning={loading} size='large'>
                             <Form onSubmit={this.handleSubmit}>
                                 <Row>
-                                    <Col span={12}>
+                                    <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
                                             label="所属仓库"
@@ -130,7 +126,7 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                    <Col span={12}>
+                                    <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
                                             label="产品条码"
@@ -143,9 +139,7 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                </Row>
-                                <Row>
-                                    <Col span={12}>
+                                    <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
                                             label="产品名称"
@@ -158,7 +152,7 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                    <Col span={12}>
+                                    <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
                                             label="产品单位"
@@ -171,9 +165,7 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                </Row>
-                                <Row>
-                                    <Col span={12}>
+                                    <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
                                             label="成本价格"
@@ -191,7 +183,7 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                    <Col span={12}>
+                                    <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
                                             label="备注"
@@ -204,9 +196,7 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                </Row>
-                                <Row>
-                                    <Col span={12}>
+                                    <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
                                             label="创建时间"
