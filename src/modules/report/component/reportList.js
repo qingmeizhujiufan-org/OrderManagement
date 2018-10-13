@@ -8,8 +8,13 @@ import {
     Breadcrumb,
     Notification,
     Message,
-    Button
+    Button,
+    DatePicker
 } from 'antd';
+import {
+    Bar,
+    Pie,
+} from 'Comps/Charts';
 import assign from "lodash.assign";
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
@@ -18,6 +23,8 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from "Utils/util";
 
 const TabPane = Tabs.TabPane;
+const {RangePicker} = DatePicker;
+const dateFormat = 'YYYY/MM/DD';
 
 const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
 const delUrl = restUrl.BASE_HOST + 'order/delete';
@@ -180,7 +187,8 @@ class OrderList extends React.Component {
                 pageSize: 10,
             },
             keyWords: '123',
-            searchKey: {}
+            searchKey: {},
+            periodData: []
         };
     }
 
@@ -201,13 +209,20 @@ class OrderList extends React.Component {
                     const backData = data.backData;
                     const dataSource = backData.content;
                     const total = backData.totalElements;
+                    const periodData = [];
                     dataSource.map(item => {
                         item.key = item.id;
+
+                        periodData.push({
+                            x: item.region,
+                            y: item.totalAmount
+                        })
                     });
 
                     this.setState({
                         dataSource,
-                        pagination: {total}
+                        pagination: {total},
+                        periodData
                     });
                 } else {
                     this.setState({
@@ -224,7 +239,8 @@ class OrderList extends React.Component {
 
     render() {
 
-        const {dataSource, pagination, loading, keyWords} = this.state;
+        const {dataSource, loading, periodData} = this.state;
+        console.log('periodData === ', periodData);
 
         return (
             <div className="zui-content page-newsList">
@@ -244,11 +260,17 @@ class OrderList extends React.Component {
                                 <Row>
                                     <Col span={14}>
                                         <ZZCard>
-                                            <Button
-                                                icon='download'
-                                                onClick={this.outOrderList}
-                                                style={{marginBottom: 15}}
-                                            >导出表格</Button>
+                                            <div style={{marginBottom: 15}}>
+                                                <RangePicker
+                                                    format={dateFormat}
+                                                />
+                                                <Button
+                                                    type='primary'
+                                                    icon='download'
+                                                    onClick={this.outOrderList}
+                                                    style={{marginLeft: 15}}
+                                                >导出表格</Button>
+                                            </div>
                                             <ZZTable
                                                 columns={this.dateColumns}
                                                 dataSource={dataSource}
@@ -256,14 +278,9 @@ class OrderList extends React.Component {
                                             />
                                         </ZZCard>
                                     </Col>
-                                    <Col span={8}>
+                                    <Col span={10}>
                                         <ZZCard>
-                                            <Button
-                                                icon='download'
-                                                onClick={this.outOrderList}
-                                                style={{marginBottom: 15}}
-                                            >导出图表</Button>
-                                            <div>是是是</div>
+                                            <Bar height={418} data={periodData}/>
                                         </ZZCard>
                                     </Col>
                                 </Row>
@@ -314,12 +331,6 @@ class OrderList extends React.Component {
                                     </Col>
                                     <Col span={8}>
                                         <ZZCard>
-                                            <Button
-                                                icon='download'
-                                                onClick={this.outOrderList}
-                                                style={{marginBottom: 15}}
-                                            >导出图表</Button>
-                                            <div>是是是</div>
                                         </ZZCard>
                                     </Col>
                                 </Row>
