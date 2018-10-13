@@ -189,14 +189,13 @@ class DetailForm extends React.Component {
     const {getFieldDecorator} = this.props.form;
     const {data, fileList, imageUrl, roleList, roleLoading, submitLoading} = this.state;
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form layout="vertical" hideRequiredMark onSubmit={this.handleSubmit}>
         <Row type="flex" justify="center">
           <Col span={8}>
-            <Row justify='center'>
-              <Col>
+            <Row>
+              <Col span={20}>
                 <FormItem
                   label="角色选择"
-                  {...formItemLayout}
                 >
                   <Spin spinning={roleLoading} indicator={<Icon type="loading"/>}>
                     {getFieldDecorator('roleId', {
@@ -216,10 +215,9 @@ class DetailForm extends React.Component {
                 </FormItem>
               </Col>
             </Row>
-            <Row justify='center'>
-              <Col>
+            <Row>
+              <Col span={20}>
                 <FormItem
-                  {...formItemLayout}
                   label="用户名"
                 >
                   {getFieldDecorator('userName', {
@@ -231,10 +229,9 @@ class DetailForm extends React.Component {
                 </FormItem>
               </Col>
             </Row>
-            <Row justify='center'>
-              <Col>
+            <Row>
+              <Col span={20}>
                 <FormItem
-                  {...formItemLayout}
                   label="个人电话"
                 >
                   {getFieldDecorator('phone', {
@@ -246,10 +243,9 @@ class DetailForm extends React.Component {
                 </FormItem>
               </Col>
             </Row>
-            <Row justify='center'>
-              <Col>
+            <Row>
+              <Col span={20}>
                 <FormItem
-                  {...formItemLayout}
                   label="所属区域"
                 >
                   {getFieldDecorator('region', {
@@ -261,10 +257,9 @@ class DetailForm extends React.Component {
                 </FormItem>
               </Col>
             </Row>
-            <Row justify='center'>
-              <Col>
+            <Row>
+              <Col span={20}>
                 <FormItem
-                  {...formItemLayout}
                   label="创建时间"
                 >
                   {getFieldDecorator('createTime', {
@@ -279,7 +274,7 @@ class DetailForm extends React.Component {
           </Col>
           <Col span={6}>
             <FormItem
-              {...formItemLayout}
+              label="头像"
             >
               {getFieldDecorator('assessorys', {
                 valuePropName: 'fileList',
