@@ -12,9 +12,13 @@ import {
     DatePicker
 } from 'antd';
 import {
-    Bar,
-    Pie,
-} from 'Comps/Charts';
+    Chart,
+    Geom,
+    Axis,
+    Tooltip,
+    Legend,
+} from "bizcharts";
+import DataSet from "@antv/data-set";
 import assign from "lodash.assign";
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
@@ -238,9 +242,50 @@ class OrderList extends React.Component {
     }
 
     render() {
-
         const {dataSource, loading, periodData} = this.state;
-        console.log('periodData === ', periodData);
+        // console.log('periodData === ', periodData);
+        const data = [
+            {
+                name: "热线",
+                "一区": 18.9,
+                "二区": 28.8,
+                "三区": 39.3,
+                "四区": 81.4,
+                "五区": 47,
+                "六区": 20.3,
+                "七区": 24,
+            },
+            {
+                name: "回访",
+                "一区": 12.4,
+                "二区": 23.2,
+                "三区": 34.5,
+                "四区": 99.7,
+                "五区": 52.6,
+                "六区": 35.5,
+                "七区": 37.4
+            },
+            {
+                name: "复购",
+                "一区": 12.4,
+                "二区": 23.2,
+                "三区": 34.5,
+                "四区": 99.7,
+                "五区": 52.6,
+                "六区": 35.5,
+                "七区": 37.4
+            }
+        ];
+        const ds = new DataSet();
+        const dv = ds.createView().source(data);
+        dv.transform({
+            type: "fold",
+            fields: ["一区", "二区", "三区", "四区", "五区", "六区", "七区"],
+            // 展开字段集
+            key: "月份",
+            // key字段
+            value: "月均降雨量" // value字段
+        });
 
         return (
             <div className="zui-content page-newsList">
@@ -258,7 +303,7 @@ class OrderList extends React.Component {
                         <Tabs defaultActiveKey="1">
                             <TabPane tab={<span><Icon type="clock-circle"/>时间段</span>} key="1">
                                 <Row>
-                                    <Col span={14}>
+                                    <Col span={12}>
                                         <ZZCard>
                                             <div style={{marginBottom: 15}}>
                                                 <RangePicker
@@ -278,9 +323,23 @@ class OrderList extends React.Component {
                                             />
                                         </ZZCard>
                                     </Col>
-                                    <Col span={10}>
-                                        <ZZCard>
-                                            <Bar height={418} data={periodData}/>
+                                    <Col span={12}>
+                                        <ZZCard title={'各区订单性质堆叠柱状图'}>
+                                            <Chart height={500} data={dv} forceFit>
+                                                <Legend/>
+                                                <Axis name="月份"/>
+                                                <Axis name="月均降雨量"/>
+                                                <Tooltip/>
+                                                <Geom
+                                                    type="intervalStack"
+                                                    position="月份*月均降雨量"
+                                                    color={"name"}
+                                                    style={{
+                                                        stroke: "#fff",
+                                                        lineWidth: 1
+                                                    }}
+                                                />
+                                            </Chart>
                                         </ZZCard>
                                     </Col>
                                 </Row>
