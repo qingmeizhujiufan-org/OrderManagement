@@ -12,14 +12,10 @@ import {
     DatePicker
 } from 'antd';
 import {
-    Chart,
-    Geom,
-    Axis,
-    Tooltip,
-    Legend,
-} from "bizcharts";
-import DataSet from "@antv/data-set";
-import assign from "lodash.assign";
+    Bar,
+    Pie,
+} from 'Comps/Charts';
+import find from "lodash/find";
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
 import '../index.less';
@@ -30,8 +26,7 @@ const TabPane = Tabs.TabPane;
 const {RangePicker} = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 
-const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
-const delUrl = restUrl.BASE_HOST + 'order/delete';
+const regionOrderUrl = restUrl.BASE_HOST + 'order/regionOrder';
 const exportOrderUrl = restUrl.BASE_HOST + 'order/exportOrder';
 
 class OrderList extends React.Component {
@@ -53,11 +48,23 @@ class OrderList extends React.Component {
                             children: value,
                             props: {},
                         };
-                        if (index % 3 === 0) {
-                            obj.props.rowSpan = 3;
+                        const totalLineList = this.state.totalLineList;
+
+                        const _cur = find(totalLineList, {startIndex: index});
+                        if (_cur) {
+                            obj.props.rowSpan = _cur.rowspan;
                         } else {
                             obj.props.rowSpan = 0;
                         }
+
+                        // const _total = find(totalLineList, {index: index});
+                        // if (_total) {
+                        //     obj.props.rowSpan = 0;
+                        //     obj.props.colSpan = 0;
+                        // } else {
+                        //     obj.props.colSpan = 1;
+                        // }
+
                         return obj;
                     }
                 }, {
@@ -65,17 +72,33 @@ class OrderList extends React.Component {
                     width: 100,
                     align: 'center',
                     dataIndex: 'orderNature',
-                    key: 'orderNature'
+                    key: 'orderNature',
+                    // render: (value, row, index) => {
+                    //     const obj = {
+                    //         children: value,
+                    //         props: {},
+                    //     };
+                    //     const totalLineList = this.state.totalLineList;
+                    //
+                    //     const _total = find(totalLineList, {index: index});
+                    //     if (_total) {
+                    //         obj.props.colSpan = 1;
+                    //     } else {
+                    //         obj.props.colSpan = 1;
+                    //     }
+                    //
+                    //     return obj;
+                    // }
                 }, {
                     title: '单数',
                     width: 100,
-                    align: 'center',
-                    dataIndex: 'count',
-                    key: 'count',
+                    align: 'right',
+                    dataIndex: 'orderNum',
+                    key: 'orderNum',
                 }, {
                     title: '定金',
                     width: 100,
-                    align: 'center',
+                    align: 'right',
                     dataIndex: 'depositAmout',
                     key: 'depositAmout',
                     render: (text, record, index) => (
@@ -84,7 +107,7 @@ class OrderList extends React.Component {
                 }, {
                     title: '代收金额',
                     width: 100,
-                    align: 'center',
+                    align: 'right',
                     dataIndex: 'collectionAmout',
                     key: 'collectionAmout',
                     render: (text, record, index) => (
@@ -93,7 +116,7 @@ class OrderList extends React.Component {
                 }, {
                     title: '总金额',
                     width: 100,
-                    align: 'center',
+                    align: 'right',
                     dataIndex: 'totalAmount',
                     key: 'totalAmount',
                     render: (text, record, index) => (
@@ -102,7 +125,7 @@ class OrderList extends React.Component {
                 }, {
                     title: '货物成本',
                     width: 100,
-                    align: 'center',
+                    align: 'right',
                     dataIndex: 'costAmount',
                     key: 'costAmount',
                     render: (text, record, index) => (
@@ -185,7 +208,7 @@ class OrderList extends React.Component {
         this.state = {
             loading: false,
             dataSource: [],
-            pagination: {},
+            totalLineList: [],
             params: {
                 pageNumber: 1,
                 pageSize: 10,
@@ -204,34 +227,54 @@ class OrderList extends React.Component {
     }
 
     queryList = () => {
-        const {params, searchKey} = this.state;
-        const param = assign({}, params, searchKey);
+        const param = {
+            deliverBeginDate: '2018-09-01',
+            deliverEndDate: '2018-10-13'
+        };
         this.setState({loading: true});
-        ajax.getJSON(queryListUrl, param, data => {
+        ajax.postJSON(regionOrderUrl, JSON.stringify(param), data => {
             if (data.success) {
                 if (data.backData) {
-                    const backData = data.backData;
-                    const dataSource = backData.content;
-                    const total = backData.totalElements;
+                    const dataSource = data.backData;
                     const periodData = [];
-                    dataSource.map(item => {
+                    const totalLineList = [];
+                    dataSource.map((item, index) => {
                         item.key = item.id;
-
-                        periodData.push({
-                            x: item.region,
-                            y: item.totalAmount
-                        })
+                        if (item.orderNature === '合计' || item.region === '总计') {
+                            totalLineList.push({
+                                title: item.region,
+                                index,
+                                totalAmount: item.totalAmount
+                            });
+                        }
                     });
+                    totalLineList.map((item, index) => {
+                        if (index === 0) {
+                            item.startIndex = 0;
+                            item.rowspan = item.index + 1;
+                        } else {
+                            item.startIndex = totalLineList[index - 1].index + 1;
+                            item.rowspan = item.index - totalLineList[index - 1].index;
+                        }
+
+                        if (index !== totalLineList.length - 1) {
+                            periodData.push({
+                                x: item.title,
+                                y: item.totalAmount
+                            });
+                        }
+                    });
+                    console.log('totalLineList == ', totalLineList);
+                    console.log('periodData == ', periodData);
 
                     this.setState({
                         dataSource,
-                        pagination: {total},
+                        totalLineList,
                         periodData
                     });
                 } else {
                     this.setState({
-                        dataSource: [],
-                        pagination: {total: 0}
+                        dataSource: []
                     });
                 }
             } else {
@@ -243,52 +286,9 @@ class OrderList extends React.Component {
 
     render() {
         const {dataSource, loading, periodData} = this.state;
-        // console.log('periodData === ', periodData);
-        const data = [
-            {
-                name: "热线",
-                "一区": 18.9,
-                "二区": 28.8,
-                "三区": 39.3,
-                "四区": 81.4,
-                "五区": 47,
-                "六区": 20.3,
-                "七区": 24,
-            },
-            {
-                name: "回访",
-                "一区": 12.4,
-                "二区": 23.2,
-                "三区": 34.5,
-                "四区": 99.7,
-                "五区": 52.6,
-                "六区": 35.5,
-                "七区": 37.4
-            },
-            {
-                name: "复购",
-                "一区": 12.4,
-                "二区": 23.2,
-                "三区": 34.5,
-                "四区": 99.7,
-                "五区": 52.6,
-                "六区": 35.5,
-                "七区": 37.4
-            }
-        ];
-        const ds = new DataSet();
-        const dv = ds.createView().source(data);
-        dv.transform({
-            type: "fold",
-            fields: ["一区", "二区", "三区", "四区", "五区", "六区", "七区"],
-            // 展开字段集
-            key: "月份",
-            // key字段
-            value: "月均降雨量" // value字段
-        });
 
         return (
-            <div className="zui-content page-newsList">
+            <div className="zui-content">
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
@@ -302,7 +302,7 @@ class OrderList extends React.Component {
                     <div className='ibox-content'>
                         <Tabs defaultActiveKey="1">
                             <TabPane tab={<span><Icon type="clock-circle"/>时间段</span>} key="1">
-                                <Row>
+                                <Row gutter={24}>
                                     <Col span={12}>
                                         <ZZCard>
                                             <div style={{marginBottom: 15}}>
@@ -324,22 +324,8 @@ class OrderList extends React.Component {
                                         </ZZCard>
                                     </Col>
                                     <Col span={12}>
-                                        <ZZCard title={'各区订单性质堆叠柱状图'}>
-                                            <Chart height={500} data={dv} forceFit>
-                                                <Legend/>
-                                                <Axis name="月份"/>
-                                                <Axis name="月均降雨量"/>
-                                                <Tooltip/>
-                                                <Geom
-                                                    type="intervalStack"
-                                                    position="月份*月均降雨量"
-                                                    color={"name"}
-                                                    style={{
-                                                        stroke: "#fff",
-                                                        lineWidth: 1
-                                                    }}
-                                                />
-                                            </Chart>
+                                        <ZZCard title={'近一个月各区累计总金额柱状图'}>
+                                            <Bar height={500} data={periodData}/>
                                         </ZZCard>
                                     </Col>
                                 </Row>
