@@ -24,13 +24,10 @@ class ZZTable extends React.Component {
     }
 
     componentWillReceiveProps = nextProps => {
-        if (('dataSource' in nextProps && nextProps.dataSource.length !== this.props.dataSource.length)
-            || ('pagination' in nextProps && isEqual(nextProps.pagination, this.props.pagination) !== true)) {
-            this.setState({
-                _dataSource: nextProps.dataSource,
-                _pagination: nextProps.pagination
-            });
-        }
+        this.setState({
+            _dataSource: nextProps.dataSource,
+            _pagination: nextProps.pagination
+        });
     }
 
     setData = () => {

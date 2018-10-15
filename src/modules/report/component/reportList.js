@@ -32,6 +32,7 @@ const dateFormat = 'YYYY/MM/DD';
 
 const regionOrderUrl = restUrl.BASE_HOST + 'order/regionOrder';
 const exportRegionOrderUrl = restUrl.BASE_HOST + 'order/exportRegionOrder';
+const countPeriodOrderUrl = restUrl.BASE_HOST + 'order/countPeriodOrder';
 
 class Index extends React.Component {
     constructor(props) {
@@ -191,8 +192,9 @@ class Index extends React.Component {
         ];
 
         this.state = {
-            loading: false,
+            loading: true,
             submitLoading: false,
+            periodLoading: false,
             dataSource: [],
             totalLineList: [],
             periodData: []
@@ -203,6 +205,87 @@ class Index extends React.Component {
     }
 
     componentDidMount = () => {
+        this.queryList({
+            deliverBeginDate: moment().add('year', 0).month(moment().month()).startOf('month').format("YYYY-MM-DD"),
+            deliverEndDate: moment().add('year', 0).month(moment().month()).endOf('month').format("YYYY-MM-DD")
+        }, () => {
+            this.setState({loading: false});
+        })
+        this.queryBarData();
+    }
+
+    queryList = (param, endLoading) => {
+        ajax.postJSON(regionOrderUrl, JSON.stringify(param), data => {
+            if (data.success) {
+                if (data.backData) {
+                    const dataSource = data.backData;
+                    const totalLineList = [];
+                    dataSource.map((item, index) => {
+                        item.key = item.id;
+                        if (item.orderNature === '合计' || item.region === '总计') {
+                            totalLineList.push({
+                                title: item.region,
+                                index,
+                                totalAmount: item.totalAmount
+                            });
+                        }
+                    });
+                    totalLineList.map((item, index) => {
+                        if (index === 0) {
+                            item.startIndex = 0;
+                            item.rowspan = item.index + 1;
+                        } else {
+                            item.startIndex = totalLineList[index - 1].index + 1;
+                            item.rowspan = item.index - totalLineList[index - 1].index;
+                        }
+                    });
+
+                    this.setState({
+                        dataSource,
+                        totalLineList
+                    });
+                } else {
+                    this.setState({
+                        dataSource: []
+                    });
+                }
+            } else {
+                Message.error(data.backMsg);
+            }
+            endLoading();
+        });
+    }
+
+    queryBarData = () => {
+        const param = {
+            deliverBeginDate: moment().add('year', 0).month(moment().month()).startOf('month').format("YYYY-MM-DD"),
+            deliverEndDate: moment().add('year', 0).month(moment().month()).endOf('month').format("YYYY-MM-DD")
+        };
+        this.setState({
+            periodLoading: true
+        });
+        ajax.postJSON(countPeriodOrderUrl, JSON.stringify(param), data => {
+            if (data.success) {
+                if (data.backData) {
+                    const backData = data.backData;
+                    const periodData = [];
+
+                    backData.map(item => {
+                        periodData.push({
+                            x: item.region,
+                            y: item.totalAmount
+                        });
+                    });
+
+                    this.setState({
+                        periodData
+                    });
+                }
+            } else {
+                Message.error(data.backMsg);
+            }
+            this.setState({periodLoading: false});
+        });
     }
 
     handleSubmit = (e) => {
@@ -210,61 +293,11 @@ class Index extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('handleSubmit  values === ', values);
-                const param = {
+                this.setState({submitLoading: true});
+                this.queryList({
                     deliverBeginDate: values.deliverDate[0].format("YYYY-MM-DD"),
                     deliverEndDate: values.deliverDate[1].format("YYYY-MM-DD")
-                };
-                this.setState({
-                    submitLoading: true
-                });
-                ajax.postJSON(regionOrderUrl, JSON.stringify(param), data => {
-                    if (data.success) {
-                        if (data.backData) {
-                            const dataSource = data.backData;
-                            const periodData = [];
-                            const totalLineList = [];
-                            dataSource.map((item, index) => {
-                                item.key = item.id;
-                                if (item.orderNature === '合计' || item.region === '总计') {
-                                    totalLineList.push({
-                                        title: item.region,
-                                        index,
-                                        totalAmount: item.totalAmount
-                                    });
-                                }
-                            });
-                            totalLineList.map((item, index) => {
-                                if (index === 0) {
-                                    item.startIndex = 0;
-                                    item.rowspan = item.index + 1;
-                                } else {
-                                    item.startIndex = totalLineList[index - 1].index + 1;
-                                    item.rowspan = item.index - totalLineList[index - 1].index;
-                                }
-
-                                if (index !== totalLineList.length - 1) {
-                                    periodData.push({
-                                        x: item.title,
-                                        y: item.totalAmount
-                                    });
-                                }
-                            });
-                            console.log('totalLineList == ', totalLineList);
-                            console.log('periodData == ', periodData);
-
-                            this.setState({
-                                dataSource,
-                                totalLineList,
-                                periodData
-                            });
-                        } else {
-                            this.setState({
-                                dataSource: []
-                            });
-                        }
-                    } else {
-                        Message.error('查询列表失败');
-                    }
+                }, () => {
                     this.setState({submitLoading: false});
                 });
             }
@@ -292,10 +325,12 @@ class Index extends React.Component {
 
     render() {
         const {getFieldDecorator, getFieldsValue} = this.props.form;
-        const {dataSource, loading, submitLoading, periodData} = this.state;
+        const {dataSource, loading, submitLoading, periodLoading, periodData} = this.state;
 
         const values = getFieldsValue();
-        let title = '时间段: -- 的订单数据';
+        const deliverBeginDate = moment().add('year', 0).month(moment().month()).startOf('month').format("YYYY-MM-DD");
+        const deliverEndDate = moment().add('year', 0).month(moment().month()).endOf('month').format("YYYY-MM-DD");
+        let title = `时间段:${deliverBeginDate}-${deliverEndDate}的订单数据`;
         if (values.deliverDate) {
             title = `时间段:${values.deliverDate[0].format("YYYYMMDD")}-${values.deliverDate[1].format("YYYYMMDD")}的订单数据`;
         }
@@ -316,32 +351,39 @@ class Index extends React.Component {
                         <Tabs defaultActiveKey="1">
                             <TabPane tab={<span><Icon type="clock-circle"/>时间段</span>} key="1">
                                 <Row gutter={24}>
-                                    <Col span={16}>
-                                        <ZZCard>
-                                            <Form layout="inline" onSubmit={this.handleSubmit}
-                                                  style={{marginBottom: 15}}>
-                                                <FormItem>
-                                                    {getFieldDecorator('deliverDate', {
-                                                        rules: [{required: true, message: '请选择日期区间'}]
-                                                    })(
-                                                        <RangePicker
-                                                            format={dateFormat}
-                                                        />
-                                                    )}
-                                                </FormItem>
-                                                <FormItem>
-                                                    <Button
-                                                        type="primary"
-                                                        htmlType="submit"
-                                                        loading={submitLoading}
-                                                    >查询数据</Button>
-                                                    <Button
-                                                        icon='download'
-                                                        onClick={this.exportRegionOrder}
-                                                        style={{marginLeft: 15}}
-                                                    >导出表格</Button>
-                                                </FormItem>
-                                            </Form>
+                                    <Col>
+                                        <ZZCard
+                                            title={(
+                                                <Form layout="inline" onSubmit={this.handleSubmit}>
+                                                    <FormItem>
+                                                        {getFieldDecorator('deliverDate', {
+                                                            rules: [{required: true, message: '请选择日期区间'}],
+                                                            initialValue: [
+                                                                moment().add('year', 0).month(moment().month()).startOf('month'),
+                                                                moment().add('year', 0).month(moment().month()).endOf('month')
+                                                            ]
+                                                        })(
+                                                            <RangePicker
+                                                                format={dateFormat}
+                                                            />
+                                                        )}
+                                                    </FormItem>
+                                                    <FormItem>
+                                                        <Button
+                                                            type="primary"
+                                                            htmlType="submit"
+                                                            loading={submitLoading}
+                                                        >查询数据</Button>
+                                                        <Button
+                                                            icon='download'
+                                                            onClick={this.exportRegionOrder}
+                                                            style={{marginLeft: 15}}
+                                                        >导出表格</Button>
+                                                    </FormItem>
+                                                </Form>
+                                            )}
+                                            loading={loading}
+                                        >
                                             <div
                                                 style={{
                                                     padding: 10,
@@ -354,20 +396,15 @@ class Index extends React.Component {
                                             <ZZTable
                                                 columns={this.dateColumns}
                                                 dataSource={dataSource}
-                                                loading={loading}
+                                                loading={submitLoading}
                                             />
-                                        </ZZCard>
-                                    </Col>
-                                    <Col span={8}>
-                                        <ZZCard title={'近一个月各区累计总金额柱状图'}>
-                                            <Bar height={350} data={periodData}/>
                                         </ZZCard>
                                     </Col>
                                 </Row>
                             </TabPane>
                             <TabPane tab={<span><Icon type="dollar"/>购买多次</span>} key="2">
                                 <Row>
-                                    <Col span={14}>
+                                    <Col span={12}>
                                         <ZZCard>
                                             <Button
                                                 icon='download'
@@ -381,8 +418,8 @@ class Index extends React.Component {
                                             />
                                         </ZZCard>
                                     </Col>
-                                    <Col span={8}>
-                                        <ZZCard>
+                                    <Col span={10}>
+                                        <ZZCard loading={periodLoading}>
                                             <Button
                                                 icon='download'
                                                 onClick={this.outOrderList}
@@ -395,6 +432,25 @@ class Index extends React.Component {
                             </TabPane>
                         </Tabs>
                     </div>
+                    <Row gutter={24} style={{marginTop: 24}}>
+                        <Col span={17}>
+                            <ZZCard title={'近一个月各区累计总金额柱状图'} loading={periodLoading}>
+                                <Bar height={350} data={periodData} color='#5578DC'/>
+                            </ZZCard>
+                        </Col>
+                        <Col span={7}>
+                            <ZZCard title={'近一个月各区累计总金额扇形图'} loading={periodLoading}>
+                                <Pie
+                                    subTitle="总计"
+                                    total={periodData.reduce((total, now) => total + now.y, 0)}
+                                    data={periodData}
+                                    height={344}
+                                    lineWidth={4}
+                                    colors={['#FAD337', '#4DCA73', '#5CDECF', '#39A0FF', '#9C91DB', '#425088', '#E9A574']}
+                                />
+                            </ZZCard>
+                        </Col>
+                    </Row>
                 </div>
             </div>
         );
