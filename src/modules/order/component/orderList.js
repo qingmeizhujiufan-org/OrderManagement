@@ -419,7 +419,7 @@ class OrderList extends React.Component {
             }, {
                 title: '订单状态',
                 width: 120,
-                align: 'center',
+                align: 'left',
                 fixed: 'right',
                 dataIndex: 'orderState',
                 key: 'orderState',
@@ -433,7 +433,7 @@ class OrderList extends React.Component {
                 title: '快递状态',
                 width: 120,
                 fixed: 'right',
-                align: 'center',
+                align: 'left',
                 dataIndex: 'expressState',
                 key: 'expressState',
                 render: (text, record, index) => {

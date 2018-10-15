@@ -24,7 +24,7 @@ import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 import {message} from "antd/lib/index";
-import _ from "lodash";
+import assign from "lodash/assign";
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 
 const orderAddUrl = restUrl.BASE_HOST + 'order/save';
@@ -253,7 +253,7 @@ class Index extends React.Component {
 
     // 处理分页变化
     handlePageChange = param => {
-        const params = _.assign({}, this.state.params, param);
+        const params = assign({}, this.state.params, param);
         this.setState({params}, () => {
             this.getList();
         });
