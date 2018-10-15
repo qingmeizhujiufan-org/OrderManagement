@@ -71,12 +71,12 @@ class ZZHeader extends React.Component {
                     <Col span={10}>
                     </Col>
                     <Col span={12} style={{textAlign: 'right'}}>
-                        <Badge dot>
-              <span onClick={this.checkMessage}>
-                <Icon type="bell" theme="outlined" style={{fontSize: 20, color: '#fff', verticalAlign: 'text-bottom'}}/>
-              </span>
-                        </Badge>
-                        <Divider type="vertical" style={{margin: '0 30px'}}/>
+                        {/*<Badge dot>*/}
+              {/*<span onClick={this.checkMessage}>*/}
+                {/*<Icon type="bell" theme="outlined" style={{fontSize: 20, color: '#fff', verticalAlign: 'text-bottom'}}/>*/}
+              {/*</span>*/}
+                        {/*</Badge>*/}
+                        {/*<Divider type="vertical" style={{margin: '0 30px'}}/>*/}
                         <Dropdown overlay={this.menu}>
                             <a className="ant-dropdown-link" style={{color: '#fff'}}>
                                 <Avatar

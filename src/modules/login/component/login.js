@@ -6,6 +6,7 @@ import ajax from 'Utils/ajax';
 import '../login.less';
 
 import loginBg from 'Img/login-bg.jpg';
+import Logo from 'Img/logo.png';
 
 const FormItem = Form.Item;
 
@@ -98,7 +99,8 @@ class Login extends React.Component {
                     <Row>
                         <Col span={13} style={{height: '400px', backgroundColor: 'rgba(85, 120, 220, .65)'}}>
                             <div style={{margin: '85px 0 40px', textAlign: 'center'}}>
-                                <Icon type="windows" theme='filled' style={{fontSize: 90, color: '#fff'}}/>
+                                {/*<Icon type="windows" theme='filled' style={{fontSize: 90, color: '#fff'}}/>*/}
+                                <img src={Logo} style={{width: '70%'}}/>
                             </div>
                             <div
                                 style={{paddingTop: 30, textAlign: 'center', fontSize: 20, color: '#fff'}}>订单管理系统

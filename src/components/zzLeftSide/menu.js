@@ -1,62 +1,62 @@
 const Menu = [
     {
         key: '1',
-        iconType: 'idcard',
-        label: '用户管理',
-        children: [
-            {
-                key: '1_1',
-                link: '/frame/user/list',
-                label: '用户列表'
-            }, {
-                key: '1_2',
-                link: '/frame/user/add',
-                label: '新增用户'
-            }
-        ]
-    }, {
-        key: '2',
-        iconType: 'file-search',
-        label: '产品管理',
-        children: [
-            {
-                key: '2_1',
-                link: '/frame/product/list',
-                label: '产品列表'
-            }, {
-                key: '2_2',
-                link: '/frame/product/add',
-                label: '新增产品'
-            }
-        ]
-    }, {
-        key: '3',
         iconType: 'file-text',
         label: '订单管理',
         children: [
             {
-                key: '3_1',
+                key: '1_1',
                 link: '/frame/order/list',
                 label: '订单列表'
             }, {
-                key: '3_2',
+                key: '1_2',
                 link: '/frame/order/add',
                 label: '新增订单'
             }, {
-                key: '3_3',
+                key: '1_3',
                 link: '/frame/order/sender',
                 label: '寄件信息列表'
             }
         ]
     }, {
-        key: '4',
+        key: '2',
         iconType: 'area-chart',
         label: '报表管理',
         children: [
             {
-                key: '4_1',
+                key: '2_1',
                 link: '/frame/report/list',
                 label: '报表'
+            }
+        ]
+    }, {
+        key: '3',
+        iconType: 'file-search',
+        label: '产品管理',
+        children: [
+            {
+                key: '3_1',
+                link: '/frame/product/list',
+                label: '产品列表'
+            }, {
+                key: '3_2',
+                link: '/frame/product/add',
+                label: '新增产品'
+            }
+        ]
+    }, {
+        key: '4',
+        iconType: 'idcard',
+        label: '用户管理',
+        children: [
+            {
+                key: '4_1',
+                link: '/frame/user/list',
+                label: '用户列表'
+            }, {
+                key: '4_2',
+                link: '/frame/user/add',
+                label: '新增用户'
             }
         ]
     }, {
