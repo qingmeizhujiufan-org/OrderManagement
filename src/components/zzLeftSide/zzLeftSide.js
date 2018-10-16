@@ -8,6 +8,8 @@ import {admin, subAdmin, operator} from './authority';
 import menuTree from './menu';
 import './zzLeftSide.less';
 
+import Logo from 'Img/logo.png';
+
 const {Sider} = Layout;
 const SubMenu = Menu.SubMenu;
 
@@ -169,7 +171,7 @@ class ZZLeftSide extends React.Component {
             >
                 <div className="logo">
                     <Link to="/frame/user/list">
-                        <h1>ADMIN</h1>
+                        <h1><img src={Logo}/></h1>
                     </Link>
                 </div>
                 <Scrollbars className='zui-menu'>
