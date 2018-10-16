@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
-import {Chart, Tooltip, Geom, Coord} from 'bizcharts';
+import 'bizcharts/lib/core';
+import Chart from 'bizcharts/lib/components/Chart';
+import Tooltip from 'bizcharts/lib/components/Tooltip';
+import Coord from 'bizcharts/lib/components/Coord';
+import Geom from 'bizcharts/lib/components/Geom';
 import {DataView} from '@antv/data-set';
 import {Divider} from 'antd';
 import ReactFitText from 'react-fittext';
