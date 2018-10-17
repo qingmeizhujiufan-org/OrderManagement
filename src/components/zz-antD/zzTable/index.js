@@ -61,6 +61,12 @@ class ZZTable extends React.Component {
     render() {
         const {_dataSource, _pagination} = this.state;
         const {className, dataSource, pagination, handlePageChange, ...restProps} = this.props;
+        _dataSource.map((item, index) => {
+            if (item.key === undefined || item.key === null || item.key === '') {
+                item.key = index;
+            }
+        });
+
         return (
             <Table
                 className={`zzTable ${className}`}

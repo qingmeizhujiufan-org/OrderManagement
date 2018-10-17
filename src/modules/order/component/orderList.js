@@ -535,11 +535,10 @@ class OrderList extends React.Component {
 
     //简单搜索
     onSearch = (val) => {
-        const searchKey = {
-            keyWords: val
-        };
         this.setState({
-            searchKey: searchKey
+            searchKey: {
+                keyWords: val
+            }
         }, () => {
             this.queryList();
         });
@@ -588,35 +587,6 @@ class OrderList extends React.Component {
                 this.queryList()
             });
         }
-    }
-
-    //订单快递状态更新信息导入弹框
-
-
-    //获取查询参数
-    getSearchKey = (callback) => {
-        // let keyWords = this.state.keyWords;
-        // const values = this.props.form.getFieldsValue();
-        // const searchKey = {};
-        // values.keyWords = keyWords;
-        // values.orderDate = values.orderDate ? values.orderDate.format("YYYY-MM-DD") : '';
-        // values.deliverBeginDate = values.deliverBeginDate ? values.deliverBeginDate.format("YYYY-MM-DD") : '';
-        // values.deliverEndDate = values.deliverEndDate ? values.deliverEndDate.format("YYYY-MM-DD") : '';
-        // values.deliverDate = values.deliverDate ? values.deliverDate.format("YYYY-MM-DD") : '';
-        //
-        // console.log('onsearch value == ', values);
-
-        // for (let key in values) {
-        //     if (values[key] !== "" && values[key] !== undefined) {
-        //         searchKey[key] = values[key]
-        //     }
-        // }
-
-        // this.setState({
-        //   searchKey: searchKey
-        // }, () => {
-        //   if (typeof callback === 'function') callback();
-        // });
     }
 
     addOrder = () => {
@@ -670,15 +640,23 @@ class OrderList extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                let keyWords = this.state.keyWords;
-                values.keyWords = keyWords;
+                values.keyWords = this.state.keyWords;
                 values.orderDate = values.orderDate ? values.orderDate.format("YYYY-MM-DD") : '';
                 values.deliverBeginDate = values.deliverBeginDate ? values.deliverBeginDate.format("YYYY-MM-DD") : '';
                 values.deliverEndDate = values.deliverEndDate ? values.deliverEndDate.format("YYYY-MM-DD") : '';
                 values.deliverDate = values.deliverDate ? values.deliverDate.format("YYYY-MM-DD") : '';
-                console.log('values ===', values);
-                this.setState({drawerVisible: false});
-                this.queryList();
+
+                const searchKey = {};
+                for(let item in values){
+                    if(values[item] !== undefined && values[item] !== ''){
+                        searchKey[item] = values[item];
+                    }
+                }
+
+                this.setState({
+                    drawerVisible: false,
+                    searchKey
+                }, () => this.queryList());
             }
         })
     };
@@ -690,11 +668,7 @@ class OrderList extends React.Component {
     render() {
         const {getFieldDecorator} = this.props.form;
         const {dataSource, pagination, loading, keyWords, showUpload, warehouse, drawerVisible} = this.state;
-        const customPanelStyle = {
-            borderRadius: 4,
-            border: 0,
-            overflow: 'hidden',
-        };
+
         return (
             <div className="zui-content page-newsList">
                 <div className='pageHeader'>
@@ -710,7 +684,7 @@ class OrderList extends React.Component {
                             <Col span={8}>
                                 <Search
                                     id="keyWords"
-                                    placeholder="搜索订单名称关键字"
+                                    placeholder="区域/订单号/业务员名/收件人名/收件人手机号/快递号"
                                     enterButton='搜索'
                                     size="large"
                                     value={keyWords}

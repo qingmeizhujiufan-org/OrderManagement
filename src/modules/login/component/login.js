@@ -37,9 +37,9 @@ class Login extends React.Component {
                     if (data.success) {
                         let backData = data.backData;
                         sessionStorage.setItem('token', backData.token);
+                        sessionStorage.setItem('expireDate', backData.outofServicetime);
                         const loginedUser = backData.loginedUser;
                         if (loginedUser) {
-                            sessionStorage.setItem('expireDate', new Date(new Date().getTime() + 10000000));
                             sessionStorage.setItem('userId', loginedUser.id);
                             sessionStorage.setItem('region', loginedUser.region);
 
@@ -50,22 +50,23 @@ class Login extends React.Component {
                             }
 
                             ajax.getJSON(roleDetailUrl, {id: loginedUser.roleId}, res => {
-                                this.setState({
-                                    loading: false
-                                });
+                                this.setState({loading: false});
 
                                 if (res.success) {
                                     const role = res.backData;
                                     let type = null;
                                     let initUrl = null;
+                                    // 管理员
                                     if (role.roleCode === '002') {
                                         type = 1;
-                                        initUrl = '/frame/user/list'
+                                        initUrl = '/frame/report/list'
                                     }
+                                    // 二级管理员
                                     else if (role.roleCode === '003') {
                                         type = 2;
-                                        initUrl = '/frame/product/list'
+                                        initUrl = '/frame/order/list'
                                     }
+                                    // 业务员
                                     else if (role.roleCode === '004') {
                                         type = 3;
                                         initUrl = '/frame/order/list'
@@ -78,9 +79,7 @@ class Login extends React.Component {
                             })
                         }
                     } else {
-                        this.setState({
-                            loading: false
-                        });
+                        this.setState({loading: false});
                         Message.error('登录失败，请检查用户名及密码！');
                     }
                 });
