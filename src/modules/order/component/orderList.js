@@ -16,10 +16,8 @@ import {
     Select,
     Message,
     Modal,
-    Collapse,
     Button,
     Upload,
-    Tabs,
     Drawer,
 } from 'antd';
 import moment from 'moment';
@@ -32,12 +30,10 @@ import Util from 'Utils/util';
 
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 
-const TabPane = Tabs.TabPane;
 const Search = Input.Search;
 const FormItem = Form.Item;
 const Option = Select.Option;
-const Panel = Collapse.Panel;
-const MonthPicker = DatePicker.MonthPicker;
+const ButtonGroup = Button.Group;
 
 const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
 const delUrl = restUrl.BASE_HOST + 'order/delete';
@@ -49,197 +45,6 @@ const importWarehouseReceiptUrl = restUrl.BASE_HOST + 'order/importWarehouseRece
 const importOrderExpressUrl = restUrl.BASE_HOST + 'order/importOrderExpress';
 //Excel模板导出接口
 const exportExcelTemplateUrl = restUrl.BASE_HOST + 'order/exportTemplate';
-//客户信息信息导出
-const exportMultiPurchaseUrl = restUrl.BASE_HOST + 'order/exportMultiPurchase';
-//区域订单数据导出
-const exportRegionOrderUrl = restUrl.BASE_HOST + 'order/exportRegionOrder';
-
-class ExcelTemplate extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
-    //Excel模板导出
-    exportExcelTemplate = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-
-                Util.exportExcel({
-                    url: exportExcelTemplateUrl + '?type=2',
-                    method: 'GET',
-                    body: null,
-                    error: function () {
-                        Message.error('Excel模板导出失败');
-                    }
-                });
-            }
-        })
-    }
-
-    render() {
-        return (
-            <Form onSubmit={this.exportExcelTemplate}>
-                <Row style={{textAlign: 'center'}}>
-                    <Col>
-                        <Button
-                            icon='download'
-                            htmlType="submit"
-                            type="primary"
-                        >导出</Button>
-                    </Col>
-                </Row>
-            </Form>
-        )
-    }
-}
-
-ExcelTemplate = Form.create()(ExcelTemplate);
-
-class MultiPurchase extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
-    //不同订单性质的客户信息导出
-    exportMultiPurchase = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                values.deliverMonth = values.deliverMonth ? values.deliverMonth.format("YYYY-MM") : '';
-                Util.exportExcel({
-                    url: exportMultiPurchaseUrl,
-                    method: 'POST',
-                    body: JSON.stringify(values),
-                    error: function () {
-                        Message.error('客户信息导出失败');
-                    }
-                });
-            }
-        })
-    }
-
-    render() {
-        const {getFieldDecorator} = this.props.form;
-        return (
-            <Form onSubmit={this.exportMultiPurchase}>
-                <Row>
-                    <Col span={24}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="订单性质"
-                        >
-                            {getFieldDecorator('orderNature', {
-                                rules: [{required: true, message: '请输入订单性质'}],
-                                initialValue: ''
-                            })(
-                                <Input/>
-                            )}
-                        </FormItem>
-                    </Col>
-                    <Col span={24}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="导出月份"
-                        >
-                            {getFieldDecorator('deliverMonth', {
-                                rules: [{required: false}],
-                            })(
-                                <MonthPicker style={{width: '100%'}}/>
-                            )}
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row style={{textAlign: 'center'}}>
-                    <Col>
-                        <Button
-                            icon='download'
-                            htmlType="submit"
-                            type="primary"
-                        >导出</Button>
-                    </Col>
-                </Row>
-            </Form>
-        )
-    }
-}
-
-MultiPurchase = Form.create()(MultiPurchase);
-
-class RegionOrder extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
-    //数据段内各区域订单数据导出
-    exportRegionOrder = (e) => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                values.deliverBeginDate = values.deliverBeginDate.format("YYYY-MM-DD");
-                values.deliverEndDate = values.deliverEndDate.format("YYYY-MM-DD");
-                Util.exportExcel({
-                    url: exportRegionOrderUrl,
-                    method: 'POST',
-                    body: JSON.stringify(values),
-                    error: function () {
-                        Message.error('区域订单数据导出失败');
-                    }
-                });
-            }
-        })
-    }
-
-    render() {
-        const {getFieldDecorator} = this.props.form;
-        return (
-            <Form onSubmit={this.exportRegionOrder}>
-                <Row>
-                    <Col span={24}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="开始日期"
-                        >
-                            {getFieldDecorator('deliverBeginDate', {
-                                rules: [{required: true, message: '请输入开始日期'}],
-                                initialValue: moment()
-                            })(
-                                <DatePicker style={{width: '100%'}}/>
-                            )}
-                        </FormItem>
-                    </Col>
-                    <Col span={24}>
-                        <FormItem
-                            {...formItemLayout}
-                            label="结束日期"
-                        >
-                            {getFieldDecorator('deliverEndDate', {
-                                rules: [{required: true, message: '请输入结束日期'}],
-                                initialValue: moment()
-                            })(
-                                <DatePicker style={{width: '100%'}}/>
-                            )}
-                        </FormItem>
-                    </Col>
-                </Row>
-                <Row style={{textAlign: 'center'}}>
-                    <Col>
-                        <Button
-                            icon='download'
-                            htmlType="submit"
-                            type="primary"
-                        >导出</Button>
-                    </Col>
-                </Row>
-            </Form>
-        )
-    }
-}
-
-RegionOrder = Form.create()(RegionOrder);
 
 class OrderList extends React.Component {
     constructor(props) {
@@ -544,6 +349,18 @@ class OrderList extends React.Component {
         });
     }
 
+    //Excel模板导出
+    exportExcelTemplate = () => {
+        Util.exportExcel({
+            url: exportExcelTemplateUrl + '?type=2',
+            method: 'GET',
+            body: null,
+            error: function () {
+                Message.error('Excel模板导出失败');
+            }
+        });
+    }
+
     //导出订单列表
     exportOrderList = () => {
         let keyWords = this.state.keyWords;
@@ -647,8 +464,8 @@ class OrderList extends React.Component {
                 values.deliverDate = values.deliverDate ? values.deliverDate.format("YYYY-MM-DD") : '';
 
                 const searchKey = {};
-                for(let item in values){
-                    if(values[item] !== undefined && values[item] !== ''){
+                for (let item in values) {
+                    if (values[item] !== undefined && values[item] !== '') {
                         searchKey[item] = values[item];
                     }
                 }
@@ -670,7 +487,7 @@ class OrderList extends React.Component {
         const {dataSource, pagination, loading, keyWords, showUpload, warehouse, drawerVisible} = this.state;
 
         return (
-            <div className="zui-content page-newsList">
+            <div className="zui-content page-orderList">
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
@@ -868,18 +685,21 @@ class OrderList extends React.Component {
                     </div>
                 </div>
                 <div className='pageContent'>
-                    <ZZCard>
-                        <Tabs defaultActiveKey="1">
-                            <TabPane tab="订单列表" key="1">
+                    <ZZCard
+                        title={<Button
+                            icon='export'
+                            type="primary"
+                            onClick={this.exportExcelTemplate}
+                        >订单快递状态更新模板</Button>}
+                        extra={(
+                            <ButtonGroup>
                                 <Button
                                     icon='download'
                                     onClick={this.exportOrderList}
-                                    style={{marginBottom: 15, marginRight: 10}}
                                 >订单信息</Button>
                                 <Button
                                     icon='upload'
                                     onClick={this.showUploadModal}
-                                    style={{marginBottom: 15, marginRight: 10}}
                                 >仓库回执信息</Button>
                                 <Upload
                                     headers={{
@@ -894,42 +714,17 @@ class OrderList extends React.Component {
                                         <Icon type="upload"/> 订单快递状态
                                     </Button>
                                 </Upload>
-
-                                <ZZTable
-                                    columns={this.columns}
-                                    dataSource={dataSource}
-                                    pagination={pagination}
-                                    loading={loading}
-                                    scroll={{x: 3500}}
-                                    handlePageChange={this.handlePageChange.bind(this)}
-                                />
-                            </TabPane>
-                            <TabPane tab="导出管理" key="2">
-                                <Row gutter={24}>
-                                    <Col span={8}>
-                                        <ZZCard
-                                            title='订单快递状态更新模板'
-                                        >
-                                            <ExcelTemplate/>
-                                        </ZZCard>
-                                    </Col>
-                                    <Col span={8}>
-                                        <ZZCard
-                                            title='客户信息'
-                                        >
-                                            <MultiPurchase/>
-                                        </ZZCard>
-                                    </Col>
-                                    <Col span={8}>
-                                        <ZZCard
-                                            title='区域订单数据'
-                                        >
-                                            <RegionOrder/>
-                                        </ZZCard>
-                                    </Col>
-                                </Row>
-                            </TabPane>
-                        </Tabs>
+                            </ButtonGroup>
+                        )}
+                    >
+                        <ZZTable
+                            columns={this.columns}
+                            dataSource={dataSource}
+                            pagination={pagination}
+                            loading={loading}
+                            scroll={{x: 3500}}
+                            handlePageChange={this.handlePageChange.bind(this)}
+                        />
                     </ZZCard>
                 </div>
                 <Modal
