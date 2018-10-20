@@ -13,10 +13,6 @@ import {
     Form,
     Input
 } from 'antd';
-import {
-    Bar,
-    Pie,
-} from 'Comps/Charts';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import find from "lodash/find";
@@ -25,17 +21,15 @@ import ajax from 'Utils/ajax';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from "Utils/util";
-import {formItemLayout, itemGrid} from "Utils/formItemGrid";
 
 moment.locale('zh-cn');
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
-const {RangePicker, MonthPicker} = DatePicker;
+const {RangePicker} = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 
 const regionOrderUrl = restUrl.BASE_HOST + 'order/regionOrder';
 const exportRegionOrderUrl = restUrl.BASE_HOST + 'order/exportRegionOrder';
-const countPeriodOrderUrl = restUrl.BASE_HOST + 'order/countPeriodOrder';
 const multiPurchaseOrderUrl = restUrl.BASE_HOST + 'order/multiPurchaseOrder';
 const exportMultiPurchaseOrderUrl = restUrl.BASE_HOST + 'order/exportMultiPurchase';
 
@@ -368,8 +362,7 @@ class Index extends React.Component {
             submitLoading: false,
             periodLoading: false,
             dataSource: [],
-            totalLineList: [],
-            periodData: []
+            totalLineList: []
         };
     }
 
@@ -383,7 +376,6 @@ class Index extends React.Component {
         }, () => {
             this.setState({loading: false});
         })
-        this.queryBarData();
     }
 
     queryList = (param, endLoading) => {
@@ -425,38 +417,6 @@ class Index extends React.Component {
                 Message.error(data.backMsg);
             }
             endLoading();
-        });
-    }
-
-    queryBarData = () => {
-        const param = {
-            deliverBeginDate: moment().add('year', 0).month(moment().month()).startOf('month').format("YYYY-MM-DD"),
-            deliverEndDate: moment().add('year', 0).month(moment().month()).endOf('month').format("YYYY-MM-DD")
-        };
-        this.setState({
-            periodLoading: true
-        });
-        ajax.postJSON(countPeriodOrderUrl, JSON.stringify(param), data => {
-            if (data.success) {
-                if (data.backData) {
-                    const backData = data.backData;
-                    const periodData = [];
-
-                    backData.map(item => {
-                        periodData.push({
-                            x: item.region,
-                            y: item.totalAmount
-                        });
-                    });
-
-                    this.setState({
-                        periodData
-                    });
-                }
-            } else {
-                Message.error(data.backMsg);
-            }
-            this.setState({periodLoading: false});
         });
     }
 
@@ -567,25 +527,6 @@ class Index extends React.Component {
                                                 columns={this.dateColumns}
                                                 dataSource={dataSource}
                                                 loading={submitLoading}
-                                            />
-                                        </ZZCard>
-                                    </Col>
-                                </Row>
-                                <Row gutter={24} style={{marginTop: 24}}>
-                                    <Col span={17}>
-                                        <ZZCard title={'近一个月各区累计总金额柱状图'} loading={periodLoading}>
-                                            <Bar height={350} data={periodData} color='#5578DC'/>
-                                        </ZZCard>
-                                    </Col>
-                                    <Col span={7}>
-                                        <ZZCard title={'近一个月各区累计总金额扇形图'} loading={periodLoading}>
-                                            <Pie
-                                                subTitle="总计"
-                                                total={periodData.reduce((total, now) => total + now.y, 0)}
-                                                data={periodData}
-                                                height={344}
-                                                lineWidth={4}
-                                                colors={['#FAD337', '#4DCA73', '#5CDECF', '#39A0FF', '#9C91DB', '#425088', '#E9A574']}
                                             />
                                         </ZZCard>
                                     </Col>

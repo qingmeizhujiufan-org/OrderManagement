@@ -92,6 +92,10 @@ const ReportList = Loadable({
     loader: () => import("../modules/report/component/reportList"),
     loading: Loading
 });
+const ReportHChart = Loadable({
+    loader: () => import("../modules/report/component/reportHChart"),
+    loading: Loading
+});
 
 /* 个人设置 */
 const SettingList = Loadable({
@@ -162,6 +166,7 @@ class PageRouter extends React.Component {
                         <Route path="report" component={App}>
                             <IndexRoute component={ReportList}/>
                             <Route path="list" component={ReportList}/>
+                            <Route path="chart" component={ReportHChart}/>
                         </Route>
                         {/* 个人设置 */}
                         <Route path="setting" component={App}>

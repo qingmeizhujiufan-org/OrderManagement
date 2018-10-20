@@ -3,7 +3,7 @@ const admin = [{
     children: ['1_1', '1_2', '1_3']
 }, {
     key: '2',
-    children: ['2_1']
+    children: ['2_1', '2_2']
 }, {
     key: '3',
     children: ['3_1', '3_2']
@@ -20,7 +20,7 @@ const subAdmin = [{
     children: ['1_1', '1_2', '1_3']
 }, {
     key: '2',
-    children: ['2_1']
+    children: ['2_1', '2_2']
 }, {
     key: '3',
     children: ['3_1', '3_2']

@@ -696,11 +696,11 @@ class OrderList extends React.Component {
                                 <Button
                                     icon='download'
                                     onClick={this.exportOrderList}
-                                >订单信息</Button>
+                                >导出订单</Button>
                                 <Button
                                     icon='upload'
                                     onClick={this.showUploadModal}
-                                >仓库回执信息</Button>
+                                >导入仓库回执</Button>
                                 <Upload
                                     headers={{
                                         'X-Auth-Token': sessionStorage.token
@@ -711,7 +711,7 @@ class OrderList extends React.Component {
                                     onChange={this.handleUpload}
                                 >
                                     <Button>
-                                        <Icon type="upload"/> 订单快递状态
+                                        <Icon type="upload"/> 更新快递状态
                                     </Button>
                                 </Upload>
                             </ButtonGroup>

@@ -27,6 +27,10 @@ const Menu = [
                 key: '2_1',
                 link: '/frame/report/list',
                 label: '报表'
+            },{
+                key: '2_2',
+                link: '/frame/report/chart',
+                label: '图表'
             }
         ]
     }, {
