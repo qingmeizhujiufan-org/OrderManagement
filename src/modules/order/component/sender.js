@@ -17,7 +17,8 @@ import {
 } from 'antd';
 import {ZZCard, ZZTable} from 'Comps/zz-antD/index';
 
-import assign from "lodash.assign";
+import find from "lodash/find";
+import assign from "lodash/assign";
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../../user/index.less';
@@ -39,8 +40,7 @@ class Index extends React.Component {
     this.columns = [
       {
         title: '寄件方名称',
-        align: 'center',
-        width: 150,
+        align: 'left',
         dataIndex: 'senderName',
         key: 'senderName'
       }, {
@@ -52,12 +52,13 @@ class Index extends React.Component {
       }, {
         title: '寄件方地址',
         width: 250,
-        align: 'center',
+        align: 'left',
         dataIndex: 'senderAddr',
         key: 'senderAddr',
       }, {
         title: '备注',
         width: 150,
+        align: 'left',
         dataIndex: 'memo',
         key: 'memo',
       }, {
@@ -176,6 +177,17 @@ class Index extends React.Component {
 
   onFrozenChange = (checked, record, index) => {
     const param = {};
+    const curObj = find(this.state.dataSource, function (o) {
+      return o.isEnabled === 1;
+    })
+    if (curObj !== undefined && record.id !== curObj.id) {
+      ajax.postJSON(frozenUserUrl, JSON.stringify({
+        id: curObj.id,
+        enabled: 0
+      }), data => {
+
+      })
+    }
     param.id = record.id;
     param.enabled = checked ? 1 : 0;
     ajax.postJSON(frozenUserUrl, JSON.stringify(param), data => {
@@ -242,7 +254,7 @@ class Index extends React.Component {
     this.props.form.validateFields((err, values) => {
       console.log(values);
       if (!err) {
-        values.isEnabled = values.isEnabled === true ? 1: 0;
+        values.isEnabled = values.isEnabled === true ? 1 : 0;
         ajax.postJSON(addUrl, JSON.stringify(values), (data) => {
           if (data.success) {
             Notification.success({
@@ -330,6 +342,7 @@ class Index extends React.Component {
         <Modal
           title="新增寄件人信息"
           visible={addSenderModal}
+          destroyOnClose='true'
           onCancel={this.handleCancel}
           footer={null}
         >
@@ -370,19 +383,6 @@ class Index extends React.Component {
                     rules: [{required: true, message: '请输入寄件地址'}]
                   })(
                     <Input/>
-                  )}
-                </FormItem>
-              </Col>
-              <Col>
-                <FormItem
-                  {...formItemLayout}
-                  label="启停用"
-                >
-                  {getFieldDecorator('isEnabled', {
-                    rules: [{required: true, message: '请选择启停用状态'}],
-                    initialValue: false
-                  })(
-                    <Switch />
                   )}
                 </FormItem>
               </Col>
