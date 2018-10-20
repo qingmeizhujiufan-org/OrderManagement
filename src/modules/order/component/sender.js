@@ -7,7 +7,7 @@ import {
   Breadcrumb,
   Button,
   Message,
-  Dropdown,
+  Switch,
   Menu,
   Row,
   Col,
@@ -29,6 +29,7 @@ const FormItem = Form.Item;
 const queryListUrl = restUrl.BASE_HOST + 'sender/queryList';
 const deleteUrl = restUrl.BASE_HOST + 'sender/delete';
 const addUrl = restUrl.BASE_HOST + 'sender/save';
+const frozenUserUrl = restUrl.BASE_HOST + 'sender/enabled';
 
 
 class Index extends React.Component {
@@ -39,19 +40,18 @@ class Index extends React.Component {
       {
         title: '寄件方名称',
         align: 'center',
+        width: 150,
         dataIndex: 'senderName',
-        key: 'senderName',
-        render: (text, record, index) => (
-          <Link to={this.onDetail(record.id)}>{text}</Link>
-        )
+        key: 'senderName'
       }, {
         title: '寄件方电话',
+        width: 120,
         align: 'center',
         dataIndex: 'serderPhone',
         key: 'serderPhone',
       }, {
         title: '寄件方地址',
-        width: 150,
+        width: 250,
         align: 'center',
         dataIndex: 'senderAddr',
         key: 'senderAddr',
@@ -73,30 +73,30 @@ class Index extends React.Component {
         dataIndex: 'createTime',
         key: 'createTime',
       }, {
+        title: '启停用',
+        fixed: 'right',
+        width: 120,
+        align: 'center',
+        dataIndex: 'is_enabled',
+        key: 'is_enabled',
+        render: (text, record, index) => (
+          <Switch
+            checkedChildren="是"
+            unCheckedChildren="否"
+            checked={record.isEnabled === 1 ? true : false}
+            onChange={checked => this.onFrozenChange(checked, record, index)}
+          />
+        )
+      }, {
         title: <a><Icon type="setting" style={{fontSize: 18}}/></a>,
         key: 'operation',
         fixed: 'right',
-        width: 180,
+        width: 120,
         align: 'center',
         render: (text, record, index) => (
-          <Dropdown
-            placement="bottomCenter"
-            overlay={
-              <Menu>
-                <Menu.Item>
-                  <Link to={this.onDetail(record.id)}>查看</Link>
-                </Menu.Item>
-                {/*<Menu.Item>*/}
-                  {/*<Link to={this.onEdit(record.id)}>编辑</Link>*/}
-                {/*</Menu.Item>*/}
-                <Menu.Item>
-                  <a onClick={() => this.onDelete(record.id)}>删除</a>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <a className="ant-dropdown-link">操作</a>
-          </Dropdown>
+          <div>
+            <a onClick={() => this.onDelete(record.id)}>删除</a>
+          </div>
         )
       }];
 
@@ -174,27 +174,22 @@ class Index extends React.Component {
     });
   }
 
-  onDetail = id => {
-    return `/frame/order/list/detail/${id}`
-  }
-
-  onEdit = id => {
-
-  }
-
   onFrozenChange = (checked, record, index) => {
     const param = {};
     param.id = record.id;
-    param.isFrozen = checked ? 1 : 0;
+    param.enabled = checked ? 1 : 0;
     ajax.postJSON(frozenUserUrl, JSON.stringify(param), data => {
       if (data.success) {
         Notification.success({
           message: '提示',
-          description: '冻结设置成功！'
+          description: '地址启停用成功！'
         });
-        const dataSource = this.state.dataSource;
-        dataSource[index].isFrozen = checked ? 1 : 0;
-        this.setState({dataSource});
+
+        this.setState({
+          loading: true
+        }, () => {
+          this.queryList();
+        });
       } else {
         Message.error(data.backMsg);
       }
@@ -238,10 +233,16 @@ class Index extends React.Component {
     });
   }
 
+  setEnabled = () => {
+
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
+      console.log(values);
       if (!err) {
+        values.isEnabled = values.isEnabled === true ? 1: 0;
         ajax.postJSON(addUrl, JSON.stringify(values), (data) => {
           if (data.success) {
             Notification.success({
@@ -342,7 +343,7 @@ class Index extends React.Component {
                   {getFieldDecorator('senderName', {
                     rules: [{required: true, message: '请输入寄件人姓名'}]
                   })(
-                    <Input />
+                    <Input/>
                   )}
                 </FormItem>
               </Col>
@@ -356,7 +357,7 @@ class Index extends React.Component {
                       validator: this.validatePhone
                     }]
                   })(
-                    <Input />
+                    <Input/>
                   )}
                 </FormItem>
               </Col>
@@ -368,14 +369,27 @@ class Index extends React.Component {
                   {getFieldDecorator('senderAddr', {
                     rules: [{required: true, message: '请输入寄件地址'}]
                   })(
-                    <Input />
+                    <Input/>
+                  )}
+                </FormItem>
+              </Col>
+              <Col>
+                <FormItem
+                  {...formItemLayout}
+                  label="启停用"
+                >
+                  {getFieldDecorator('isEnabled', {
+                    rules: [{required: true, message: '请选择启停用状态'}],
+                    initialValue: false
+                  })(
+                    <Switch />
                   )}
                 </FormItem>
               </Col>
             </Row>
             <Row type="flex" justify="center" style={{marginTop: 20}}>
               <Button onClick={this.handleCancel} style={{marginRight: 20}}>取消</Button>
-              <Button type="primary"  onClick={this.handleSubmit}
+              <Button type="primary" onClick={this.handleSubmit}
                       loading={submitLoading}>保存</Button>
             </Row>
           </Form>
