@@ -19,6 +19,7 @@ import {
     Button,
     Upload,
     Drawer,
+    InputNumber,
 } from 'antd';
 import moment from 'moment';
 import assign from 'lodash/assign';
@@ -27,9 +28,10 @@ import ajax from 'Utils/ajax';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from 'Utils/util';
+import {formItemLayout} from "Utils/formItemGrid";
 
-import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
-
+const {RangePicker} = DatePicker;
+const dateFormat = 'YYYY/MM/DD';
 const Search = Input.Search;
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -288,7 +290,9 @@ class OrderList extends React.Component {
             },
             keyWords: '',
             searchKey: {},
-            drawerVisible: false
+            drawerVisible: false,
+            showExportOrderModal: false,
+            exportOrderDate: null
         };
     }
 
@@ -361,23 +365,37 @@ class OrderList extends React.Component {
         });
     }
 
-    //导出订单列表
-    exportOrderList = () => {
-        let keyWords = this.state.keyWords;
-        const values = this.props.form.getFieldsValue();
-        values.keyWords = keyWords;
-        values.orderDate = values.orderDate ? values.orderDate.format("YYYY-MM-DD") : '';
-        values.deliverBeginDate = values.deliverBeginDate ? values.deliverBeginDate.format("YYYY-MM-DD") : '';
-        values.deliverEndDate = values.deliverEndDate ? values.deliverEndDate.format("YYYY-MM-DD") : '';
-        values.deliverDate = values.deliverDate ? values.deliverDate.format("YYYY-MM-DD") : '';
+    //弹出导出订单弹框
+    onShowExportOrderModal = () => {
+        this.setState({showExportOrderModal: true});
+    }
+    //关闭导出订单弹框
+    onCloseExportOrderModal = () => {
+        this.setState({showExportOrderModal: false});
+    }
+
+    onExportOrderDateChange = val => {
+        console.log('val == ', val);
+        this.setState({exportOrderDate: val});
+    }
+
+    //操作导出订单
+    handleExportOrderModal = () => {
+        const {exportOrderDate} = this.state;
+        if (exportOrderDate === null) {
+            Message.warning('请选择发货期间');
+            return;
+        }
+        const param = {};
+        param.deliverBeginDate = exportOrderDate[0].format("YYYY-MM-DD");
+        param.deliverEndDate = exportOrderDate[1].format("YYYY-MM-DD");
 
         Util.exportExcel({
             url: exportOrderUrl,
             method: 'POST',
-            body: JSON.stringify(values),
-            error: function () {
-                Message.error('导出订单失败');
-            }
+            body: JSON.stringify(param),
+            success: () => this.onCloseExportOrderModal(),
+            error: () => Message.error('导出订单失败')
         });
     }
 
@@ -484,7 +502,7 @@ class OrderList extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {dataSource, pagination, loading, keyWords, showUpload, warehouse, drawerVisible} = this.state;
+        const {dataSource, pagination, loading, keyWords, showUpload, warehouse, drawerVisible, showExportOrderModal} = this.state;
 
         return (
             <div className="zui-content page-orderList">
@@ -688,16 +706,17 @@ class OrderList extends React.Component {
                     <ZZCard
                         title={<Button
                             icon='export'
-                            type="primary"
                             onClick={this.exportExcelTemplate}
                         >订单快递状态更新模板</Button>}
                         extra={(
                             <ButtonGroup>
                                 <Button
+                                    type="primary"
                                     icon='download'
-                                    onClick={this.exportOrderList}
+                                    onClick={this.onShowExportOrderModal}
                                 >导出订单</Button>
                                 <Button
+                                    type="primary"
                                     icon='upload'
                                     onClick={this.showUploadModal}
                                 >导入仓库回执</Button>
@@ -710,7 +729,7 @@ class OrderList extends React.Component {
                                     action={importOrderExpressUrl}
                                     onChange={this.handleUpload}
                                 >
-                                    <Button>
+                                    <Button type="primary">
                                         <Icon type="upload"/> 更新快递状态
                                     </Button>
                                 </Upload>
@@ -727,6 +746,26 @@ class OrderList extends React.Component {
                         />
                     </ZZCard>
                 </div>
+                <Modal
+                    title='导出订单'
+                    visible={showExportOrderModal}
+                    onOk={this.handleExportOrderModal}
+                    onCancel={this.onCloseExportOrderModal}
+                    footer={null}
+                >
+                    <FormItem
+                        {...formItemLayout}
+                        label="发货期间"
+                    >
+                        <RangePicker
+                            format={dateFormat}
+                            onChange={this.onExportOrderDateChange}
+                        />
+                    </FormItem>
+                    <div style={{textAlign: 'center'}}>
+                        <Button type='primary' onClick={this.handleExportOrderModal}>确认</Button>
+                    </div>
+                </Modal>
                 <Modal
                     title="导入仓库回执信息"
                     visible={showUpload}

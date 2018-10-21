@@ -262,7 +262,7 @@ class Index extends React.Component {
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
-                        <Alert visible={showTips} message="该订单今日发货，上午十点以后不允许修改" type="warning" showIcon/>,
+                        <Alert visible={showTips} message="当前日期已过订单发货日期次日上午十点，则之后不允许修改" type="warning" showIcon/>,
                         <Spin spinning={loading} size='large'>
                             <Divider>产品信息</Divider>
                             <div style={{

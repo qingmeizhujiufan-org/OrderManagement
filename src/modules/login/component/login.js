@@ -80,7 +80,7 @@ class Login extends React.Component {
                         }
                     } else {
                         this.setState({loading: false});
-                        Message.error('登录失败，请检查用户名及密码！');
+                        Message.error(data.backMsg);
                     }
                 });
             }

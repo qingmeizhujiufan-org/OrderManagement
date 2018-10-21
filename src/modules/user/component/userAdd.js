@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Row, Col, Form, Input, Select, Breadcrumb, Button, Upload, Icon, Spin, Notification, Message} from 'antd';
+import {Row, Col, Form, Input, Select, Breadcrumb, Button, Upload, Icon, Spin, Notification, Message, Tooltip} from 'antd';
 import ajax from 'Utils/ajax';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import restUrl from 'RestUrl';
@@ -218,7 +218,13 @@ class Index extends React.Component {
                                 <Col {...itemGrid}>
                                     <FormItem
                                         {...formItemLayout}
-                                        label="密码"
+                                        label={(
+                                            <span>密码&nbsp;
+                                                <Tooltip title="初始密码为：000000">
+                                                    <Icon type="question-circle-o"/>
+                                                </Tooltip>
+                                            </span>
+                                        )}
                                     >
                                         {getFieldDecorator('password', {
                                             rules: [{
@@ -226,6 +232,7 @@ class Index extends React.Component {
                                             }, {
                                                 validator: this.validateToNextPassword,
                                             }],
+                                            initialValue: '000000'
                                         })(
                                             <Input type="password"/>
                                         )}
@@ -242,6 +249,7 @@ class Index extends React.Component {
                                             }, {
                                                 validator: this.compareToFirstPassword,
                                             }],
+                                            initialValue: '000000'
                                         })(
                                             <Input type="password" onBlur={this.handleConfirmBlur}/>
                                         )}
