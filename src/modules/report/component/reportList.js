@@ -38,46 +38,39 @@ class MultiPurchase extends React.Component {
         super();
         this.columns = [
             {
-                title: '一个月内两次购买客户档案',
-                align: 'left',
-                children: [{
-                    title: '区域',
-                    width: 100,
-                    align: 'center',
-                    dataIndex: 'region',
-                    key: 'region'
-                }, {
-                    title: '业务员',
-                    width: 100,
-                    align: 'center',
-                    dataIndex: 'orderNature',
-                    key: 'orderNature'
-                }, {
-                    title: '客户',
-                    width: 100,
-                    align: 'center',
-                    dataIndex: 'count',
-                    key: 'count',
-                }, {
-                    title: '两次总金额',
-                    width: 100,
-                    align: 'center',
-                    dataIndex: 'depositAmout',
-                    key: 'depositAmout',
-                    render: (text, record, index) => (
-                        <span>{Util.shiftThousands(text)}</span>
-                    )
-                }]
+                title: '区域',
+                width: '25%',
+                align: 'center',
+                dataIndex: 'region',
+                key: 'region'
+            }, {
+                title: '业务员',
+                width: '25%',
+                align: 'center',
+                dataIndex: 'userName',
+                key: 'userName'
+            }, {
+                title: '客户',
+                width: '25%',
+                align: 'center',
+                dataIndex: 'receiverName',
+                key: 'receiverName',
+            }, {
+                title: '购买总金额',
+                width: '25%',
+                align: 'right',
+                dataIndex: 'totalAmount',
+                key: 'totalAmount',
+                render: (text, record, index) => (
+                    <span>{Util.shiftThousands(text)}</span>
+                )
             }
         ];
 
         this.state = {
             loading: true,
             submitLoading: false,
-            chartLoading: false,
-            dataSource: [],
-            totalLineList: [],
-            chartData: []
+            dataSource: []
         }
     }
 
@@ -92,15 +85,14 @@ class MultiPurchase extends React.Component {
             deliverEndDate: moment().add('year', 0).month(moment().month()).endOf('month').format("YYYY-MM-DD")
         }, () => {
             this.setState({loading: false});
-        })
-        this.queryChartData();
+        });
     }
 
     queryList = (param, endLoading) => {
         ajax.postJSON(multiPurchaseOrderUrl, JSON.stringify(param), data => {
             if (data.success) {
                 if (data.backData) {
-                    const dataSource = data.backData;
+                    const dataSource = data.backData.slice(2);
 
                     this.setState({
                         dataSource
@@ -111,13 +103,13 @@ class MultiPurchase extends React.Component {
                     });
                 }
             } else {
+                this.setState({
+                    dataSource: []
+                });
                 Message.error(data.backMsg);
             }
             endLoading();
         });
-    }
-
-    queryChartData = () => {
     }
 
     handleSubmit = (e) => {
@@ -140,30 +132,40 @@ class MultiPurchase extends React.Component {
     }
 
     exportMultiPurchaseOrder = () => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                values.deliverMonth = values.deliverMonth ? values.deliverMonth.format("YYYY-MM") : '';
-                Util.exportExcel({
-                    url: exportMultiPurchaseOrderUrl,
-                    method: 'POST',
-                    body: JSON.stringify(values),
-                    error: function () {
-                        Message.error('客户信息导出失败');
-                    }
-                });
+        const values = this.props.form.getFieldsValue();
+        if (values.orderNature === undefined || values.orderNature === null || values.orderNature === '') {
+            Message.warning('请填写订单性质！');
+            return;
+        }
+        if (values.deliverDate === undefined || values.deliverDate === null || values.deliverDate === '') {
+            Message.warning('请选择订单期间！');
+            return;
+        }
+
+        Util.exportExcel({
+            url: exportMultiPurchaseOrderUrl,
+            method: 'POST',
+            body: JSON.stringify({
+                orderNature: values.orderNature,
+                deliverBeginDate: values.deliverDate[0].format("YYYY-MM-DD"),
+                deliverEndDate: values.deliverDate[1].format("YYYY-MM-DD"),
+            }),
+            error: function () {
+                Message.error('订单性质导出失败');
             }
-        })
+        });
     }
 
     render() {
         const {getFieldDecorator, getFieldsValue} = this.props.form;
-        const {dataSource, loading, submitLoading, chartLoading, chartData} = this.state;
+        const {dataSource, loading, submitLoading} = this.state;
 
         const values = getFieldsValue();
         const orderNature = values.orderNature;
-        const deliverDate = values.deliverMonth ? values.deliverMonth.format("YYYY-MM") : '';
-        let title = `订单性质:${orderNature}的订单数据`;
+        const deliverBeginDate = values.deliverDate ? values.deliverDate[0].format("YYYYMMDD") : '';
+        const deliverEndDate = values.deliverDate ? values.deliverDate[1].format("YYYYMMDD") : '';
+
+        let title = `${deliverBeginDate}-${deliverEndDate}${orderNature}的客户档案`;
         return (
             <div>
                 <Row gutter={24}>
@@ -188,7 +190,7 @@ class MultiPurchase extends React.Component {
                                                 moment().add('year', 0).month(moment().month()).endOf('month')
                                             ]
                                         })(
-                                            <RangePicker format={dateFormat}/>
+                                            <RangePicker format={dateFormat} allowClear={false}/>
                                         )}
                                     </FormItem>
                                     <FormItem>
@@ -217,15 +219,12 @@ class MultiPurchase extends React.Component {
                                 }}
                             >{title}</div>
                             <ZZTable
-                                columns={this.dateColumns}
+                                columns={this.columns}
                                 dataSource={dataSource}
                                 loading={submitLoading}
                             />
                         </ZZCard>
                     </Col>
-                </Row>
-                <Row gutter={24} style={{marginTop: 24}}>
-
                 </Row>
             </div>
         )
@@ -414,6 +413,9 @@ class Index extends React.Component {
                     });
                 }
             } else {
+                this.setState({
+                    dataSource: []
+                });
                 Message.error(data.backMsg);
             }
             endLoading();
@@ -438,32 +440,33 @@ class Index extends React.Component {
 
     exportRegionOrder = () => {
         const values = this.props.form.getFieldsValue();
-        if (values.deliverDate) {
-            Util.exportExcel({
-                url: exportRegionOrderUrl,
-                method: 'POST',
-                body: JSON.stringify({
-                    deliverBeginDate: values.deliverDate[0].format("YYYY-MM-DD"),
-                    deliverEndDate: values.deliverDate[1].format("YYYY-MM-DD"),
-                }),
-                error: function () {
-                    Message.error('导出失败，请重试！');
-                }
-            });
-        } else {
-            Message.warning('请选择时间区间');
+        if (values.deliverDate === undefined || values.deliverDate === null || values.deliverDate === '') {
+            Message.warning('请选择订单期间！');
+            return;
         }
+
+        Util.exportExcel({
+            url: exportRegionOrderUrl,
+            method: 'POST',
+            body: JSON.stringify({
+                deliverBeginDate: values.deliverDate[0].format("YYYY-MM-DD"),
+                deliverEndDate: values.deliverDate[1].format("YYYY-MM-DD"),
+            }),
+            error: function () {
+                Message.error(data.backMsg);
+            }
+        });
     }
 
     render() {
         const {getFieldDecorator, getFieldsValue} = this.props.form;
-        const {dataSource, loading, submitLoading, periodLoading, periodData} = this.state;
+        const {dataSource, loading, submitLoading} = this.state;
 
         const values = getFieldsValue();
         const deliverBeginDate = moment().add('year', 0).month(moment().month()).startOf('month').format("YYYY-MM-DD");
         const deliverEndDate = moment().add('year', 0).month(moment().month()).endOf('month').format("YYYY-MM-DD");
         let title = `时间段:${deliverBeginDate}-${deliverEndDate}的订单数据`;
-        if (values.deliverDate) {
+        if (values.deliverDate && values.deliverDate !== '') {
             title = `时间段:${values.deliverDate[0].format("YYYYMMDD")}-${values.deliverDate[1].format("YYYYMMDD")}的订单数据`;
         }
 
@@ -481,7 +484,7 @@ class Index extends React.Component {
                 <div className='pageContent'>
                     <div className='ibox-content'>
                         <Tabs defaultActiveKey="1">
-                            <TabPane tab={<span><Icon type="clock-circle"/>时间段</span>} key="1">
+                            <TabPane forceRender tab={<span><Icon type="clock-circle"/>时间段</span>} key="1">
                                 <Row gutter={24}>
                                     <Col>
                                         <ZZCard
@@ -495,7 +498,7 @@ class Index extends React.Component {
                                                                 moment().add('year', 0).month(moment().month()).endOf('month')
                                                             ]
                                                         })(
-                                                            <RangePicker format={dateFormat}/>
+                                                            <RangePicker format={dateFormat} allowClear={false}/>
                                                         )}
                                                     </FormItem>
                                                     <FormItem>
@@ -532,7 +535,7 @@ class Index extends React.Component {
                                     </Col>
                                 </Row>
                             </TabPane>
-                            <TabPane tab={<span><Icon type="dollar"/>订单性质</span>} key="2">
+                            <TabPane forceRender tab={<span><Icon type="dollar"/>订单性质</span>} key="2">
                                 <MultiPurchase/>
                             </TabPane>
                         </Tabs>

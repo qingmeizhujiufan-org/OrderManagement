@@ -5,6 +5,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');//html模板
 const autoprefixer = require('autoprefixer');
 const CustomTheme = require('./src/util/customTheme');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const postcssOpts = {
     ident: 'postcss',
@@ -155,5 +156,7 @@ module.exports = {
             }
         }),//最小化一切
         new webpack.optimize.AggressiveMergingPlugin(),//合并块
+        /* 分析包的大小分布 */
+        new BundleAnalyzerPlugin(),
     ]
 };
