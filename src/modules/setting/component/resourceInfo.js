@@ -58,15 +58,15 @@ class EditableCell extends React.Component {
           return (
             <td {...restProps}>
               {editing ? (
-                  <FormItem style={{margin: 10}}>
-                    {getFieldDecorator(dataIndex, {
-                      rules: [{
-                        required: true,
-                        message: `请输入${title}!`,
-                      }],
-                      initialValue: record[dataIndex],
-                    })(this.getInput())}
-                  </FormItem>
+                <FormItem style={{margin: 10}}>
+                  {getFieldDecorator(dataIndex, {
+                    rules: [{
+                      required: true,
+                      message: `请输入${title}!`,
+                    }],
+                    initialValue: record[dataIndex],
+                  })(this.getInput())}
+                </FormItem>
               ) : restProps.children}
             </td>
           );
@@ -135,12 +135,10 @@ class Index extends React.Component {
                       <a
                         href="javascript:;"
                         onClick={() => this.save(form, record.key)}
-                        style={{marginRight: 8}}
-                      >
-                        保存
-                      </a>
+                      >保存</a>
                     )}
                   </EditableContext.Consumer>
+                  <Divider type="vertical"/>
                   <Popconfirm
                     title="取消?"
                     onConfirm={() => this.cancel(record.key)}
@@ -150,10 +148,10 @@ class Index extends React.Component {
                 </span>
               ) : (
                 <span>
-                   <a onClick={() => this.edit(record.key)}>编辑</a>
-                   <Divider type="vertical"/>
+                  <a onClick={() => this.edit(record.key)}>编辑</a>
+                  <Divider type="vertical"/>
                   <Popconfirm title="是否删除?" onConfirm={() => this.handleDelete(text, record, index)}>
-                  <a href="javascript:;">删除</a>
+                   <a href="javascript:;">删除</a>
                   </Popconfirm>
                 </span>
               )}
@@ -193,11 +191,11 @@ class Index extends React.Component {
   };
 
   edit(key) {
-    this.setState({ editingKey: key });
+    this.setState({editingKey: key});
   }
 
   cancel = () => {
-    this.setState({ editingKey: '' });
+    this.setState({editingKey: ''});
   };
 
   save(form, key) {
@@ -213,10 +211,10 @@ class Index extends React.Component {
           ...item,
           ...row,
         });
-        this.setState({ childrenDetail: newData, editingKey: '' });
+        this.setState({childrenDetail: newData, editingKey: ''});
       } else {
         newData.push(row);
-        this.setState({ childrenDetail: newData, editingKey: '' });
+        this.setState({childrenDetail: newData, editingKey: ''});
       }
     });
   }
@@ -324,7 +322,6 @@ class Index extends React.Component {
               </Button>
               <ZZTable
                 components={components}
-                size='small'
                 dataSource={childrenDetail.filter(item => item.voState !== 3)}
                 columns={columns}
                 rowClassName="editable-row"
