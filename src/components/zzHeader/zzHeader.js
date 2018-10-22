@@ -8,6 +8,15 @@ const {Header} = Layout;
 
 const logoutUrl = restUrl.ADDR + 'server/LoginOut';
 
+const orignalSetItem = sessionStorage.setItem;
+sessionStorage.setItem = function (key, newValue) {
+    const setItemEvent = new Event("setItemEvent");
+    setItemEvent.key = key;
+    setItemEvent.newValue = newValue;
+    window.dispatchEvent(setItemEvent);
+    orignalSetItem.apply(this, arguments);
+};
+
 class ZZHeader extends React.Component {
     constructor(props) {
         super(props);
@@ -22,6 +31,19 @@ class ZZHeader extends React.Component {
                 </Menu.Item>
             </Menu>
         );
+
+        this.state = {
+            avatar: sessionStorage.getItem('avatar')
+        };
+    }
+
+    componentDidMount = () => {
+        window.addEventListener('setItemEvent', e => {
+            console.log('e === ', e);
+            if (e.key === 'avatar' && e.newValue) {
+                this.setState({avatar: e.newValue});
+            }
+        });
     }
 
     goUserCenter = () => {
@@ -57,6 +79,7 @@ class ZZHeader extends React.Component {
 
     render() {
         const {collapsed, onToggleClick} = this.props;
+        const {avatar} = this.state;
 
         return (
             <Header className="zui-header">
@@ -77,8 +100,8 @@ class ZZHeader extends React.Component {
                             <Avatar
                                 className='zui-avatar'
                                 size="small"
-                                icon={sessionStorage.getItem('avatar') || "user"}
-                                src={sessionStorage.getItem('avatar') || null}
+                                icon={avatar !== 'undefined' ? avatar : "user"}
+                                src={avatar !== 'undefined' ? avatar : null}
                             /> 管理员 <Icon type="down"/>
                         </a>
                     </Dropdown>

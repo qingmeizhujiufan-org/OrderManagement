@@ -33,14 +33,6 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 
-const orignalSetItem = sessionStorage.setItem;
-sessionStorage.setItem = function(key,newValue){
-    const setItemEvent = new Event("setItemEvent");
-    setItemEvent.newValue = newValue;
-    window.dispatchEvent(setItemEvent);
-    orignalSetItem.apply(this,arguments);
-}
-
 class DetailForm extends React.Component {
     constructor(props) {
         super(props);
@@ -62,13 +54,12 @@ class DetailForm extends React.Component {
     }
 
     handleChange = ({file, fileList}) => {
-        console.log('fileList === ', fileList);
+        console.log('file === ', file);
         if (file.status === 'done') {
             this.setState({fileList});
-            sessionStorage.setItem('avatar', restUrl.ADDR + file.response.backData.path + file.response.backData.name);
         }
         if (file.status === 'removed') {
-            this.delFile(file.id);
+            this.delFile(file.response.backData.id);
         }
     }
 
@@ -89,7 +80,7 @@ class DetailForm extends React.Component {
                     description: '删除成功！'
                 });
 
-                this.setState({fieldList: []});
+                this.setState({fileList: []});
             } else {
                 Message.error(data.backMsg);
             }
@@ -113,14 +104,13 @@ class DetailForm extends React.Component {
                             status: 'done',
                             url: restUrl.ADDR + item.path + item.name,
                             response: {
-                                data: item
+                                backData: item
                             }
                         });
                     });
                 } else {
                     backData.assessorys = [];
                 }
-                console.log('assessorys == ', backData.assessorys);
                 const fileList = [].concat(backData.assessorys);
 
                 this.setState({
@@ -165,7 +155,7 @@ class DetailForm extends React.Component {
                 values.assessorys = values.assessorys ? values.assessorys.map(item => {
                     return item.response.backData;
                 }) : [];
-                console.log('handleSubmit  param === ', values);
+
                 this.setState({
                     submitLoading: true
                 });
@@ -179,11 +169,11 @@ class DetailForm extends React.Component {
                         Message.error(data.backMsg);
                     }
                     const backData = data.backData;
-                    window.addEventListener('setItemEvent', e => {
-                        if(e.key === 'avatar'){
-                            sessionStorage.setItem('avatar', restUrl.ADDR + backData.assessorys[0].path + backData.assessorys[0].name);
-                        }
-                    });
+                    if (backData.assessorys && backData.assessorys.length > 0) {
+                        sessionStorage.setItem('avatar', restUrl.ADDR + backData.assessorys[0].path + backData.assessorys[0].name);
+                    } else {
+                        sessionStorage.setItem('avatar', undefined);
+                    }
 
                     this.setState({
                         submitLoading: false
@@ -316,10 +306,9 @@ class DetailForm extends React.Component {
                                         listType="picture-card"
                                         onChange={this.handleChange}
                                     >
-                                        {fileList.length >= 1 ? null : <Button>
+                                        {fileList.length === 0 ? <Button>
                                             <Icon type="upload"/> 上传头像
-                                        </Button>}
-
+                                        </Button> : null}
                                     </Upload>
                                 )}
                             </FormItem>
