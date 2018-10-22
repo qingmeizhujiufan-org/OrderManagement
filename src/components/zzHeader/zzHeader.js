@@ -60,34 +60,28 @@ class ZZHeader extends React.Component {
 
         return (
             <Header className="zui-header">
-                <Row type="flex" justify="space-between" align="middle" style={{height: '100%'}}>
-                    <Col span={2}>
-                        <Icon
-                            className="trigger"
-                            type={collapsed ? 'menu-unfold' : 'menu-fold'}
-                            onClick={onToggleClick}
-                        />
-                    </Col>
-                    <Col span={10}>
-                    </Col>
-                    <Col span={12} style={{textAlign: 'right'}}>
-                        {/*<Badge dot>*/}
-              {/*<span onClick={this.checkMessage}>*/}
-                {/*<Icon type="bell" theme="outlined" style={{fontSize: 20, color: '#fff', verticalAlign: 'text-bottom'}}/>*/}
-              {/*</span>*/}
-                        {/*</Badge>*/}
-                        {/*<Divider type="vertical" style={{margin: '0 30px'}}/>*/}
-                        <Dropdown overlay={this.menu}>
-                            <a className="ant-dropdown-link" style={{color: '#fff'}}>
-                                <Avatar
-                                    className='zui-avatar'
-                                    size="small"
-                                    icon={sessionStorage.getItem('avatar') || "user"}
-                                    src={sessionStorage.getItem('avatar') || null}
-                                /> 管理员 <Icon type="down"/>
-                            </a>
-                        </Dropdown>
-                    </Col>
+                <Row type="flex" justify="space-between" align="middle">
+                    <Icon
+                        className="trigger"
+                        type={collapsed ? 'menu-unfold' : 'menu-fold'}
+                        onClick={onToggleClick}
+                    />
+                    {/*<Badge dot>*/}
+                    {/*<span onClick={this.checkMessage}>*/}
+                    {/*<Icon type="bell" theme="outlined" style={{fontSize: 20, color: '#fff', verticalAlign: 'text-bottom'}}/>*/}
+                    {/*</span>*/}
+                    {/*</Badge>*/}
+                    {/*<Divider type="vertical" style={{margin: '0 30px'}}/>*/}
+                    <Dropdown overlay={this.menu}>
+                        <a className="ant-dropdown-link" style={{color: '#fff'}}>
+                            <Avatar
+                                className='zui-avatar'
+                                size="small"
+                                icon={sessionStorage.getItem('avatar') || "user"}
+                                src={sessionStorage.getItem('avatar') || null}
+                            /> 管理员 <Icon type="down"/>
+                        </a>
+                    </Dropdown>
                 </Row>
             </Header>
         );
