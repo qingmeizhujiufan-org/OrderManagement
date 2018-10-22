@@ -16,6 +16,8 @@ import {
 } from 'antd';
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
+import assign from 'lodash/assign';
+
 import '../index.less';
 
 const userSaveUrl = restUrl.BASE_HOST + 'user/save';
@@ -63,7 +65,7 @@ class Index extends React.Component {
                 let backData = data.backData;
                 if (backData.assessorys) {
                     backData.assessorys.map((item, index) => {
-                        backData.assessorys[index] = _.assign({}, item, {
+                        backData.assessorys[index] = assign({}, item, {
                             uid: item.id,
                             status: 'done',
                             url: restUrl.ADDR + item.path + item.name,
