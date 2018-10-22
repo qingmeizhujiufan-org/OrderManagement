@@ -20,7 +20,7 @@ module.exports = {
     entry: {
         "index": path.resolve(__dirname, 'src/index'),
         //添加要打包在vendor.js里面的库
-        vendor: ['babel-polyfill', 'antd', 'react', 'react-dom', 'react-router', 'react-router-redux', 'react-redux', 'redux']
+        vendor: ['react', 'react-dom', 'react-router', 'react-router-redux', 'react-redux', 'redux']
     },
 
     output: {
@@ -28,6 +28,8 @@ module.exports = {
         chunkFilename: 'chunk.[chunkhash:5].js',
         path: path.join(__dirname, '/build'),
     },
+
+    externals: {},
 
     resolve: {
         modules: [path.resolve(__dirname, 'node_modules'), path.join(__dirname, 'src')],
@@ -157,6 +159,6 @@ module.exports = {
         }),//最小化一切
         new webpack.optimize.AggressiveMergingPlugin(),//合并块
         /* 分析包的大小分布 */
-        new BundleAnalyzerPlugin(),
+        // new BundleAnalyzerPlugin(),
     ]
 };
