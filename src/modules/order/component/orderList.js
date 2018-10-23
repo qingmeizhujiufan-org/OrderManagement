@@ -390,7 +390,7 @@ class OrderList extends React.Component {
             method: 'POST',
             body: JSON.stringify(param),
             success: () => this.onCloseExportOrderModal(),
-            error: () => Message.error('导出订单失败')
+            error: (data) => Message.error(data.backMsg)
         });
     }
 
