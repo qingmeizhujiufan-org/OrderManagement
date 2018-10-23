@@ -135,7 +135,6 @@ export default {
             },
             body: body
         }).then((response) => {
-            console.log('response ===', response);
             const disposition = response.headers.get('Content-Disposition');
             let filename;
             if (disposition && disposition.match(/attachment/)) {
@@ -154,7 +153,9 @@ export default {
                 });
                 if (typeof success === 'function' && success !== undefined) success();
             } else {
-                if (typeof error === 'function' && error !== undefined) error();
+                if (typeof error === 'function' && error !== undefined){
+                    response.json().then(res => error(res));
+                }
             }
         });
     }

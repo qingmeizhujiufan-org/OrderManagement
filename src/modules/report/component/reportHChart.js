@@ -19,22 +19,18 @@ import {
 } from 'Comps/Charts';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 import find from "lodash/find";
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from "Utils/util";
-import {formItemLayout, itemGrid} from "Utils/formItemGrid";
 
-moment.locale('zh-cn');
-const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
-const {RangePicker, MonthPicker} = DatePicker;
+const {RangePicker} = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 
-const regionOrderUrl = restUrl.BASE_HOST + 'order/regionOrder';
-const exportRegionOrderUrl = restUrl.BASE_HOST + 'order/exportRegionOrder';
 const countPeriodOrderUrl = restUrl.BASE_HOST + 'order/countPeriodOrder';
 const multiPurchaseOrderUrl = restUrl.BASE_HOST + 'order/multiPurchaseOrder';
 const exportMultiPurchaseOrderUrl = restUrl.BASE_HOST + 'order/exportMultiPurchase';

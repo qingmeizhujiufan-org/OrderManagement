@@ -15,6 +15,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 import find from "lodash/find";
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
@@ -22,7 +23,6 @@ import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from "Utils/util";
 
-moment.locale('zh-cn');
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const {RangePicker} = DatePicker;
@@ -452,7 +452,7 @@ class Index extends React.Component {
                 deliverBeginDate: values.deliverDate[0].format("YYYY-MM-DD"),
                 deliverEndDate: values.deliverDate[1].format("YYYY-MM-DD"),
             }),
-            error: function () {
+            error: data => {
                 Message.error(data.backMsg);
             }
         });
@@ -484,7 +484,7 @@ class Index extends React.Component {
                 <div className='pageContent'>
                     <div className='ibox-content'>
                         <Tabs defaultActiveKey="1">
-                            <TabPane forceRender tab={<span><Icon type="clock-circle"/>时间段</span>} key="1">
+                            <TabPane forceRender tab={<span><Icon type="clock-circle"/>各区订单统计</span>} key="1">
                                 <Row gutter={24}>
                                     <Col>
                                         <ZZCard
@@ -535,7 +535,7 @@ class Index extends React.Component {
                                     </Col>
                                 </Row>
                             </TabPane>
-                            <TabPane forceRender tab={<span><Icon type="dollar"/>订单性质</span>} key="2">
+                            <TabPane forceRender tab={<span><Icon type="dollar"/>不同性质订单统计</span>} key="2">
                                 <MultiPurchase/>
                             </TabPane>
                         </Tabs>

@@ -15,7 +15,6 @@ import restUrl from 'RestUrl';
 import '../index.less';
 
 const queryListUrl = restUrl.BASE_HOST + 'message/queryList';
-const queryDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
 
 class messageList extends React.Component {
     constructor(props) {

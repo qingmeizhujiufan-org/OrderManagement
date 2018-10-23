@@ -102,7 +102,7 @@ class ZZHeader extends React.Component {
                                 size="small"
                                 icon={avatar !== 'undefined' ? avatar : "user"}
                                 src={avatar !== 'undefined' ? avatar : null}
-                            /> 管理员 <Icon type="down"/>
+                            /> {sessionStorage.userName} <Icon type="down"/>
                         </a>
                     </Dropdown>
                 </Row>

@@ -7,7 +7,6 @@ import restUrl from 'RestUrl';
 import '../index.less';
 
 const userDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
-const delUrl = restUrl.ADDR + 'user/delete';
 
 const FormItem = Form.Item;
 

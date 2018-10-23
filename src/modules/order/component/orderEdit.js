@@ -20,6 +20,8 @@ import {
     Radio
 } from 'antd';
 import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';

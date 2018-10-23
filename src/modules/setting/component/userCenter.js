@@ -147,6 +147,15 @@ class DetailForm extends React.Component {
         });
     }
 
+    validatePhone = (rule, value, callback) => {
+        const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
+        if (value && value !== '' && !reg.test(value)) {
+            callback(new Error('手机号格式不正确'));
+        } else {
+            callback();
+        }
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
@@ -165,14 +174,15 @@ class DetailForm extends React.Component {
                             message: '提示',
                             description: '用户信息保存成功！'
                         });
+
+                        const backData = data.backData;
+                        if (backData.assessorys && backData.assessorys.length > 0) {
+                            sessionStorage.setItem('avatar', restUrl.ADDR + backData.assessorys[0].path + backData.assessorys[0].name);
+                        } else {
+                            sessionStorage.setItem('avatar', undefined);
+                        }
                     } else {
                         Message.error(data.backMsg);
-                    }
-                    const backData = data.backData;
-                    if (backData.assessorys && backData.assessorys.length > 0) {
-                        sessionStorage.setItem('avatar', restUrl.ADDR + backData.assessorys[0].path + backData.assessorys[0].name);
-                    } else {
-                        sessionStorage.setItem('avatar', undefined);
                     }
 
                     this.setState({
@@ -250,10 +260,12 @@ class DetailForm extends React.Component {
                                         label="个人电话"
                                     >
                                         {getFieldDecorator('phone', {
-                                            rules: [{required: true, message: '请输入个人电话'}],
+                                            rules: [{required: true, message: '请输入个人电话'}, {
+                                                validator: this.validatePhone,
+                                            }],
                                             initialValue: data.phone
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -267,7 +279,7 @@ class DetailForm extends React.Component {
                                             rules: [{required: true, message: '请输入所属区域'}],
                                             initialValue: data.region
                                         })(
-                                            <Input disabled/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>

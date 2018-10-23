@@ -19,9 +19,10 @@ import {
     Button,
     Upload,
     Drawer,
-    InputNumber,
 } from 'antd';
 import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 import assign from 'lodash/assign';
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
@@ -107,7 +108,6 @@ class OrderList extends React.Component {
                 key: 'serderPhone'
             }, {
                 title: '寄件地址',
-                width: 250,
                 dataIndex: 'senderAddr',
                 key: 'senderAddr'
             }, {
@@ -218,11 +218,6 @@ class OrderList extends React.Component {
                 align: 'center',
                 dataIndex: 'incomlineTime',
                 key: 'incomlineTime'
-            }, {
-                title: '备注',
-                align: 'center',
-                dataIndex: 'remark',
-                key: 'remark'
             }, {
                 title: '订单状态',
                 width: 120,
