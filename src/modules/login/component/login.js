@@ -11,7 +11,6 @@ import Logo from 'Img/logo.png';
 const FormItem = Form.Item;
 
 const loginUrl = restUrl.BASE_HOST + 'user/login';
-const roleDetailUrl = restUrl.BASE_HOST + 'role/findbyid';
 
 class Login extends React.Component {
     constructor(props) {
@@ -49,34 +48,30 @@ class Login extends React.Component {
                                 sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);
                             }
 
-                            ajax.getJSON(roleDetailUrl, {id: loginedUser.roleId}, res => {
-                                this.setState({loading: false});
-
-                                if (res.success) {
-                                    const role = res.backData;
-                                    let type = null;
-                                    let initUrl = null;
-                                    // 管理员
-                                    if (role.roleCode === '002') {
-                                        type = 1;
-                                        initUrl = '/frame/report/list'
-                                    }
-                                    // 二级管理员
-                                    else if (role.roleCode === '003') {
-                                        type = 2;
-                                        initUrl = '/frame/order/list'
-                                    }
-                                    // 业务员
-                                    else if (role.roleCode === '004') {
-                                        type = 3;
-                                        initUrl = '/frame/order/list'
-                                    }
-                                    sessionStorage.setItem('type', type);
-                                    return this.context.router.push(initUrl);
-                                } else {
-                                    Message.error('获取用户权限失败');
-                                }
-                            })
+                            let type = null;
+                            let initUrl = null;
+                            // 超级管理员
+                            if(loginedUser.roleCode === '001') {
+                                type = 1;
+                                initUrl = '/frame/report/list'
+                            }
+                            // 管理员
+                            else if (loginedUser.roleCode === '002') {
+                                type = 1;
+                                initUrl = '/frame/report/list'
+                            }
+                            // 二级管理员
+                            else if (loginedUser.roleCode === '003') {
+                                type = 2;
+                                initUrl = '/frame/order/list'
+                            }
+                            // 业务员
+                            else if (loginedUser.roleCode === '004') {
+                                type = 3;
+                                initUrl = '/frame/order/list'
+                            }
+                            sessionStorage.setItem('type', type);
+                            return this.context.router.push(initUrl);
                         }
                     } else {
                         this.setState({loading: false});

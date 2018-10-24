@@ -157,7 +157,7 @@ class Index extends React.Component {
                       <a
                         href="javascript:;"
                         onClick={() => this.save(form, record.key)}
-                      >保存</a>
+                      >确定</a>
                     )}
                   </EditableContext.Consumer>
                   <Divider type="vertical"/>

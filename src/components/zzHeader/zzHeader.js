@@ -100,8 +100,8 @@ class ZZHeader extends React.Component {
                             <Avatar
                                 className='zui-avatar'
                                 size="small"
-                                icon={avatar !== 'undefined' ? avatar : "user"}
-                                src={avatar !== 'undefined' ? avatar : null}
+                                icon={avatar ? avatar : "user"}
+                                src={avatar ? avatar : null}
                             /> {sessionStorage.userName} <Icon type="down"/>
                         </a>
                     </Dropdown>
