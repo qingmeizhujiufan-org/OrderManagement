@@ -19,7 +19,6 @@ import {
 } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-
 moment.locale('zh-cn');
 import {ZZTable} from 'Comps/zz-antD';
 
@@ -28,6 +27,8 @@ import restUrl from 'RestUrl';
 import '../index.less';
 import {message} from "antd/lib/index";
 import assign from "lodash/assign";
+import uniqBy from 'lodash/uniqBy';
+import includes from 'lodash/includes';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 
 const orderAddUrl = restUrl.BASE_HOST + 'order/save';
@@ -135,7 +136,7 @@ class Index extends React.Component {
                 align: 'center',
                 render: (text, record, index) => (
                     <div>
-                        <a onClick={() => this.onDelete(index)}>删除</a>
+                        <a onClick={() => this.onDelete(record.id)}>删除</a>
                     </div>
                 )
             }]
@@ -153,26 +154,19 @@ class Index extends React.Component {
     componentDidMount = () => {
     }
 
-    onDelete = index => {
+    onDelete = id => {
         Modal.confirm({
             title: '提示',
             content: '确认要删除吗？',
             okText: '确认',
             cancelText: '取消',
             onOk: () => {
-                let selectedProduct = this.state.selectedProduct;
-                let selectedRowKeys = this.state.selectedRowKeys;
-                selectedProduct.splice(index, 1);
-                selectedRowKeys.splice(index, 1);
-                console.log('selectedRowKeys ===', selectedRowKeys)
+                const {selectedProduct, selectedRowKeys} = this.state;
+                console.log('id == ', id);
+                console.log('selectedProduct == ', selectedProduct);
                 this.setState({
-                    selectedProduct,
-                    selectedRowKeys
-                }, () => {
-                    Notification.success({
-                        message: '提示',
-                        description: '删除成功！'
-                    });
+                    selectedProduct: selectedProduct.filter(item => item.id !== id),
+                    selectedRowKeys: selectedRowKeys.filter(item => item !== id)
                 });
             }
         });
@@ -214,10 +208,11 @@ class Index extends React.Component {
         for (let i in selectedProduct) {
             selectedProduct[i].number = 1;
         }
+        selectedProduct = uniqBy(selectedProduct);
+        selectedProduct = selectedProduct.filter(item => includes(this.state.selectedRowKeys, item.key));
         this.setState({
             submitProduct: selectedProduct,
             showModal: false
-        }, () => {
         });
     }
 
@@ -226,12 +221,12 @@ class Index extends React.Component {
         if (selectedNum <= 4) {
             this.setState({
                 selectedRowKeys: selectedRowKeys,
-                selectedProduct: selectedRows
+                selectedProduct: this.state.selectedProduct.concat(selectedRows)
             });
         } else {
             message.warning('产品种类最多为四种');
         }
-        console.log('selectedRowKeys changed: ', selectedRows);
+        console.log('selectedRowKeys changed: ', selectedRowKeys);
 
     }
 
