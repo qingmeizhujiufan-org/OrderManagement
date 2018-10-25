@@ -225,57 +225,37 @@ class Index extends React.Component {
   }
 
   onSelectChange = (record, selected, selectedRows, nativeEvent) => {
-    console.log('selected ===', selected);
-    console.log('record ===', record);
-    console.log('selectedRows ===', selectedRows);
     let {selectedProduct, selectedRowKeys} = this.state;
     let selectedNum = selectedProduct.length;
 
-    if (selectedNum <= 4) {
-      let res = find(selectedRowKeys, function (i) {
-        return i === record.id
+    let res = find(selectedRowKeys, function (i) {
+      return i === record.id
+    })
+    console.log('res ===', res)
+    if (res) {
+      selectedRowKeys = filter(selectedRowKeys, function (i) {
+        return i !== record.id
       })
-      console.log('res ===', res)
-      if (res) {
-        selectedRowKeys = filter(selectedRowKeys, function (i) {
-          return i !== record.id
-        })
-        selectedProduct = filter(selectedProduct, function (i) {
-          return i.id !== record.id
-        })
-      } else {
+      selectedProduct = filter(selectedProduct, function (i) {
+        return i.id !== record.id
+      })
+    } else {
+      if (selectedNum < 4) {
         selectedRowKeys.push(record.id);
         selectedProduct.push(record)
+      } else {
+        message.warning('产品种类最多为四种');
       }
-      this.setState({
-        selectedRowKeys: selectedRowKeys,
-        selectedProduct: selectedProduct
-      });
-    } else {
-      message.warning('产品种类最多为四种');
     }
+    this.setState({
+      selectedRowKeys: selectedRowKeys,
+      selectedProduct: selectedProduct
+    });
   }
-
-  // onSelectChange = (selectedRowKeys, selectedRows) => {
-  //   let selectedProduct = this.state.selectedProduct;
-  //   const selectedNum = selectedRowKeys.length;
-  //   console.log("selectedRowKeys ===",selectedRowKeys);
-  //   if (selectedNum <= 4) {
-  //     this.setState({
-  //       selectedRowKeys: selectedRowKeys,
-  //       selectedProduct: Array.from(new Set([...selectedProduct, ...selectedRows]))
-  //     }, () => {
-  //       console.log('selectedRow ===', this.state.selectedProduct);
-  //     });
-  //   } else {
-  //     message.warning('产品种类最多为四种');
-  //   }
-  //   console.log('selectedRowKeys changed: ', selectedRows);
-  // }
 
   setEachProNumber = (val, record, index) => {
     let data = this.state.submitProduct;
-    record.number = val ? val : 1;
+    record.pnumber = val ? val : 1;
     data[index] = record;
     this.setState({
       submitProduct: data
@@ -354,7 +334,7 @@ class Index extends React.Component {
           return {
             productId: item.id,
             productName: item.name,
-            pnumber: item.number,
+            pnumber: item.pnumber,
             productUnit: item.unit,
             productBarCode: item.barCode,
             orderId: null,
