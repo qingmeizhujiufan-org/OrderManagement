@@ -152,7 +152,7 @@ class OrderList extends React.Component {
                 dataIndex: 'receiverAddr',
                 key: 'receiverAddr',
                 render: text => (
-                    <div className='zui-ellipsis' style={{width: 300}}>{text}</div>
+                    <div className='zui-ellipsis' style={{width: 300}} title={text}>{text}</div>
                 )
             }, {
                 title: '定金',

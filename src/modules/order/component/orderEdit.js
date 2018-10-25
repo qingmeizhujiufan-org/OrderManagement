@@ -35,7 +35,6 @@ const queryDetailUrl = restUrl.BASE_HOST + 'order/findbyid';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const {TextArea} = Input;
 
 class Index extends React.Component {
     constructor(props) {
@@ -74,7 +73,7 @@ class Index extends React.Component {
                 render: (text, record, index) => (
                     <InputNumber
                         style={{width: '50%'}}
-                        defaultValue={1}
+                        defaultValue={text}
                         min={1}
                         step={1}
                         onChange={value => this.setEachProNumber(value, record, index)}
@@ -120,6 +119,7 @@ class Index extends React.Component {
             loading: true
         });
         ajax.getJSON(queryDetailUrl, param, data => {
+            this.setState({loading: false});
             if (data.success) {
                 let backData = data.backData;
                 backData.childrenDetail.map(item => {
@@ -128,8 +128,7 @@ class Index extends React.Component {
 
                 this.setState({
                     data: backData,
-                    proData: backData.childrenDetail,
-                    loading: false
+                    proData: backData.childrenDetail
                 }, () => {
                     this.showTips();
                     this.canEdit();
@@ -143,10 +142,11 @@ class Index extends React.Component {
     showTips = () => {
         const data = this.state.data;
         const deliverDate = data.deliverDate;
-        const curDate = moment().format("YYYY-MM-DD");
-        console.log(deliverDate === curDate);
+        const curDate = moment().format("YYYY-MM-DD") + ' 10:00:00';
+        console.log(new Date(deliverDate));
+        console.log(new Date(curDate));
 
-        if (deliverDate === curDate) {
+        if (new Date(deliverDate).getTime() < new Date(curDate).getTime()) {
             this.setState({
                 showTips: true
             });
@@ -251,7 +251,7 @@ class Index extends React.Component {
     render() {
         const {getFieldDecorator} = this.props.form;
         const {data, proData, canEdit, showTips, isOperator, loading, submitLoading} = this.state;
-
+        console.log('showTips === ', showTips);
         return (
             <div className="zui-content">
                 <div className='pageHeader'>
@@ -266,8 +266,10 @@ class Index extends React.Component {
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
-                        <Alert visible={showTips} message="当前日期已过订单发货日期次日上午十点，则之后不允许修改" type="warning" showIcon/>,
-                        <Spin spinning={loading} size='large'>
+                        {
+                            showTips ? <Alert message="当前日期已过订单发货日期次日上午十点，则之后不允许修改" type="warning" showIcon/> : null
+                        }
+                        <Spin spinning={loading}>
                             <Divider>产品信息</Divider>
                             <div style={{
                                 paddingBottom: 30,
@@ -311,7 +313,7 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                    <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
+                                    <Col {...itemGrid} style={{display: 'none'}}>
                                         <FormItem
                                             {...formItemLayout}
                                             label="业务员id"
@@ -320,7 +322,7 @@ class Index extends React.Component {
                                                 rules: [{required: true, message: '请输入业务员id'}],
                                                 initialValue: data.userId
                                             })(
-                                                <Input disabled={isOperator}/>
+                                                <Input disabled/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -333,7 +335,7 @@ class Index extends React.Component {
                                                 rules: [{required: true, message: '请输入业务员姓名'}],
                                                 initialValue: data.userName
                                             })(
-                                                <Input disabled={isOperator}/>
+                                                <Input disabled/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -346,7 +348,7 @@ class Index extends React.Component {
                                                 rules: [{required: false, message: '请输入订单编号'}],
                                                 initialValue: data.orderCode
                                             })(
-                                                <Input disabled={isOperator}/>
+                                                <Input disabled/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -361,7 +363,7 @@ class Index extends React.Component {
                                                 }],
                                                 initialValue: data.serderPhone
                                             })(
-                                                <Input disabled={isOperator}/>
+                                                <Input disabled/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -374,7 +376,7 @@ class Index extends React.Component {
                                                 rules: [{required: true, message: '请输入寄件详细地址'}],
                                                 initialValue: data.senderAddr
                                             })(
-                                                <TextArea autosize disabled={isOperator}/>
+                                                <Input title={data.senderAddr} disabled/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -469,7 +471,7 @@ class Index extends React.Component {
                                                 rules: [{required: true, message: '请输入收件人详细地址'}],
                                                 initialValue: data.receiverAddr
                                             })(
-                                                <TextArea autosize/>
+                                                <Input title={data.receiverAddr}/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -585,12 +587,12 @@ class Index extends React.Component {
                                                 rules: [{required: true, message: '请选择'}],
                                                 initialValue: data.orderState
                                             })(
-                                                <RadioGroup>
-                                                    <Radio value={0}>编辑中</Radio>
-                                                    <Radio value={1}>已锁定</Radio>
-                                                    <Radio value={2}>已发快递</Radio>
-                                                    <Radio value={3}>成单</Radio>
-                                                </RadioGroup>
+                                                <Select disabled={isOperator}>
+                                                    <Option key='0' value={0}>编辑中</Option>
+                                                    <Option key='1' value={1}>已锁定</Option>
+                                                    <Option key='2' value={2}>已发快递</Option>
+                                                    <Option key='3' value={3}>成单</Option>
+                                                </Select>
                                             )}
                                         </FormItem>
                                     </Col>

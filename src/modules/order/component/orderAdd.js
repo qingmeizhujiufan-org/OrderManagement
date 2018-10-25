@@ -38,7 +38,6 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const Search = Input.Search;
-const {TextArea} = Input;
 
 class Index extends React.Component {
     constructor(props) {
@@ -517,7 +516,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入寄件详细地址'}],
                                             initialValue: senderData.senderAddr
                                         })(
-                                            <TextArea autosize disabled/>
+                                            <Input disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -610,7 +609,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('receiverAddr', {
                                             rules: [{required: true, message: '请输入收件人详细地址'}],
                                         })(
-                                            <TextArea autosize/>
+                                            <Input/>
                                         )}
                                     </FormItem>
                                 </Col>
