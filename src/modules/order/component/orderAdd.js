@@ -19,6 +19,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+
 moment.locale('zh-cn');
 import {ZZTable} from 'Comps/zz-antD';
 
@@ -161,12 +162,12 @@ class Index extends React.Component {
             okText: '确认',
             cancelText: '取消',
             onOk: () => {
-                const {selectedProduct, selectedRowKeys} = this.state;
-                console.log('id == ', id);
-                console.log('selectedProduct == ', selectedProduct);
+                let {selectedProduct, selectedRowKeys} = this.state;
+                selectedProduct = selectedProduct.filter(item => item.id !== id);
                 this.setState({
-                    selectedProduct: selectedProduct.filter(item => item.id !== id),
-                    selectedRowKeys: selectedRowKeys.filter(item => item !== id)
+                    selectedProduct,
+                    selectedRowKeys: selectedRowKeys.filter(item => item !== id),
+                    submitProduct: selectedProduct
                 });
             }
         });
@@ -208,9 +209,10 @@ class Index extends React.Component {
         for (let i in selectedProduct) {
             selectedProduct[i].number = 1;
         }
-        selectedProduct = uniqBy(selectedProduct);
+        selectedProduct = uniqBy(selectedProduct, 'key');
         selectedProduct = selectedProduct.filter(item => includes(this.state.selectedRowKeys, item.key));
         this.setState({
+            selectedProduct,
             submitProduct: selectedProduct,
             showModal: false
         });
