@@ -25,6 +25,8 @@ import 'moment/locale/zh-cn';
 
 moment.locale('zh-cn');
 import assign from 'lodash/assign';
+import filter from 'lodash/filter';
+
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
 import '../index.less';
@@ -300,6 +302,11 @@ class OrderList extends React.Component {
     }
 
     componentWillMount = () => {
+      const type = sessionStorage.type;
+      //业务员
+      if (type === "3") {
+        this.columns = this.columns.filter(item =>  item.title !== '成本')
+      }
     }
 
     componentDidMount = () => {
