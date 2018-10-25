@@ -38,6 +38,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const Search = Input.Search;
+const {TextArea} = Input;
 
 class Index extends React.Component {
     constructor(props) {
@@ -516,7 +517,7 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入寄件详细地址'}],
                                             initialValue: senderData.senderAddr
                                         })(
-                                            <Input disabled/>
+                                            <TextArea autosize disabled/>
                                         )}
                                     </FormItem>
                                 </Col>
@@ -563,8 +564,7 @@ class Index extends React.Component {
                                         label="发货日期"
                                     >
                                         {getFieldDecorator('deliverDate', {
-                                            rules: [{required: true, message: '请输入发货日期'}],
-                                            // initialValue: moment()
+                                            rules: [{required: true, message: '请输入发货日期'}]
 
                                         })(
                                             <DatePicker
@@ -610,7 +610,7 @@ class Index extends React.Component {
                                         {getFieldDecorator('receiverAddr', {
                                             rules: [{required: true, message: '请输入收件人详细地址'}],
                                         })(
-                                            <Input/>
+                                            <TextArea autosize/>
                                         )}
                                     </FormItem>
                                 </Col>

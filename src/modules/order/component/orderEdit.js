@@ -21,6 +21,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+
 moment.locale('zh-cn');
 import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
@@ -34,6 +35,7 @@ const queryDetailUrl = restUrl.BASE_HOST + 'order/findbyid';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const {TextArea} = Input;
 
 class Index extends React.Component {
     constructor(props) {
@@ -372,7 +374,7 @@ class Index extends React.Component {
                                                 rules: [{required: true, message: '请输入寄件详细地址'}],
                                                 initialValue: data.senderAddr
                                             })(
-                                                <Input disabled={isOperator}/>
+                                                <TextArea autosize disabled={isOperator}/>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -467,7 +469,7 @@ class Index extends React.Component {
                                                 rules: [{required: true, message: '请输入收件人详细地址'}],
                                                 initialValue: data.receiverAddr
                                             })(
-                                                <Input/>
+                                                <TextArea autosize/>
                                             )}
                                         </FormItem>
                                     </Col>

@@ -22,6 +22,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+
 moment.locale('zh-cn');
 import assign from 'lodash/assign';
 import restUrl from 'RestUrl';
@@ -108,8 +109,12 @@ class OrderList extends React.Component {
                 key: 'serderPhone'
             }, {
                 title: '寄件地址',
+                width: 300,
                 dataIndex: 'senderAddr',
-                key: 'senderAddr'
+                key: 'senderAddr',
+                render: text => (
+                    <div className='zui-ellipsis' style={{width: 300}}>{text}</div>
+                )
             }, {
                 title: '成单微信号',
                 width: 120,
@@ -142,10 +147,13 @@ class OrderList extends React.Component {
                 key: 'ReceiverPhone'
             }, {
                 title: '收件人地址',
-                width: 150,
-                align: 'center',
+                width: 300,
+                align: 'left',
                 dataIndex: 'receiverAddr',
-                key: 'receiverAddr'
+                key: 'receiverAddr',
+                render: text => (
+                    <div className='zui-ellipsis' style={{width: 300}}>{text}</div>
+                )
             }, {
                 title: '定金',
                 width: 100,
@@ -428,38 +436,46 @@ class OrderList extends React.Component {
     }
 
     onDelete = (record) => {
-        if (record.orderState === 0)
+        const type = sessionStorage.type;
+        //业务员
+        if (type === '3' && record.orderState !== 0) {
             Message.warning('当前订单无法删除');
-        else {
-            Modal.confirm({
-                title: '提示',
-                content: '确认要删除吗？',
-                okText: '确认',
-                cancelText: '取消',
-                onOk: () => {
-                    let param = {};
-                    param.id = record.id;
-                    ajax.postJSON(delUrl, JSON.stringify(param), data => {
-                        if (data.success) {
-                            Notification.success({
-                                message: '提示',
-                                description: '删除成功！'
-                            });
-
-                            this.setState({
-                                params: {
-                                    pageNumber: 1
-                                },
-                            }, () => {
-                                this.queryList();
-                            });
-                        } else {
-                            Message.error(data.backMsg);
-                        }
-                    });
-                }
-            });
+            return;
         }
+        //二级管理员及以上
+        if (type !== '3' && record.orderState > 1) {
+            Message.warning('当前订单无法删除');
+            return;
+        }
+
+        Modal.confirm({
+            title: '提示',
+            content: '确认要删除吗？',
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => {
+                let param = {};
+                param.id = record.id;
+                ajax.postJSON(delUrl, JSON.stringify(param), data => {
+                    if (data.success) {
+                        Notification.success({
+                            message: '提示',
+                            description: '删除成功！'
+                        });
+
+                        this.setState({
+                            params: {
+                                pageNumber: 1
+                            },
+                        }, () => {
+                            this.queryList();
+                        });
+                    } else {
+                        Message.error(data.backMsg);
+                    }
+                });
+            }
+        });
     }
 
     showDrawer = () => this.setState({drawerVisible: true})
@@ -736,7 +752,7 @@ class OrderList extends React.Component {
                             dataSource={dataSource}
                             pagination={pagination}
                             loading={loading}
-                            scroll={{x: 3500}}
+                            scroll={{x: 3450}}
                             handlePageChange={this.handlePageChange.bind(this)}
                         />
                     </ZZCard>
