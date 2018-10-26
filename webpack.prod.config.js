@@ -29,7 +29,9 @@ module.exports = {
         path: path.join(__dirname, '/build'),
     },
 
-    externals: {},
+    externals: {
+        '@antv/data-set': '@antv/data-set'
+    },
 
     resolve: {
         modules: [path.resolve(__dirname, 'node_modules'), path.join(__dirname, 'src')],
@@ -159,6 +161,6 @@ module.exports = {
         }),//最小化一切
         new webpack.optimize.AggressiveMergingPlugin(),//合并块
         /* 分析包的大小分布 */
-        // new BundleAnalyzerPlugin(),
+        new BundleAnalyzerPlugin(),
     ]
 };

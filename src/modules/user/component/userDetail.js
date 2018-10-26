@@ -6,10 +6,9 @@ import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 import assign from "lodash/assign";
-import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
+import {formItemLayout} from 'Utils/formItemGrid';
 
 const userDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
-const delUrl = restUrl.ADDR + 'user/delete';
 
 const FormItem = Form.Item;
 

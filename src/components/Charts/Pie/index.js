@@ -4,7 +4,6 @@ import Chart from 'bizcharts/lib/components/Chart';
 import Tooltip from 'bizcharts/lib/components/Tooltip';
 import Coord from 'bizcharts/lib/components/Coord';
 import Geom from 'bizcharts/lib/components/Geom';
-import {DataView} from '@antv/data-set';
 import {Divider} from 'antd';
 import ReactFitText from 'react-fittext';
 import Debounce from 'lodash-decorators/debounce';
@@ -199,7 +198,7 @@ class Pie extends Component {
 
         const padding = [12, 0, 12, 0];
 
-        const dv = new DataView();
+        const dv = new DataSet.View();
         dv.source(data).transform({
             type: 'percent',
             field: 'y',

@@ -33,6 +33,10 @@ module.exports = {
         path: path.join(__dirname, '/build'),
     },
 
+    externals: {
+        '@antv/data-set': '@antv/data-set'
+    },
+
     resolve: {
         modules: [
             path.resolve(__dirname, 'node_modules'),
