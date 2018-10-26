@@ -39,7 +39,6 @@ class ZZHeader extends React.Component {
 
     componentDidMount = () => {
         window.addEventListener('setItemEvent', e => {
-            console.log('e === ', e);
             if (e.key === 'avatar' && e.newValue) {
                 this.setState({avatar: e.newValue});
             }

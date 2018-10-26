@@ -46,6 +46,8 @@ class Login extends React.Component {
                             sessionStorage.setItem('roleId', loginedUser.roleId);
                             if (loginedUser.assessorys && loginedUser.assessorys.length > 0) {
                                 sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);
+                            }else {
+                                sessionStorage.removeItem('avatar');
                             }
 
                             let type = null;
@@ -69,6 +71,10 @@ class Login extends React.Component {
                             else if (loginedUser.roleCode === '004') {
                                 type = 3;
                                 initUrl = '/frame/order/list'
+                            }else {
+                                this.setState({loading: false});
+                                Message.error('角色不存在，请与管理员联系！');
+                                return;
                             }
                             sessionStorage.setItem('type', type);
                             return this.context.router.push(initUrl);

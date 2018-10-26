@@ -25,7 +25,6 @@ import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 const userSaveUrl = restUrl.BASE_HOST + 'user/save';
 const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
 const delFileUrl = restUrl.BASE_HOST + 'assessory/delete';
-const queryRoleUrl = restUrl.BASE_HOST + 'role/queryList';
 const queryDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
 const updatePasswordUrl = restUrl.BASE_HOST + 'user/updatePassword';
 
@@ -50,7 +49,6 @@ class DetailForm extends React.Component {
 
     componentDidMount = () => {
         this.queryDetail();
-        this.queryRole();
     }
 
     handleChange = ({file, fileList}) => {
@@ -124,29 +122,6 @@ class DetailForm extends React.Component {
         });
     }
 
-    queryRole = () => {
-        this.setState({roleLoading: true});
-        ajax.getJSON(queryRoleUrl, null, data => {
-            if (data.success) {
-                let content = data.backData.content;
-                let roleList = [];
-                content.map(item => {
-                    roleList.push({
-                        id: item.id,
-                        name: item.roleName
-                    });
-                });
-
-                this.setState({
-                    roleList,
-                    roleLoading: false
-                });
-            } else {
-                Message.error(data.backMsg);
-            }
-        });
-    }
-
     validatePhone = (rule, value, callback) => {
         const reg = /^[1][3,4,5,7,8][0-9]{9}$/;
         if (value && value !== '' && !reg.test(value)) {
@@ -197,32 +172,37 @@ class DetailForm extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
-        const {data, fileList, roleList, roleLoading, submitLoading} = this.state;
+        const {data, fileList, submitLoading} = this.state;
         return (
             <div className='userCenter'>
                 <Form layout="vertical" hideRequiredMark onSubmit={this.handleSubmit}>
                     <Row type="flex" justify="center">
                         <Col span={8}>
+                            <Row style={{display: 'none'}}>
+                                <Col span={20}>
+                                    <FormItem
+                                        label="用户角色"
+                                    >
+                                        {getFieldDecorator('roleId', {
+                                            rules: [{required: true, message: '角色不能为空!'}],
+                                            initialValue: data.roleId
+                                        })(
+                                            <Input disabled/>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                            </Row>
                             <Row>
                                 <Col span={20}>
                                     <FormItem
                                         label="用户角色"
                                     >
-                                        <Spin spinning={roleLoading} indicator={<Icon type="loading"/>}>
-                                            {getFieldDecorator('roleId', {
-                                                rules: [{required: true, message: '角色不能为空!'}],
-                                                initialValue: data.roleId
-                                            })(
-                                                <Select disabled>
-                                                    {
-                                                        roleList.map(item => {
-                                                            return (<Option key={item.id}
-                                                                            value={item.id}>{item.name}</Option>)
-                                                        })
-                                                    }
-                                                </Select>
-                                            )}
-                                        </Spin>
+                                        {getFieldDecorator('roleName', {
+                                            rules: [{required: true, message: '角色不能为空!'}],
+                                            initialValue: data.roleName
+                                        })(
+                                            <Input disabled/>
+                                        )}
                                     </FormItem>
                                 </Col>
                             </Row>
