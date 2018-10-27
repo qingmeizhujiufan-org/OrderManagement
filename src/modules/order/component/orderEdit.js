@@ -489,6 +489,114 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="进线时间"
+                                        >
+                                            {getFieldDecorator('incomlineTime', {
+                                                rules: [{required: true, message: '请输入进线时间'}],
+                                                initialValue: moment(data.incomlineTime)
+                                            })(
+                                                <DatePicker style={{width: '100%'}}/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="成单日期"
+                                        >
+                                            {getFieldDecorator('orderDate', {
+                                                rules: [{required: true, message: '请输入成单日期'}],
+                                                initialValue: moment(data.orderDate)
+
+                                            })(
+                                                <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="发货日期"
+                                        >
+                                            {getFieldDecorator('deliverDate', {
+                                                rules: [{required: true, message: '请输入发货日期'}],
+                                                initialValue: moment(data.deliverDate)
+
+                                            })(
+                                                <DatePicker style={{width: '100%'}}/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="广告渠道"
+                                        >
+                                            {getFieldDecorator('advertChannel', {
+                                                rules: [{required: true, message: '请输入广告渠道'}],
+                                                initialValue: data.advertChannel
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="订单性质"
+                                        >
+                                            {getFieldDecorator('orderNature', {
+                                                rules: [{required: true, message: '请输入订单性质'}],
+                                                initialValue: data.orderNature
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="寄件电话"
+                                        >
+                                            {getFieldDecorator('serderPhone', {
+                                                rules: [{required: true, message: '请输入寄件电话'}, {
+                                                    validator: this.validatePhone,
+                                                }],
+                                                initialValue: data.serderPhone
+                                            })(
+                                                <Input disabled/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="寄件详细地址"
+                                        >
+                                            {getFieldDecorator('senderAddr', {
+                                                rules: [{required: true, message: '请输入寄件详细地址'}],
+                                                initialValue: data.senderAddr
+                                            })(
+                                                <Input title={data.senderAddr} disabled/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="成单微信号"
+                                        >
+                                            {getFieldDecorator('orderWechatCode', {
+                                                rules: [{required: true, message: '请输入成单微信号'}],
+                                                initialValue: data.orderWechatCode
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
                                     <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
                                         <FormItem
                                             label="所属仓库"
@@ -541,228 +649,6 @@ class Index extends React.Component {
                                                 initialValue: data.orderCode
                                             })(
                                                 <Input disabled/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="寄件电话"
-                                        >
-                                            {getFieldDecorator('serderPhone', {
-                                                rules: [{required: true, message: '请输入寄件电话'}, {
-                                                    validator: this.validatePhone,
-                                                }],
-                                                initialValue: data.serderPhone
-                                            })(
-                                                <Input disabled/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="寄件详细地址"
-                                        >
-                                            {getFieldDecorator('senderAddr', {
-                                                rules: [{required: true, message: '请输入寄件详细地址'}],
-                                                initialValue: data.senderAddr
-                                            })(
-                                                <Input title={data.senderAddr} disabled/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="订单性质"
-                                        >
-                                            {getFieldDecorator('orderNature', {
-                                                rules: [{required: true, message: '请输入订单性质'}],
-                                                initialValue: data.orderNature
-                                            })(
-                                                <Input/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="成单微信号"
-                                        >
-                                            {getFieldDecorator('orderWechatCode', {
-                                                rules: [{required: true, message: '请输入成单微信号'}],
-                                                initialValue: data.orderWechatCode
-                                            })(
-                                                <Input/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="成单日期"
-                                        >
-                                            {getFieldDecorator('orderDate', {
-                                                rules: [{required: true, message: '请输入成单日期'}],
-                                                initialValue: moment(data.orderDate)
-
-                                            })(
-                                                <DatePicker style={{width: '100%'}} onChange={this.getDate}/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="发货日期"
-                                        >
-                                            {getFieldDecorator('deliverDate', {
-                                                rules: [{required: true, message: '请输入发货日期'}],
-                                                initialValue: moment(data.deliverDate)
-
-                                            })(
-                                                <DatePicker style={{width: '100%'}}/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="收件人"
-                                        >
-                                            {getFieldDecorator('receiverName', {
-                                                rules: [{required: true, message: '请输入收件人'}],
-                                                initialValue: data.receiverName
-                                            })(
-                                                <Input/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="收件人手机号"
-                                        >
-                                            {getFieldDecorator('receiverPhone', {
-                                                rules: [{required: true, message: '请输入收件人手机号'}, {
-                                                    validator: this.validatePhone,
-                                                }],
-                                                initialValue: data.receiverPhone
-                                            })(
-                                                <Input/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="收件人详细地址"
-                                        >
-                                            {getFieldDecorator('receiverAddr', {
-                                                rules: [{required: true, message: '请输入收件人详细地址'}],
-                                                initialValue: data.receiverAddr
-                                            })(
-                                                <Input title={data.receiverAddr}/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="广告渠道"
-                                        >
-                                            {getFieldDecorator('advertChannel', {
-                                                rules: [{required: true, message: '请输入广告渠道'}],
-                                                initialValue: data.advertChannel
-                                            })(
-                                                <Input/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="进线时间"
-                                        >
-                                            {getFieldDecorator('incomlineTime', {
-                                                rules: [{required: true, message: '请输入进线时间'}],
-                                                initialValue: moment(data.incomlineTime)
-                                            })(
-                                                <DatePicker style={{width: '100%'}}/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="定金"
-                                        >
-                                            {getFieldDecorator('depositAmout', {
-                                                rules: [{required: true, message: '请输入定金'}],
-                                                initialValue: data.depositAmout
-                                            })(
-                                                <InputNumber
-                                                    step={0.01}
-                                                    precision={2}
-                                                    min={0}
-                                                    style={{width: '100%'}}
-                                                    onChange={this.handleDepositAmoutChange}
-                                                />
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="代收金额"
-                                        >
-                                            {getFieldDecorator('collectionAmout', {
-                                                rules: [{required: true, message: '请输入代收金额'}],
-                                                initialValue: data.collectionAmout
-                                            })(
-                                                <InputNumber
-                                                    min={0}
-                                                    step={0.01}
-                                                    precision={2}
-                                                    style={{width: '100%'}}
-                                                    onChange={this.handleCollectionAmoutChange}
-                                                />
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="总金额"
-                                        >
-                                            {getFieldDecorator('totalAmount', {
-                                                rules: [{required: true, message: '请输入总金额'}],
-                                                initialValue: data.totalAmount
-                                            })(
-                                                <InputNumber
-                                                    min={0}
-                                                    step={0.01}
-                                                    precision={2}
-                                                    style={{width: '100%'}}
-                                                    disabled
-                                                />
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid}>
-                                        <FormItem
-                                            {...formItemLayout}
-                                            label="是否国际件"
-                                        >
-                                            {getFieldDecorator('isForeignExpress', {
-                                                rules: [{required: true, message: '请选择'}],
-                                                initialValue: data.isForeignExpress
-                                            })(
-                                                <RadioGroup>
-                                                    <Radio value={0}>不是</Radio>
-                                                    <Radio value={1}>是</Radio>
-                                                </RadioGroup>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -856,13 +742,24 @@ class Index extends React.Component {
                                             })(
                                                 <Select>
                                                     <Option key='0' value={0}>顺丰</Option>
-                                                    <Option key='1' value={1}>申通</Option>
-                                                    <Option key='2' value={2}>中通</Option>
-                                                    <Option key='3' value={3}>圆通</Option>
-                                                    <Option key='4' value={4}>韵达</Option>
-                                                    <Option key='5' value={5}>百世汇通</Option>
-                                                    <Option key='6' value={6}>其他</Option>
+                                                    <Option key='1' value={1}>邮政</Option>
                                                 </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="是否国际件"
+                                        >
+                                            {getFieldDecorator('isForeignExpress', {
+                                                rules: [{required: true, message: '请选择'}],
+                                                initialValue: data.isForeignExpress
+                                            })(
+                                                <RadioGroup>
+                                                    <Radio value={0}>不是</Radio>
+                                                    <Radio value={1}>是</Radio>
+                                                </RadioGroup>
                                             )}
                                         </FormItem>
                                     </Col>
@@ -908,6 +805,107 @@ class Index extends React.Component {
                                                 rules: [{required: false}],
                                             })(
                                                 <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Divider>收件人信息</Divider>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="收件人"
+                                        >
+                                            {getFieldDecorator('receiverName', {
+                                                rules: [{required: true, message: '请输入收件人'}],
+                                                initialValue: data.receiverName
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="收件人手机号"
+                                        >
+                                            {getFieldDecorator('receiverPhone', {
+                                                rules: [{required: true, message: '请输入收件人手机号'}, {
+                                                    validator: this.validatePhone,
+                                                }],
+                                                initialValue: data.receiverPhone
+                                            })(
+                                                <Input/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="收件人详细地址"
+                                        >
+                                            {getFieldDecorator('receiverAddr', {
+                                                rules: [{required: true, message: '请输入收件人详细地址'}],
+                                                initialValue: data.receiverAddr
+                                            })(
+                                                <Input title={data.receiverAddr}/>
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="定金"
+                                        >
+                                            {getFieldDecorator('depositAmout', {
+                                                rules: [{required: true, message: '请输入定金'}],
+                                                initialValue: data.depositAmout
+                                            })(
+                                                <InputNumber
+                                                    step={0.01}
+                                                    precision={2}
+                                                    min={0}
+                                                    style={{width: '100%'}}
+                                                    onChange={this.handleDepositAmoutChange}
+                                                />
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="代收金额"
+                                        >
+                                            {getFieldDecorator('collectionAmout', {
+                                                rules: [{required: true, message: '请输入代收金额'}],
+                                                initialValue: data.collectionAmout
+                                            })(
+                                                <InputNumber
+                                                    min={0}
+                                                    step={0.01}
+                                                    precision={2}
+                                                    style={{width: '100%'}}
+                                                    onChange={this.handleCollectionAmoutChange}
+                                                />
+                                            )}
+                                        </FormItem>
+                                    </Col>
+                                    <Col {...itemGrid}>
+                                        <FormItem
+                                            {...formItemLayout}
+                                            label="总金额"
+                                        >
+                                            {getFieldDecorator('totalAmount', {
+                                                rules: [{required: true, message: '请输入总金额'}],
+                                                initialValue: data.totalAmount
+                                            })(
+                                                <InputNumber
+                                                    min={0}
+                                                    step={0.01}
+                                                    precision={2}
+                                                    style={{width: '100%'}}
+                                                    disabled
+                                                />
                                             )}
                                         </FormItem>
                                     </Col>
