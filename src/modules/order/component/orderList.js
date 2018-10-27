@@ -212,25 +212,35 @@ class OrderList extends React.Component {
                 )
             }, {
                 title: '快递单号',
-                width: 150,
+                width: 200,
                 align: 'center',
                 dataIndex: 'expressCode',
-                key: 'expressCode'
+                key: 'expressCode',
+                render: text => (
+                    <div className='zui-ellipsis' style={{width: 200}} title={text}>{text}</div>
+                )
             }, {
                 title: '广告渠道',
-                width: 100,
+                width: 160,
                 align: 'center',
                 dataIndex: 'advertChannel',
-                key: 'advertChannel channel'
+                key: 'advertChannel channel',
+                render: text => (
+                    <div className='zui-ellipsis' style={{width: 160}} title={text}>{text}</div>
+                )
             }, {
                 title: '进线时间',
-                width: 180,
+                width: 120,
                 align: 'center',
                 dataIndex: 'incomlineTime',
-                key: 'incomlineTime'
+                key: 'incomlineTime',
+                render: text => (
+                    <div className='zui-ellipsis' style={{width: 120}}
+                         title={text.substring(0, 10)}>{text.substring(0, 10)}</div>
+                )
             }, {
                 title: '订单状态',
-                width: 120,
+                width: 100,
                 align: 'left',
                 fixed: 'right',
                 dataIndex: 'orderState',
@@ -722,21 +732,18 @@ class OrderList extends React.Component {
                 </div>
                 <div className='pageContent'>
                     <ZZCard
-                        title={<Button
-                            icon='export'
-                            onClick={this.exportExcelTemplate}
-                        >订单快递状态更新模板</Button>}
-                        extra={(
+                        title={sessionStorage.type !== '3' ? (<Button
+                                icon='export'
+                                onClick={this.exportExcelTemplate}
+                            >订单快递状态更新模板</Button>
+                        ) : null}
+                        extra={sessionStorage.type !== '3' ? (
                             <ButtonGroup>
-                                {
-                                    sessionStorage.type !== '3' ? (
-                                        <Button
-                                            type="primary"
-                                            icon='download'
-                                            onClick={this.onShowExportOrderModal}
-                                        >导出订单</Button>
-                                    ) : null
-                                }
+                                <Button
+                                    type="primary"
+                                    icon='download'
+                                    onClick={this.onShowExportOrderModal}
+                                >导出订单</Button>
                                 <Button
                                     type="primary"
                                     icon='upload'
@@ -756,14 +763,14 @@ class OrderList extends React.Component {
                                     </Button>
                                 </Upload>
                             </ButtonGroup>
-                        )}
+                        ) : null}
                     >
                         <ZZTable
                             columns={this.columns}
                             dataSource={dataSource}
                             pagination={pagination}
                             loading={loading}
-                            scroll={{x: 3450}}
+                            scroll={{x: 3500}}
                             handlePageChange={this.handlePageChange.bind(this)}
                         />
                     </ZZCard>
