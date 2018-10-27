@@ -302,11 +302,11 @@ class OrderList extends React.Component {
     }
 
     componentWillMount = () => {
-      const type = sessionStorage.type;
-      //业务员
-      if (type === "3") {
-        this.columns = this.columns.filter(item =>  item.title !== '成本')
-      }
+        const type = sessionStorage.type;
+        //业务员
+        if (type === "3") {
+            this.columns = this.columns.filter(item => item.title !== '成本')
+        }
     }
 
     componentDidMount = () => {
@@ -728,11 +728,15 @@ class OrderList extends React.Component {
                         >订单快递状态更新模板</Button>}
                         extra={(
                             <ButtonGroup>
-                                <Button
-                                    type="primary"
-                                    icon='download'
-                                    onClick={this.onShowExportOrderModal}
-                                >导出订单</Button>
+                                {
+                                    sessionStorage.type !== '3' ? (
+                                        <Button
+                                            type="primary"
+                                            icon='download'
+                                            onClick={this.onShowExportOrderModal}
+                                        >导出订单</Button>
+                                    ) : null
+                                }
                                 <Button
                                     type="primary"
                                     icon='upload'
