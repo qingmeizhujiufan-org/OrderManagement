@@ -266,7 +266,7 @@ class Index extends React.Component {
                 productBarCode: item.barCode,
                 orderId: null,
                 productCostPrice: item.costPrice,
-                voState: 2
+                voState: 1
             }
         });
         proData = proData.concat(selectedProduct);

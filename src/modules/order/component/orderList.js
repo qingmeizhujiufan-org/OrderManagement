@@ -778,6 +778,7 @@ class OrderList extends React.Component {
                 <Modal
                     title='导出订单'
                     visible={showExportOrderModal}
+                    destroyOnClose='true'
                     onOk={this.handleExportOrderModal}
                     onCancel={this.onCloseExportOrderModal}
                     footer={null}
@@ -798,6 +799,7 @@ class OrderList extends React.Component {
                 <Modal
                     title="导入仓库回执信息"
                     visible={showUpload}
+                    destroyOnClose='true'
                     onOk={this.handleOk}
                     onCancel={this.showUploadModal}
                     footer={null}
