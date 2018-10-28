@@ -202,6 +202,7 @@ var ajax = {
                     if (_defaults.accept === 'text') {
                         _defaults.success(res.text);
                     } else {
+                        if (res.body.auth && res.body.auth === false) window.location.hash = '/login';
                         _defaults.success(res.body);
                     }
                 }

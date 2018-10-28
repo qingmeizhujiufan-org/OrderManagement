@@ -48,8 +48,8 @@ class Index extends React.Component {
 
     componentDidMount = () => {
         this.queryBarData({
-            deliverBeginDate: moment().add('year', 0).month(moment().month()).startOf('month').format("YYYY-MM-DD"),
-            deliverEndDate: moment().add('year', 0).month(moment().month()).endOf('month').format("YYYY-MM-DD")
+            deliverBeginDate: moment().add(0, 'year').month(moment().month()).startOf('month').format("YYYY-MM-DD"),
+            deliverEndDate: moment().add(0, 'year').month(moment().month()).endOf('month').format("YYYY-MM-DD")
         });
     }
 
@@ -119,8 +119,8 @@ class Index extends React.Component {
                                     {getFieldDecorator('deliverDate', {
                                         rules: [{required: true, message: '请选择日期区间'}],
                                         initialValue: [
-                                            moment().add('year', 0).month(moment().month()).startOf('month'),
-                                            moment().add('year', 0).month(moment().month()).endOf('month')
+                                            moment().add(0, 'year').month(moment().month()).startOf('month'),
+                                            moment().add(0, 'year').month(moment().month()).endOf('month')
                                         ]
                                     })(
                                         <RangePicker format={dateFormat}/>
