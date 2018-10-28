@@ -393,6 +393,7 @@ class Index extends React.Component {
             <Modal
               title="添加产品"
               visible={showModal}
+              destroyOnClose='true'
               width={800}
               onCancel={this.handleCancel}
               footer={[

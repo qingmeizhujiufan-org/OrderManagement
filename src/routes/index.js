@@ -53,6 +53,10 @@ const UserAdd = Loadable({
     loader: () => import("../modules/user/component/userAdd"),
     loading: Loading
 });
+const UserResource = Loadable({
+  loader: () => import("../modules/user/component/userResource"),
+  loading: Loading
+});
 /* 商品管理 */
 const ProductList = Loadable({
     loader: () => import("../modules/product/component/productList"),
@@ -144,6 +148,7 @@ class PageRouter extends React.Component {
                             <IndexRoute component={UserList}/>
                             <Route path="list" component={UserList}/>
                             <Route path="add" component={UserAdd}/>
+                            <Route path="resource" component={UserResource}/>
                             <Route path="list/detail/:id" component={UserDetail}/>
                             <Route path="list/edit/:id" component={UserEdit}/>
                         </Route>
