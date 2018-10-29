@@ -137,6 +137,7 @@ module.exports = {
             favicon: './public/favicon.ico', // 添加小图标
         }),
         new webpack.optimize.ModuleConcatenationPlugin(),
+        /* 排序输出 */
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
@@ -147,19 +148,19 @@ module.exports = {
             filename: '[name].[contenthash:5].css',
             allChunks: true
         }),
+        /* 最小化 */
         new webpack.optimize.UglifyJsPlugin({
-            uglifyOptions: {
-                ecma: 8,
-                compress: {
-                    comparisons: false
-                },
-                output: {
-                    ascii_only: true
-                },
-                warnings: true
-            }
-        }),//最小化一切
-        new webpack.optimize.AggressiveMergingPlugin(),//合并块
+            compress: {
+                warnings: false,
+                drop_debugger: true,
+                drop_console: true
+            },
+            sourceMap: true
+        }),
+        /* 合并块 */
+        new webpack.optimize.AggressiveMergingPlugin(),
+        /* 去除重复依赖 */
+        new webpack.optimize.DedupePlugin(),
         /* 分析包的大小分布 */
         new BundleAnalyzerPlugin(),
     ]
