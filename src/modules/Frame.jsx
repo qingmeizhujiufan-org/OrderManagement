@@ -9,18 +9,11 @@ import zh_CN from 'antd/lib/locale-provider/zh_CN';
 const {Content} = Layout;
 
 export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            storageChange: 1
-        };
-    }
-
     render() {
         return (
             <LocaleProvider locale={zh_CN}>
                 <Layout>
-                    <ZZLeftSide storageChange={this.state.storageChange}/>
+                    <ZZLeftSide/>
                     <Layout>
                         <ZZHeader/>
                         <Content>

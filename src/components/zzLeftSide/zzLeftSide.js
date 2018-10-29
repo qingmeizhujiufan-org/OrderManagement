@@ -3,7 +3,7 @@ import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import {Layout, Icon, Menu} from 'antd';
 import {Scrollbars} from 'react-custom-scrollbars';
-import _ from 'lodash';
+import find from 'lodash/find';
 import {admin, subAdmin, operator} from './authority';
 import menuTree from './menu';
 import './zzLeftSide.less';
@@ -35,10 +35,6 @@ class ZZLeftSide extends React.Component {
         });
     }
 
-    componentWillReceiveProps = nextProps => {
-        console.log('nextProps ===', nextProps)
-    }
-
     componentWillUnmount = () => {
         window.removeEventListener('hashchange', () => {
             this.selectActiveTab();
@@ -67,7 +63,7 @@ class ZZLeftSide extends React.Component {
                         _item.label = item.label;
                         _item.children = [];
                         authority_menu[i].children.map(sub_key => {
-                            _item.children.push(_.find(item.children, {key: sub_key}));
+                            _item.children.push(find(item.children, {key: sub_key}));
                         });
                         _menu.push(_item);
                     }
@@ -156,8 +152,7 @@ class ZZLeftSide extends React.Component {
     }
 
     render() {
-        const {selectedKeys, subMenuList} = this.state;
-        const {collapsed, onToggleClick} = this.props;
+        const {collapsed} = this.props;
 
         return (
             <Sider

@@ -1,6 +1,7 @@
 // 'use strict';
 import assign from 'lodash/assign';
 import isFunction from 'lodash/isFunction';
+import isPlainObject from 'lodash/isPlainObject';
 import sa from 'superagent';
 //封装ajax的相关方法
 var ajax = {
@@ -179,7 +180,7 @@ var ajax = {
             }
         }
         //设置当前请求的header信息
-        if (_defaults.header && _.isPlainObject(_defaults.header)) {
+        if (_defaults.header && isPlainObject(_defaults.header)) {
             for (var headerKey in _defaults.header) {
                 if (_defaults.header[headerKey] !== undefined) {
                     req.set(headerKey, _defaults.header[headerKey]);
