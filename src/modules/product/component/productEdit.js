@@ -13,13 +13,9 @@ import {
   Notification,
   InputNumber
 } from 'antd';
-import ajax from 'Utils/ajax';
+import axios from "Utils/axios";
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
-import restUrl from 'RestUrl';
 import '../index.less';
-
-const productSaveUrl = restUrl.BASE_HOST + 'product/save';
-const queryDetailUrl = restUrl.BASE_HOST + 'product/findbyid';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
@@ -47,17 +43,19 @@ class Index extends React.Component {
     this.setState({
       loading: true
     });
-    ajax.getJSON(queryDetailUrl, param, data => {
+    axios.get('product/findbyid', param).then(res => res.data).then(data => {
       if (data.success) {
         let backData = data.backData;
 
         this.setState({
-          data: backData,
-          loading: false
+          data: backData
         });
       } else {
         Message.error('产品信息查询失败');
       }
+      this.setState({
+        loading: false
+      });
     });
   }
 
@@ -70,7 +68,7 @@ class Index extends React.Component {
         this.setState({
           submitLoading: true
         });
-        ajax.postJSON(productSaveUrl, JSON.stringify(values), (data) => {
+        axios.post('product/save', values).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',

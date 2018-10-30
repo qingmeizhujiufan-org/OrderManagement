@@ -173,8 +173,7 @@ class Index extends React.Component {
 
         this.setState({
           data: backData,
-          proData: backData.childrenDetail,
-          loading: false
+          proData: backData.childrenDetail
         }, () => {
           this.showTips();
           this.canEdit();
@@ -183,6 +182,9 @@ class Index extends React.Component {
       } else {
         Message.error('订单信息查询失败');
       }
+      this.setState({
+        loading: false
+      });
     });
   }
 
