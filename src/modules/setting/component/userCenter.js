@@ -9,7 +9,6 @@ import {
     Button,
     Upload,
     Icon,
-    Spin,
     Tabs,
     Message,
     Notification
@@ -21,7 +20,6 @@ import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
 import axios from "Utils/axios";
 
 const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
-const updatePasswordUrl = restUrl.BASE_HOST + 'user/updatePassword';
 
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
@@ -65,7 +63,7 @@ class DetailForm extends React.Component {
     delFile = id => {
         const param = {};
         param.id = id;
-        axios.get('assessory/delete', param).then(res => res.data).then(data => {
+        axios.post('assessory/delete', param).then(res => res.data).then(data => {
             if (data.success) {
                 Notification.success({
                     message: '提示',
@@ -336,26 +334,25 @@ class PasswordForm extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('handleSubmit  param === ', values);
-                const val = {
+                const param = {
                     phone: values.phoneNumber,
                     password: values.newPassword
                 }
                 this.setState({
                     submitLoading: true
                 });
-                ajax.postJSON(updatePasswordUrl, JSON.stringify(val), (data) => {
+                axios.post('user/updatePassword', param).then(res => res.data).then(data => {
+                    this.setState({
+                        submitLoading: false
+                    });
                     if (data.success) {
                         Notification.success({
                             message: '提示',
                             description: '修改密码成功！'
                         });
                     } else {
-                        message.error(data.backMsg);
+                        Message.error(data.backMsg);
                     }
-
-                    this.setState({
-                        submitLoading: false
-                    });
                 });
             }
         });
@@ -378,7 +375,7 @@ class PasswordForm extends React.Component {
                                     validator: this.validatePhone
                                 }],
                             })(
-                                <Input autoComplete="off"/>
+                                <Input autocomplete="off"/>
                             )}
                         </FormItem>
 
@@ -392,7 +389,7 @@ class PasswordForm extends React.Component {
                                 initialValue: '',
                                 rules: [{required: true, message: '请输入新密码'}],
                             })(
-                                <Input type='password' autoComplete="off"/>
+                                <Input type='password' autocomplete="off"/>
                             )}
                         </FormItem>
                     </Col>
