@@ -159,8 +159,6 @@ module.exports = {
         }),
         /* 合并块 */
         new webpack.optimize.AggressiveMergingPlugin(),
-        /* 去除重复依赖 */
-        new webpack.optimize.DedupePlugin(),
         /* 分析包的大小分布 */
         new BundleAnalyzerPlugin(),
     ]
