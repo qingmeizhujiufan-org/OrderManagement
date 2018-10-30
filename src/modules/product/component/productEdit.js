@@ -43,7 +43,9 @@ class Index extends React.Component {
     this.setState({
       loading: true
     });
-    axios.get('product/findbyid', param).then(res => res.data).then(data => {
+    axios.get('product/findbyid', {
+      params: param
+    }).then(res => res.data).then(data => {
       if (data.success) {
         let backData = data.backData;
 

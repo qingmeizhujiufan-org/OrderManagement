@@ -57,7 +57,9 @@ class Index extends React.Component {
     this.setState({
       loading: true
     });
-    axios.get('user/qureyOneUser', param).then(res => res.data).then(data => {
+    axios.get('user/qureyOneUser', {
+      params: param
+    }).then(res => res.data).then(data => {
       if (data.success) {
         let backData = data.backData;
         if (backData.assessorys) {
@@ -91,7 +93,7 @@ class Index extends React.Component {
 
   queryRole = () => {
     this.setState({roleLoading: true});
-    axios.get('role/queryList', null).then(res => res.data).then(data => {
+    axios.get('role/queryList').then(res => res.data).then(data => {
       if (data.success) {
         let content = data.backData.content;
         let roleList = [];

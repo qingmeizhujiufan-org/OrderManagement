@@ -127,7 +127,9 @@ class ProductList extends React.Component {
     const {params, keyWords} = this.state;
     const param = assign({}, params, {keyWords});
     this.setState({loading: true});
-    axios.get('product/queryList', param).then(res => res.data).then(data => {
+    axios.get('product/queryList', {
+      params: param
+    }).then(res => res.data).then(data => {
       if (data.success) {
         if (data.backData) {
           const backData = data.backData;

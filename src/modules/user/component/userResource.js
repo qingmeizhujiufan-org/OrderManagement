@@ -70,7 +70,9 @@ class Index extends React.Component {
     const {params, keyWords} = this.state;
     const param = assign({}, params, {keyWords});
     this.setState({loading: true});
-    axios.get('user/userORList', param).then(res => res.data).then(data => {
+    axios.get('user/userORList', {
+      params: param
+    }).then(res => res.data).then(data => {
       if (data.success) {
         if (data.backData) {
           const backData = data.backData;

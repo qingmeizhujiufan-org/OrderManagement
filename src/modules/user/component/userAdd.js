@@ -44,7 +44,7 @@ class Index extends React.Component {
 
   queryRole = () => {
     this.setState({roleLoading: true});
-    axios.get('role/queryList', null).then(res => res.data).then(data => {
+    axios.get('role/queryList').then(res => res.data).then(data => {
       if (data.success) {
         let content = data.backData.content;
         let roleList = [];

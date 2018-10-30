@@ -31,7 +31,9 @@ class Index extends React.Component {
     });
     let param = {};
     param.id = id;
-    axios.get('user/qureyOneUser', param).then(res => res.data).then(data => {
+    axios.get('user/qureyOneUser', {
+      params: param
+    }).then(res => res.data).then(data => {
       if (data.success) {
         let backData = data.backData;
         this.setState({

@@ -152,7 +152,9 @@ class Index extends React.Component {
     const {params, keyWords} = this.state;
     const param = assign({}, params, {keyWords});
     this.setState({loading: true});
-    axios.get('user/userList', param).then(res => res.data).then(data => {
+    axios.get('user/userList', {
+      params: param
+    }).then(res => res.data).then(data => {
       if (data.success) {
         if (data.backData) {
           const backData = data.backData;
@@ -182,7 +184,7 @@ class Index extends React.Component {
   //查询角色列表
   queryRole = callback => {
     this.setState({roleLoading: true});
-    axios.get('role/queryList', null).then(res => res.data).then(data => {
+    axios.get('role/queryList').then(res => res.data).then(data => {
       if (data.success) {
         let content = data.backData.content;
         let roleList = [];

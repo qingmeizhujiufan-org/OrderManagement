@@ -30,7 +30,9 @@ class Index extends React.Component {
     let param = {};
     param.type = this.state.type;
     this.setState({loading: true});
-    axios.get('user/getNewlyRegisterUserData', param).then(res => res.data).then(data => {
+    axios.get('user/getNewlyRegisterUserData', {
+      params: param
+    }).then(res => res.data).then(data => {
       if (data.success) {
         data = data.backData;
         const chartData = [];
