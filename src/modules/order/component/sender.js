@@ -18,8 +18,6 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD/index';
 
 import find from "lodash/find";
 import assign from "lodash/assign";
-import ajax from 'Utils/ajax';
-import restUrl from 'RestUrl';
 import '../../user/index.less';
 import {formItemLayout} from 'Utils/formItemGrid';
 import axios from "Utils/axios";
