@@ -2,15 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Form, Icon, Row, Col, Input, Button, Message} from 'antd';
 import restUrl from 'RestUrl';
-import ajax from 'Utils/ajax';
+import axios from 'Utils/axios';
 import '../login.less';
 
 import loginBg from 'Img/login-bg.jpg';
 import Logo from 'Img/logo.png';
 
 const FormItem = Form.Item;
-
-const loginUrl = restUrl.BASE_HOST + 'user/login';
 
 class Login extends React.Component {
     constructor(props) {
@@ -32,7 +30,7 @@ class Login extends React.Component {
                 this.setState({
                     loading: true
                 });
-                ajax.postJSON(loginUrl, JSON.stringify(values), (data) => {
+                axios.post('user/login', JSON.stringify(values)).then(res => res.data).then(data => {
                     if (data.success) {
                         let backData = data.backData;
                         sessionStorage.setItem('token', backData.token);
@@ -46,14 +44,14 @@ class Login extends React.Component {
                             sessionStorage.setItem('roleId', loginedUser.roleId);
                             if (loginedUser.assessorys && loginedUser.assessorys.length > 0) {
                                 sessionStorage.setItem('avatar', restUrl.ADDR + loginedUser.assessorys[0].path + loginedUser.assessorys[0].name);
-                            }else {
+                            } else {
                                 sessionStorage.removeItem('avatar');
                             }
 
                             let type = null;
                             let initUrl = null;
                             // 超级管理员
-                            if(loginedUser.roleCode === '001') {
+                            if (loginedUser.roleCode === '001') {
                                 type = 1;
                                 initUrl = '/frame/report/list'
                             }
@@ -71,7 +69,7 @@ class Login extends React.Component {
                             else if (loginedUser.roleCode === '004') {
                                 type = 3;
                                 initUrl = '/frame/order/list'
-                            }else {
+                            } else {
                                 this.setState({loading: false});
                                 Message.error('角色不存在，请与管理员联系！');
                                 return;

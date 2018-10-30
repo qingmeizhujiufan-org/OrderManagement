@@ -25,10 +25,10 @@ import 'moment/locale/zh-cn';
 
 moment.locale('zh-cn');
 import assign from 'lodash/assign';
-import filter from 'lodash/filter';
 
 import restUrl from 'RestUrl';
 import ajax from 'Utils/ajax';
+import axios from 'Utils/axios';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from 'Utils/util';
@@ -327,7 +327,9 @@ class OrderList extends React.Component {
         const {params, searchKey} = this.state;
         const param = assign({}, params, searchKey);
         this.setState({loading: true});
-        ajax.getJSON(queryListUrl, param, data => {
+        axios.get('order/queryList', {
+            params: param
+        }).then(res => res.data).then(data => {
             if (data.success) {
                 if (data.backData) {
                     const backData = data.backData;

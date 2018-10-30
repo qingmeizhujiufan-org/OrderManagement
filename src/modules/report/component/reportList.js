@@ -19,7 +19,7 @@ import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 import find from "lodash/find";
 import restUrl from 'RestUrl';
-import ajax from 'Utils/ajax';
+import axios from 'Utils/axios';
 import '../index.less';
 import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from "Utils/util";
@@ -29,9 +29,7 @@ const FormItem = Form.Item;
 const {RangePicker} = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 
-const regionOrderUrl = restUrl.BASE_HOST + 'order/regionOrder';
 const exportRegionOrderUrl = restUrl.BASE_HOST + 'order/exportRegionOrder';
-const multiPurchaseOrderUrl = restUrl.BASE_HOST + 'order/multiPurchaseOrder';
 const exportMultiPurchaseOrderUrl = restUrl.BASE_HOST + 'order/exportMultiPurchase';
 
 class MultiPurchase extends React.Component {
@@ -90,7 +88,7 @@ class MultiPurchase extends React.Component {
     }
 
     queryList = (param, endLoading) => {
-        ajax.postJSON(multiPurchaseOrderUrl, JSON.stringify(param), data => {
+        axios.post('order/multiPurchaseOrder', JSON.stringify(param)).then(res => res.data).then(data => {
             if (data.success) {
                 if (data.backData) {
                     const dataSource = data.backData.slice(2);
@@ -355,7 +353,7 @@ class Index extends React.Component {
     }
 
     queryList = (param, endLoading) => {
-        ajax.postJSON(regionOrderUrl, JSON.stringify(param), data => {
+        axios.post('order/regionOrder', JSON.stringify(param)).then(res => res.data).then(data => {
             if (data.success) {
                 if (data.backData) {
                     const dataSource = data.backData;
