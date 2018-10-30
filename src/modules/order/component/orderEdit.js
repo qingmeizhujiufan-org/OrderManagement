@@ -60,6 +60,7 @@ class Index extends React.Component {
       loading: false,
       region: sessionStorage.region,
       isOperator: false,
+      isInEdit: true,
       submitLoading: false
     };
 
@@ -173,7 +174,8 @@ class Index extends React.Component {
 
         this.setState({
           data: backData,
-          proData: backData.childrenDetail
+          proData: backData.childrenDetail,
+          isInEdit: backData.orderState === 0
         }, () => {
           this.showTips();
           this.canEdit();
@@ -288,7 +290,7 @@ class Index extends React.Component {
         selectedProduct: this.state.selectedProduct.concat(selectedRows)
       });
     } else {
-      message.warning('产品种类最多为四种');
+        Message.warning('产品种类最多为四种');
     }
     // console.log('selectedRowKeys changed: ', selectedRowKeys);
 
@@ -375,8 +377,11 @@ class Index extends React.Component {
           Message.warning('请添加相关产品！');
           return;
         }
+        console.log('proData ===',proData)
+        console.log('values ===',values)
 
         let res = proData.find(item => item.wareHouse != values.warehouse);
+        console.log('res ===',res)
         if (res) {
           Message.warning('产品和仓库不匹配！');
           return;
@@ -424,7 +429,7 @@ class Index extends React.Component {
 
   render() {
     const {getFieldDecorator} = this.props.form;
-    const {data, proData, canEdit, showTips, selectedRowKeys, isOperator, pagination, allProduct, loading, submitLoading, showModal} = this.state;
+    const {data, proData, canEdit, isInEdit, showTips, selectedRowKeys, isOperator, pagination, allProduct, loading, submitLoading, showModal} = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -687,7 +692,7 @@ class Index extends React.Component {
                       label="订单状态"
                     >
                       {getFieldDecorator('orderState', {
-                        rules: [{required: true, message: '请选择'}],
+                        rules: [{required: !isInEdit, message: '请选择'}],
                         initialValue: data.orderState
                       })(
                         <Select disabled={isOperator}>
@@ -798,7 +803,7 @@ class Index extends React.Component {
                       label="快递单号"
                     >
                       {getFieldDecorator('expressCode', {
-                        rules: [{required: !isOperator, message: '请输入快递单号'}],
+                        rules: [{required: !isInEdit, message: '请输入快递单号'}],
                         initialValue: data.expressCode
                       })(
                         <Input disabled={isOperator}/>
@@ -811,7 +816,7 @@ class Index extends React.Component {
                       label="快递状态"
                     >
                       {getFieldDecorator('expressState', {
-                        rules: [{required: !isOperator, message: '请选择快递状态'}],
+                        rules: [{required: !isInEdit, message: '请选择快递状态'}],
                         initialValue: data.expressState
                       })(
                         <Select disabled={isOperator}>

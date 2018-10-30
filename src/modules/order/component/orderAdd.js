@@ -578,7 +578,7 @@ class Index extends React.Component {
                     label="订单状态"
                   >
                     {getFieldDecorator('orderState', {
-                      rules: [{required: true, message: '请选择'}],
+                      rules: [{required: false, message: '请选择'}],
                       initialValue: 0
                     })(
                       <RadioGroup>
