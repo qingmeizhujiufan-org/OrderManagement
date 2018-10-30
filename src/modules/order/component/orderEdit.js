@@ -24,8 +24,6 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 
 moment.locale('zh-cn');
-import ajax from 'Utils/ajax';
-import restUrl from 'RestUrl';
 import '../index.less';
 import {ZZTable} from 'Comps/zz-antD';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
@@ -33,11 +31,7 @@ import {message} from "antd/lib/index";
 import assign from "lodash/assign";
 import uniqBy from "lodash/uniqBy";
 import includes from "lodash/includes";
-
-const orderSaveUrl = restUrl.BASE_HOST + 'order/save';
-const queryDetailUrl = restUrl.BASE_HOST + 'order/findbyid';
-const getProductListUrl = restUrl.BASE_HOST + 'product/queryList';
-
+import axios from "Utils/axios";
 
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -157,7 +151,6 @@ class Index extends React.Component {
     }
   }
 
-
   componentDidMount = () => {
     this.queryDetail();
   }
@@ -169,8 +162,9 @@ class Index extends React.Component {
     this.setState({
       loading: true
     });
-    ajax.getJSON(queryDetailUrl, param, data => {
-      this.setState({loading: false});
+    axios.get('order/findbyid', {
+      params: param
+    }).then(res => res.data).then(data => {
       if (data.success) {
         let backData = data.backData;
         backData.childrenDetail.map(item => {
@@ -179,7 +173,8 @@ class Index extends React.Component {
 
         this.setState({
           data: backData,
-          proData: backData.childrenDetail
+          proData: backData.childrenDetail,
+          loading: false
         }, () => {
           this.showTips();
           this.canEdit();
@@ -317,7 +312,9 @@ class Index extends React.Component {
   getList = () => {
     const {params} = this.state;
     this.setState({selectLoading: true});
-    ajax.getJSON(getProductListUrl, params, data => {
+    axios.get('product/queryList', {
+      params: params
+    }).then(res => res.data).then(data => {
       if (data.success) {
         const backData = data.backData
         const total = backData ? backData.totalElements : 0;
@@ -328,7 +325,7 @@ class Index extends React.Component {
 
         this.setState({
           allProduct: data,
-          selectLoading: false,
+          loading: false,
           pagination: {total}
         });
       } else {
@@ -370,6 +367,19 @@ class Index extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+
+        const {proData} = this.state;
+        if(proData.length === 0) {
+          Message.warning('请添加相关产品！');
+          return;
+        }
+
+        let res = proData.find(item => item.wareHouse != values.warehouse);
+        if (res) {
+          Message.warning('产品和仓库不匹配！');
+          return;
+        }
+
         values.id = this.props.params.id;
         values.orderDate = values.orderDate.format("YYYY-MM-DD");
         values.deliverDate = values.deliverDate.format("YYYY-MM-DD");
@@ -391,17 +401,17 @@ class Index extends React.Component {
         this.setState({
           submitLoading: true
         });
-        ajax.postJSON(orderSaveUrl, JSON.stringify(values), (data) => {
+        axios.post('order/save', values).then(res => res.data).then(data => {
           if (data.success) {
             Notification.success({
               message: '提示',
-              description: '订单信息保存成功！'
+              description: '新增订单成功！'
             });
+
             return this.context.router.push('/frame/order/list');
           } else {
             Message.error(data.backMsg);
           }
-
           this.setState({
             submitLoading: false
           });
