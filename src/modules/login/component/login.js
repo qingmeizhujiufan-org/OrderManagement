@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Form, Icon, Row, Col, Input, Button, Message} from 'antd';
 import restUrl from 'RestUrl';
+import _axios from 'axios';
 import axios from 'Utils/axios';
 import '../login.less';
 
@@ -35,6 +36,7 @@ class Login extends React.Component {
                         let backData = data.backData;
                         sessionStorage.setItem('token', backData.token);
                         sessionStorage.setItem('expireDate', backData.outofServicetime);
+                        _axios.defaults.headers['X-Auth-Token'] = sessionStorage.token;
                         const loginedUser = backData.loginedUser;
                         if (loginedUser) {
                             sessionStorage.setItem('userId', loginedUser.id);

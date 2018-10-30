@@ -2,7 +2,6 @@ import axios from 'axios';
 import restUrl from 'RestUrl';
 
 axios.defaults.baseURL = restUrl.BASE_HOST;
-axios.defaults.headers['X-Auth-Token'] = sessionStorage.token;
 axios.defaults.headers['Content-Type'] = 'application/json;charset=UTF-8';
 
 // 添加请求拦截器

@@ -41,8 +41,6 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const ButtonGroup = Button.Group;
 
-const queryListUrl = restUrl.BASE_HOST + 'order/queryList';
-const delUrl = restUrl.BASE_HOST + 'order/delete';
 //订单信息导出
 const exportOrderUrl = restUrl.BASE_HOST + 'order/exportOrder';
 //仓库回执信息导入接口地址
@@ -475,7 +473,7 @@ class OrderList extends React.Component {
             onOk: () => {
                 let param = {};
                 param.id = record.id;
-                ajax.postJSON(delUrl, JSON.stringify(param), data => {
+                axios.post('order/delete', JSON.stringify(param)).then(res => res.data).then(data => {
                     if (data.success) {
                         Notification.success({
                             message: '提示',
