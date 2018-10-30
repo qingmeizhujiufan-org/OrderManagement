@@ -5,7 +5,6 @@ import {
     Col,
     Form,
     Input,
-    Select,
     Breadcrumb,
     Button,
     Upload,
@@ -16,20 +15,15 @@ import {
     Notification
 } from 'antd';
 import assign from 'lodash/assign';
-
-import ajax from 'Utils/ajax';
 import restUrl from 'RestUrl';
 import '../index.less';
 import {formItemLayout, itemGrid} from 'Utils/formItemGrid';
+import axios from "Utils/axios";
 
-const userSaveUrl = restUrl.BASE_HOST + 'user/save';
 const uploadUrl = restUrl.BASE_HOST + 'assessory/upload';
-const delFileUrl = restUrl.BASE_HOST + 'assessory/delete';
-const queryDetailUrl = restUrl.BASE_HOST + 'user/qureyOneUser';
 const updatePasswordUrl = restUrl.BASE_HOST + 'user/updatePassword';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 
 class DetailForm extends React.Component {
@@ -71,7 +65,7 @@ class DetailForm extends React.Component {
     delFile = id => {
         const param = {};
         param.id = id;
-        ajax.postJSON(delFileUrl, JSON.stringify(param), data => {
+        axios.get('assessory/delete', param).then(res => res.data).then(data => {
             if (data.success) {
                 Notification.success({
                     message: '提示',
@@ -92,7 +86,9 @@ class DetailForm extends React.Component {
         this.setState({
             loading: true
         });
-        ajax.getJSON(queryDetailUrl, param, data => {
+        axios.get('user/qureyOneUser', {
+            params: param
+        }).then(res => res.data).then(data => {
             if (data.success) {
                 let backData = data.backData;
                 if (backData.assessorys) {
@@ -143,7 +139,7 @@ class DetailForm extends React.Component {
                 this.setState({
                     submitLoading: true
                 });
-                ajax.postJSON(userSaveUrl, JSON.stringify(values), (data) => {
+                axios.post('user/save', values).then(res => res.data).then(data => {
                     if (data.success) {
                         Notification.success({
                             message: '提示',

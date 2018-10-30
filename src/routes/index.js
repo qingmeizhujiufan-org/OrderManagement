@@ -14,7 +14,7 @@ function Loading(props) {
                 padding: '30px 0',
                 textAlign: 'center'
             }}>
-                <Icon type="loading" style={{fontSize: 24}} />
+                <Icon type="loading" style={{fontSize: 24}}/>
             </div>
         );
     } else {
@@ -54,8 +54,8 @@ const UserAdd = Loadable({
     loading: Loading
 });
 const UserResource = Loadable({
-  loader: () => import("../modules/user/component/userResource"),
-  loading: Loading
+    loader: () => import("../modules/user/component/userResource"),
+    loading: Loading
 });
 /* 商品管理 */
 const ProductList = Loadable({
@@ -104,10 +104,6 @@ const ReportHChart = Loadable({
 /* 个人设置 */
 const SettingList = Loadable({
     loader: () => import("../modules/setting/component/userCenter"),
-    loading: Loading
-});
-const MessageList = Loadable({
-    loader: () => import("../modules/setting/component/messageList"),
     loading: Loading
 });
 const ResourceList = Loadable({
@@ -177,7 +173,6 @@ class PageRouter extends React.Component {
                         <Route path="setting" component={App}>
                             <IndexRoute component={SettingList}/>
                             <Route path="list" component={SettingList}/>
-                            <Route path="list/message" component={MessageList}/>
                             <Route path="resource" component={ResourceList}/>
                         </Route>
                     </Route>

@@ -13,16 +13,11 @@ import {
     Icon,
     Popconfirm
 } from 'antd';
-import ajax from 'Utils/ajax';
+import axios from 'Utils/axios';
 import remove from 'lodash/remove';
 import includes from 'lodash/includes';
-
-import restUrl from 'RestUrl';
 import '../index.less';
 import {ZZTable} from 'Comps/zz-antD';
-
-const resourceSaveUrl = restUrl.BASE_HOST + 'user/saveUserOwnResourcesOnly';
-const queryDetailUrl = restUrl.BASE_HOST + 'user/qureyUserORByUserId';
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -194,7 +189,9 @@ class Index extends React.Component {
         this.setState({
             loading: true
         });
-        ajax.getJSON(queryDetailUrl, param, data => {
+        axios.get('user/qureyUserORByUserId', {
+            params: param
+        }).then(res => res.data).then(data => {
             if (data.success) {
                 const backData = data.backData;
 
@@ -312,7 +309,7 @@ class Index extends React.Component {
                 }
             }
         });
-        ajax.postJSON(resourceSaveUrl, JSON.stringify(dataSource), data => {
+        axios.post('user/saveUserOwnResourcesOnly', dataSource).then(res => res.data).then(data => {
             if (data.success) {
                 Notification.success({
                     message: '提示',
