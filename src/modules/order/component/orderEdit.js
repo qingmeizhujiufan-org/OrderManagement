@@ -300,6 +300,8 @@ class Index extends React.Component {
         selectedProduct.map(item => {
             if(item.orderId && indexOf(tempSelectedRowKeys, item.id) > -1){
                 item.voState = 2;
+            }else {
+                item.voState = 1;
             }
         });
         tempSelectedRow = uniqBy(tempSelectedRow.concat(selectedProduct), 'id');
@@ -432,7 +434,7 @@ class Index extends React.Component {
                         pnumber: item.pnumber,
                         productUnit: item.unit,
                         productBarCode: item.barCode,
-                        orderId: item.id,
+                        orderId: item.orderId,
                         productCostPrice: item.costPrice,
                         productWareHouse: item.wareHouse,
                         voState: item.voState
