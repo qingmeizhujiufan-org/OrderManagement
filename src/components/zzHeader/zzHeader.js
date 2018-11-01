@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Layout, Row, Col, Icon, Badge, Dropdown, Menu, Avatar, Notification, Divider} from 'antd';
+import {Layout, Row, Icon, Dropdown, Menu, Avatar, Notification} from 'antd';
 import restUrl from 'RestUrl';
 import './zzHeader.less';
 
 const {Header} = Layout;
-
-const logoutUrl = restUrl.ADDR + 'server/LoginOut';
 
 const orignalSetItem = sessionStorage.setItem;
 sessionStorage.setItem = function (key, newValue) {
@@ -42,15 +40,19 @@ class ZZHeader extends React.Component {
             if (e.key === 'avatar' && e.newValue) {
                 this.setState({avatar: e.newValue});
             }
-        });
+        }, true);
+    }
+
+    componentWillUnmount = () => {
+        window.removeEventListener('setItemEvent', e => {
+            if (e.key === 'avatar' && e.newValue) {
+                this.setState({avatar: e.newValue});
+            }
+        }, true);
     }
 
     goUserCenter = () => {
         this.context.router.push('/frame/setting/list/');
-    }
-
-    checkMessage = () => {
-        this.context.router.push('/frame/setting/list/message');
     }
 
     logout = () => {
@@ -60,20 +62,6 @@ class ZZHeader extends React.Component {
             description: '已安全退出！'
         });
         this.context.router.push('/login');
-        // let param = {};
-        // param.userId = sessionStorage.userId;
-        // ajax.postJSON(logoutUrl, JSON.stringify(param), (data) => {
-        //     if (data.success) {
-        //         sessionStorage.clear();
-        //         Notification.success({
-        //             message: '提示',
-        //             description: '已安全退出！'
-        //         });
-        //         this.context.router.push('/login');
-        //     } else {
-        //         message.error(data.backMsg);
-        //     }
-        // });
     }
 
     render() {
@@ -88,12 +76,6 @@ class ZZHeader extends React.Component {
                         type={collapsed ? 'menu-unfold' : 'menu-fold'}
                         onClick={onToggleClick}
                     />
-                    {/*<Badge dot>*/}
-                    {/*<span onClick={this.checkMessage}>*/}
-                    {/*<Icon type="bell" theme="outlined" style={{fontSize: 20, color: '#fff', verticalAlign: 'text-bottom'}}/>*/}
-                    {/*</span>*/}
-                    {/*</Badge>*/}
-                    {/*<Divider type="vertical" style={{margin: '0 30px'}}/>*/}
                     <Dropdown overlay={this.menu}>
                         <a className="ant-dropdown-link" style={{color: '#fff'}}>
                             <Avatar
