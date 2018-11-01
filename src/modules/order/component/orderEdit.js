@@ -350,11 +350,10 @@ class Index extends React.Component {
     })
   }
 
-  isSameHouse = ()=> {
+  isSameHouse = (val)=> {
     let selectedProduct = this.state.selectedProduct;
-    let wareHouse = this.props.form.getFieldValue('warehouse');
-    let houseName = wareHouse === 0 ? '武汉' : '北京'
-    let res = selectedProduct.find(item => item.productWarehouse !== wareHouse);
+    let houseName = val === 0 ? '武汉' : '北京'
+    let res = selectedProduct.find(item => item.productWarehouse !== val);
     if (res) {
       Message.warning(`当前订单仓库为${houseName},与选中产品仓库不匹配！`);
       return;
@@ -696,7 +695,7 @@ class Index extends React.Component {
                         rules: [{required: true, message: '所属仓库不能为空!'}],
                         initialValue: data.warehouse
                       })(
-                        <Select onChange={this.isSameHouse}>
+                        <Select onChange={v => this.isSameHouse(v)}>
                           <Option key='0' value={0}>武汉</Option>
                           <Option key='1' value={1}>北京</Option>
                         </Select>
