@@ -241,7 +241,7 @@ class Index extends React.Component {
                 unit: item.productUnit,
                 barCode: item.productBarCode,
                 orderId: item.orderId,
-                wareHouse: item.productWareHouse,
+                wareHouse: item.productWarehouse,
                 voState: item.voState
             }
         });
@@ -298,8 +298,10 @@ class Index extends React.Component {
         let {tempSelectedRowKeys, tempSelectedRow, selectedProduct} = this.state;
         /* 判断临时选中的行是否有已经删除的接口返回的产品数据，有则把voState重置为2，更新态 */
         selectedProduct.map(item => {
-            if(item.orderId && indexOf(tempSelectedRowKeys, item.id) > -1){
-                item.voState = 2;
+            if(item.orderId){
+                if(indexOf(tempSelectedRowKeys, item.id) > -1) {
+                    item.voState = 2;
+                }
             }else {
                 item.voState = 1;
             }
@@ -408,7 +410,7 @@ class Index extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
 
-                const {selectedProduct} = this.state;
+                const {data, selectedProduct} = this.state;
                 if (selectedProduct.length === 0) {
                     Message.warning('请添加相关产品！');
                     return;
@@ -431,13 +433,13 @@ class Index extends React.Component {
                         id: item._id,
                         productId: item.id,
                         productName: item.name,
-                        pnumber: item.pnumber,
+                        pnumber: item.pnumber || 1,
                         productUnit: item.unit,
                         productBarCode: item.barCode,
-                        orderId: item.orderId,
+                        orderId: item.orderId || data.id,
                         productCostPrice: item.costPrice,
-                        productWareHouse: item.wareHouse,
-                        voState: item.voState
+                        productWarehouse: item.wareHouse,
+                        voState: item.voState || 1
                     }
                 });
                 console.log('handleSubmit  param === ', values);
