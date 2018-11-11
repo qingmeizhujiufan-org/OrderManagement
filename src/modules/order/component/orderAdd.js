@@ -73,10 +73,13 @@ class Index extends React.Component {
                 width: 250,
                 align: 'center',
                 key: 'wareHouse',
-                render: (text, record, index) => (
-                    <div>
-                        {record.wareHouse == 1 ? '北京' : '武汉'}
-                    </div>)
+                render: (text, record, index) => {
+                    let house;
+                    if (text === 0) house = '武汉1';
+                    else if (text === 1) house = '北京';
+                    else if (text === 2) house = '武汉2';
+                    return (<div>{house}</div>)
+                }
             }, {
                 title: '单位',
                 dataIndex: 'unit',
@@ -105,10 +108,13 @@ class Index extends React.Component {
                 width: '15%',
                 align: 'center',
                 key: 'wareHouse',
-                render: (text, record, index) => (
-                    <div>
-                        {record.wareHouse == 1 ? '北京' : '武汉'}
-                    </div>)
+                render: (text, record, index) => {
+                    let house;
+                    if (text === 0) house = '武汉1';
+                    else if (text === 1) house = '北京';
+                    else if (text === 2) house = '武汉2';
+                    return (<div>{house}</div>)
+                }
             }, {
                 title: '产品条码',
                 dataIndex: 'barCode',
@@ -220,6 +226,7 @@ class Index extends React.Component {
         for (let i in tempSelectedRow) {
             tempSelectedRow[i].number = 1;
         }
+
         this.setState({
             selectedRowKeys: tempSelectedRowKeys,
             selectedProduct: tempSelectedRow,
@@ -231,7 +238,9 @@ class Index extends React.Component {
         const selectedNum = selectedRowKeys.length;
 
         let wareHouse = this.props.form.getFieldValue('warehouse');
-        let houseName = wareHouse === 0 ? '武汉' : '北京'
+        let houseName = (wareHouse === 0 && '武汉1')
+            || (wareHouse === 1 && '北京')
+            || (wareHouse === 2 && '武汉2');
         let res = selectedRows.find(item => item.wareHouse != wareHouse);
         if (res) {
             Message.warning(`当前订单仓库为${houseName},与选中产品仓库不匹配！`);
@@ -340,7 +349,8 @@ class Index extends React.Component {
                         productBarCode: item.barCode,
                         orderId: null,
                         productCostPrice: item.costPrice,
-                        voState: 1
+                        voState: 1,
+                        productWarehouse: item.wareHouse
                     }
                 });
 
@@ -713,8 +723,9 @@ class Index extends React.Component {
                                             initialValue: 0
                                         })(
                                             <Select>
-                                                <Option key='0' value={0}>武汉</Option>
+                                                <Option key='0' value={0}>武汉1</Option>
                                                 <Option key='1' value={1}>北京</Option>
+                                                <Option key='2' value={2}>武汉2</Option>
                                             </Select>
                                         )}
                                     </FormItem>

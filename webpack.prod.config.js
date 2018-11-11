@@ -160,6 +160,6 @@ module.exports = {
         /* 合并块 */
         new webpack.optimize.AggressiveMergingPlugin(),
         /* 分析包的大小分布 */
-        new BundleAnalyzerPlugin(),
+        // new BundleAnalyzerPlugin(),
     ]
 };
