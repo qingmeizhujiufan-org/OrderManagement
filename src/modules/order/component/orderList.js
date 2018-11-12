@@ -146,8 +146,8 @@ class OrderList extends React.Component {
                 title: '收件人电话',
                 width: 120,
                 align: 'center',
-                dataIndex: 'ReceiverPhone',
-                key: 'ReceiverPhone'
+                dataIndex: 'receiverPhone',
+                key: 'receiverPhone'
             }, {
                 title: '收件人地址',
                 width: 300,

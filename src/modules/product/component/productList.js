@@ -64,13 +64,17 @@ class ProductList extends React.Component {
             }, {
                 title: '产品条码',
                 align: 'center',
+                width: 180,
                 dataIndex: 'barCode',
                 key: 'barCode'
             }, {
                 title: '备注',
-                width: 120,
+                width: 170,
                 dataIndex: 'memo',
-                key: 'memo'
+                key: 'memo',
+                render: text => (
+                    <div className='zui-ellipsis' style={{width: 200}} title={text}>{text}</div>
+                )
             }, {
                 title: '更新时间',
                 width: 200,

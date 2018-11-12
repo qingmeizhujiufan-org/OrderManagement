@@ -576,6 +576,23 @@ class Index extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
+                                    <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
+                                        <FormItem
+                                            label="所属仓库"
+                                            {...formItemLayout}
+                                        >
+                                            {getFieldDecorator('warehouse', {
+                                                rules: [{required: true, message: '所属仓库不能为空!'}],
+                                                initialValue: data.warehouse
+                                            })(
+                                                <Select onChange={v => this.isSameHouse(v)}>
+                                                    <Option value={0}>武汉1</Option>
+                                                    <Option value={1}>北京</Option>
+                                                    <Option value={2}>武汉2</Option>
+                                                </Select>
+                                            )}
+                                        </FormItem>
+                                    </Col>
                                     <Col {...itemGrid}>
                                         <FormItem
                                             {...formItemLayout}
@@ -681,23 +698,6 @@ class Index extends React.Component {
                                                 initialValue: data.orderWechatCode
                                             })(
                                                 <Input/>
-                                            )}
-                                        </FormItem>
-                                    </Col>
-                                    <Col {...itemGrid} style={{display: isOperator ? 'none' : 'block'}}>
-                                        <FormItem
-                                            label="所属仓库"
-                                            {...formItemLayout}
-                                        >
-                                            {getFieldDecorator('warehouse', {
-                                                rules: [{required: true, message: '所属仓库不能为空!'}],
-                                                initialValue: data.warehouse
-                                            })(
-                                                <Select onChange={v => this.isSameHouse(v)}>
-                                                    <Option value={0}>武汉1</Option>
-                                                    <Option value={1}>北京</Option>
-                                                    <Option value={2}>武汉2</Option>
-                                                </Select>
                                             )}
                                         </FormItem>
                                     </Col>

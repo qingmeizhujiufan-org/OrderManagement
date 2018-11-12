@@ -469,6 +469,23 @@ class Index extends React.Component {
                                 </Col>
                                 <Col {...itemGrid}>
                                     <FormItem
+                                        label="所属仓库"
+                                        {...formItemLayout}
+                                    >
+                                        {getFieldDecorator('warehouse', {
+                                            rules: [{required: true, message: '所属仓库不能为空!'}],
+                                            initialValue: 0
+                                        })(
+                                            <Select>
+                                                <Option key='0' value={0}>武汉1</Option>
+                                                <Option key='1' value={1}>北京</Option>
+                                                <Option key='2' value={2}>武汉2</Option>
+                                            </Select>
+                                        )}
+                                    </FormItem>
+                                </Col>
+                                <Col {...itemGrid}>
+                                    <FormItem
                                         {...formItemLayout}
                                         label="进线时间"
                                     >
@@ -710,23 +727,6 @@ class Index extends React.Component {
                                             rules: [{required: true, message: '请输入成单微信号'}],
                                         })(
                                             <Input/>
-                                        )}
-                                    </FormItem>
-                                </Col>
-                                <Col {...itemGrid}>
-                                    <FormItem
-                                        label="所属仓库"
-                                        {...formItemLayout}
-                                    >
-                                        {getFieldDecorator('warehouse', {
-                                            rules: [{required: true, message: '所属仓库不能为空!'}],
-                                            initialValue: 0
-                                        })(
-                                            <Select>
-                                                <Option key='0' value={0}>武汉1</Option>
-                                                <Option key='1' value={1}>北京</Option>
-                                                <Option key='2' value={2}>武汉2</Option>
-                                            </Select>
                                         )}
                                     </FormItem>
                                 </Col>
