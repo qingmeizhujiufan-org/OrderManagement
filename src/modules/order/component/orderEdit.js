@@ -226,13 +226,10 @@ class Index extends React.Component {
     canEdit = () => {
         const data = this.state.data;
         const deliverDate = data.deliverDate;
-        const curDate = moment();
-        let canEdit = (data.orderState !== 0 || (curDate.hour() === 10 && curDate.format('YYYY-MM-DD') === deliverDate));
-        if (!canEdit) {
-            this.setState({
-                canEdit: false
-            });
-        }
+        const curDate = moment().format("YYYY-MM-DD") + ' 10:00:00';
+        let canEdit = data.orderState === 0 && (new Date(deliverDate).getTime() >= new Date(curDate).getTime());
+        if (!this.state.isOperator) canEdit = true;
+        this.setState({canEdit});
     }
 
     setSelectData = () => {
@@ -1000,7 +997,7 @@ class Index extends React.Component {
                                 </Row>
                                 <Row type="flex" justify="center" style={{marginTop: 40}}>
                                     <Button type="primary" size='large' style={{width: 120}} htmlType="submit"
-                                            loading={submitLoading} disabled={canEdit}>提交</Button>
+                                            loading={submitLoading} disabled={!canEdit}>提交</Button>
                                 </Row>
                             </Form>
                         </Spin>
