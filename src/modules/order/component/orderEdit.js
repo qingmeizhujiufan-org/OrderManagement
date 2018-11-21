@@ -211,12 +211,9 @@ class Index extends React.Component {
 
     showTips = () => {
         const data = this.state.data;
-        const deliverDate = data.deliverDate;
-        const curDate = moment().format("YYYY-MM-DD") + ' 10:00:00';
-        console.log(new Date(deliverDate));
-        console.log(new Date(curDate));
+        const deliverDate = data.deliverDate + ' 10:00:00';
 
-        if (new Date(deliverDate).getTime() < new Date(curDate).getTime()) {
+        if (new Date(deliverDate).getTime() < new Date().getTime()) {
             this.setState({
                 showTips: true
             });
@@ -225,9 +222,8 @@ class Index extends React.Component {
 
     canEdit = () => {
         const data = this.state.data;
-        const deliverDate = data.deliverDate;
-        const curDate = moment().format("YYYY-MM-DD") + ' 10:00:00';
-        let canEdit = data.orderState === 0 && (new Date(deliverDate).getTime() >= new Date(curDate).getTime());
+        const deliverDate = data.deliverDate + ' 10:00:00';
+        let canEdit = data.orderState === 0 && (new Date(deliverDate).getTime() >= new Date().getTime());
         if (!this.state.isOperator) canEdit = true;
         this.setState({canEdit});
     }
@@ -499,7 +495,7 @@ class Index extends React.Component {
                 <div className='pageContent'>
                     <div className='ibox-content'>
                         {
-                            showTips ? <Alert message="当前日期已过订单发货日期次日上午十点，则之后不允许修改" type="warning" showIcon/> : null
+                            showTips ? <Alert message="当前日期已过订单发货日期上午十点，则之后不允许修改" type="warning" showIcon/> : null
                         }
                         <Spin spinning={loading}>
                             <Divider>产品信息</Divider>

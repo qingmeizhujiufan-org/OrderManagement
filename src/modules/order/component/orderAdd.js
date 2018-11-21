@@ -522,7 +522,11 @@ class Index extends React.Component {
                                         })(
                                             <DatePicker
                                                 disabledDate={currentDate => {
-                                                    return currentDate <= moment() ? true : false
+                                                    const curTime = new Date().getTime();
+                                                    const endTime = new Date(moment().format('YYYY-MM-DD') + ' 10:00:00').getTime();
+                                                    const limitDate = curTime <= endTime ? moment() : moment().add(-1, 'day');
+
+                                                    return currentDate <= limitDate ? true : false
                                                 }}
                                                 style={{width: '100%'}}
                                             />
