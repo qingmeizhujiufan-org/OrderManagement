@@ -165,9 +165,7 @@ class ZZLeftSide extends React.Component {
                 className="left-side"
             >
                 <div className="logo">
-                    <Link to="/frame/user/list">
-                        <h1><img src={Logo}/></h1>
-                    </Link>
+                    <h1><img src={Logo}/></h1>
                 </div>
                 <Scrollbars className='zui-menu'>
                     {this.setMenuChildren()}
