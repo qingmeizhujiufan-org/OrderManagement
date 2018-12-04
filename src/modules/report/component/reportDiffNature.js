@@ -49,7 +49,7 @@ class Index extends React.Component {
                     if (_cur) {
                         obj.props.rowSpan = _cur.rowspan;
                     } else {
-                        obj.props.rowSpan = 1;
+                        obj.props.rowSpan = 0;
                     }
 
                     return obj;
@@ -146,20 +146,24 @@ class Index extends React.Component {
                 if (data.backData) {
                     const dataSource = data.backData;
                     const totalLineList = [];
-                    dataSource.map((item, index) => {
-                        item.key = index;
-                        if (item.region === '总计') {
-                            totalLineList.push({
-                                title: item.region,
-                                index,
-                                totalAmount: item.totalAmount
-                            });
+                    for (let i = 0; i < dataSource.length; i++) {
+                        let count = 0;
+                        for (let j = i + 1; j < dataSource.length; j++) {
+                            if (dataSource[i].region === dataSource[j].region){
+                                count++;
+                            }
                         }
-                    });
+                        i += count;
+                        totalLineList.push({
+                            title: dataSource[i].region,
+                            index: i
+                        });
+                    }
+
                     totalLineList.map((item, index) => {
                         if (index === 0) {
                             item.startIndex = 0;
-                            item.rowspan = item.index;
+                            item.rowspan = item.index + 1;
                         } else {
                             item.startIndex = totalLineList[index - 1].index + 1;
                             item.rowspan = item.index - totalLineList[index - 1].index;

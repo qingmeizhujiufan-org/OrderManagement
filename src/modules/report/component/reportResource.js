@@ -24,8 +24,8 @@ import {ZZCard, ZZTable} from 'Comps/zz-antD';
 import Util from "Utils/util";
 
 const FormItem = Form.Item;
-const {RangePicker} = DatePicker;
-const dateFormat = 'YYYY/MM/DD';
+const {MonthPicker} = DatePicker;
+const dateFormat = 'YYYY/MM';
 
 class Index extends React.Component {
     constructor(props) {
@@ -33,81 +33,55 @@ class Index extends React.Component {
 
         this.dateColumns = [
             {
-                title: '订单性质',
-                width: 100,
+                title: '区域',
+                width: '10%',
                 align: 'center',
-                dataIndex: 'orderNature',
-                key: 'orderNature'
+                dataIndex: 'region',
+                key: 'region'
             }, {
-                title: '单数',
-                width: 100,
+                title: '第一月',
+                width: '20%',
                 align: 'right',
-                dataIndex: 'orderNum',
-                key: 'orderNum',
-            }, {
-                title: '定金',
-                width: 100,
-                align: 'right',
-                dataIndex: 'depositAmout',
-                key: 'depositAmout',
+                dataIndex: 'fristNum',
+                key: 'fristNum',
                 render: (text, record, index) => (
-                    <span>{Util.shiftThousands(text)}</span>
+                    <span>{index !== 0 ? Util.shiftThousands(text) : text}</span>
                 )
             }, {
-                title: '代收金额',
-                width: 100,
+                title: '上月',
+                width: '20%',
                 align: 'right',
-                dataIndex: 'collectionAmout',
-                key: 'collectionAmout',
+                dataIndex: 'beforeNum',
+                key: 'beforeNum',
                 render: (text, record, index) => (
-                    <span>{Util.shiftThousands(text)}</span>
+                    <span>{index !== 0 ? Util.shiftThousands(text) : text}</span>
                 )
             }, {
-                title: '总金额',
-                width: 100,
+                title: '当前月',
+                width: '20%',
                 align: 'right',
-                dataIndex: 'totalAmount',
-                key: 'totalAmount',
+                dataIndex: 'currentNum',
+                key: 'currentNum',
                 render: (text, record, index) => (
-                    <span>{Util.shiftThousands(text)}</span>
+                    <span>{index !== 0 ? Util.shiftThousands(text) : text}</span>
                 )
             }, {
-                title: '签收单数',
-                width: 100,
+                title: '增加粉',
+                width: '15%',
                 align: 'right',
-                dataIndex: 'signNum',
-                key: 'signNum'
-            }, {
-                title: '签收金额',
-                width: 100,
-                align: 'right',
-                dataIndex: 'signAmount',
-                key: 'signAmount',
+                dataIndex: 'addNum',
+                key: 'addNum',
                 render: (text, record, index) => (
-                    <span>{Util.shiftThousands(text)}</span>
+                    <span>{index !== 0 ? Util.shiftThousands(text) : text}</span>
                 )
             }, {
-                title: '签收率',
-                width: 100,
+                title: '总增加粉',
+                width: '15%',
                 align: 'right',
-                dataIndex: 'signRate',
-                key: 'signRate'
-            }, {
-                className: 'text-red',
-                title: '退回单数',
-                width: 100,
-                align: 'right',
-                dataIndex: 'rejectedNum',
-                key: 'rejectedNum'
-            }, {
-                className: 'text-red',
-                title: '退回金额',
-                width: 100,
-                align: 'right',
-                dataIndex: 'rejectedAmount',
-                key: 'rejectedAmount',
+                dataIndex: 'sumAddNum',
+                key: 'sumAddNum',
                 render: (text, record, index) => (
-                    <span>{Util.shiftThousands(text)}</span>
+                    <span>{index !== 0 ? Util.shiftThousands(text) : text}</span>
                 )
             }];
 
@@ -127,10 +101,8 @@ class Index extends React.Component {
     componentDidMount = () => {
         const values = this.props.form.getFieldsValue();
         let params = {
-            deliverBeginDate: values.deliverDate[0].format("YYYY-MM-DD"),
-            deliverEndDate: values.deliverDate[1].format("YYYY-MM-DD")
+            date: values.date.format("YYYY-MM-DD")
         };
-        if (sessionStorage.type !== '3') params.phone = values.phone;
 
         this.queryList(params, () => {
             this.setState({loading: false});
@@ -138,34 +110,13 @@ class Index extends React.Component {
     }
 
     queryList = (param, endLoading) => {
-        axios.post('order/personalOrder', JSON.stringify(param)).then(res => res.data).then(data => {
+        axios.post('user/countRegionOResources', JSON.stringify(param)).then(res => res.data).then(data => {
             if (data.success) {
                 if (data.backData) {
                     const dataSource = data.backData;
-                    const totalLineList = [];
-                    dataSource.map((item, index) => {
-                        item.key = index;
-                        if (item.orderNature === '合计' || item.region === '总计') {
-                            totalLineList.push({
-                                title: item.region,
-                                index,
-                                totalAmount: item.totalAmount
-                            });
-                        }
-                    });
-                    totalLineList.map((item, index) => {
-                        if (index === 0) {
-                            item.startIndex = 0;
-                            item.rowspan = item.index + 1;
-                        } else {
-                            item.startIndex = totalLineList[index - 1].index + 1;
-                            item.rowspan = item.index - totalLineList[index - 1].index;
-                        }
-                    });
 
                     this.setState({
-                        dataSource,
-                        totalLineList
+                        dataSource
                     });
                 } else {
                     this.setState({
@@ -189,10 +140,8 @@ class Index extends React.Component {
                 this.setState({submitLoading: true});
                 const values = this.props.form.getFieldsValue();
                 let params = {
-                    deliverBeginDate: values.deliverDate[0].format("YYYY-MM-DD"),
-                    deliverEndDate: values.deliverDate[1].format("YYYY-MM-DD")
+                    date: values.date.format("YYYY-MM-DD")
                 };
-                if (sessionStorage.type !== '3') params.phone = values.phone;
 
                 this.queryList(params, () => {
                     this.setState({submitLoading: false});
@@ -206,18 +155,18 @@ class Index extends React.Component {
         const {dataSource, loading, submitLoading} = this.state;
 
         const values = getFieldsValue();
-        let title = values.deliverDate && `时间段:${values.deliverDate[0].format("YYYYMMDD")}-${values.deliverDate[1].format("YYYYMMDD")}的个人出单情况`;
+        let title = values.date && `${values.date.format("YYYY年M月")}的各区用户拥有资源统计`;
 
         return (
-            <div className="zui-content report">
+            <div className="zui-content report-resource">
                 <div className='pageHeader'>
                     <div className="breadcrumb-block">
                         <Breadcrumb>
                             <Breadcrumb.Item>报表管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>个人统计报表</Breadcrumb.Item>
+                            <Breadcrumb.Item>各区用户拥有资源统计</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>个人统计报表</h1>
+                    <h1 className='title'>各区用户拥有资源统计</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
@@ -226,26 +175,14 @@ class Index extends React.Component {
                                 <ZZCard
                                     title={(
                                         <Form layout="inline" onSubmit={this.handleSubmit}>
-                                            <FormItem label="订单日期">
-                                                {getFieldDecorator('deliverDate', {
+                                            <FormItem label="日期">
+                                                {getFieldDecorator('date', {
                                                     rules: [{required: true, message: '请选择日期区间'}],
-                                                    initialValue: [
-                                                        moment().add(0, 'year').month(moment().month()).startOf('month'),
-                                                        moment().add(0, 'year').month(moment().month()).endOf('month')
-                                                    ]
+                                                    initialValue: moment().add(0, 'year').month(moment().month()).startOf('month')
                                                 })(
-                                                    <RangePicker format={dateFormat} allowClear={false}/>
+                                                    <MonthPicker format={dateFormat} allowClear={false}/>
                                                 )}
                                             </FormItem>
-                                            {
-                                                sessionStorage.type !== '3' ? (
-                                                    <FormItem label="电话">
-                                                        {getFieldDecorator('phone')(
-                                                            <Input/>
-                                                        )}
-                                                    </FormItem>
-                                                ) : null
-                                            }
                                             <FormItem>
                                                 <Button
                                                     type="primary"
@@ -267,6 +204,7 @@ class Index extends React.Component {
                                         }}
                                     >{title}</div>
                                     <ZZTable
+                                        showHeader={false}
                                         columns={this.dateColumns}
                                         dataSource={dataSource}
                                         loading={submitLoading}
