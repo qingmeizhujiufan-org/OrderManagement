@@ -35,6 +35,10 @@ const Menu = [
                 key: '2_3',
                 link: '/frame/report/personal',
                 label: '个人统计报表'
+            }, {
+                key: '2_4',
+                link: '/frame/report/diffnature',
+                label: '不同性质订单汇总'
             }
         ]
     }, {

@@ -16,7 +16,7 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 
 moment.locale('zh-cn');
-import find from "lodash/find";
+import _find from "lodash/find";
 import restUrl from 'RestUrl';
 import axios from 'Utils/axios';
 import '../index.less';
@@ -33,6 +33,28 @@ class Index extends React.Component {
 
         this.dateColumns = [
             {
+                title: '区域',
+                width: 100,
+                align: 'center',
+                dataIndex: 'region',
+                key: 'region',
+                render: (value, row, index) => {
+                    const obj = {
+                        children: value,
+                        props: {},
+                    };
+                    const totalLineList = this.state.totalLineList;
+                    console.log('totalLineList === ', totalLineList);
+                    const _cur = _find(totalLineList, {startIndex: index});
+                    if (_cur) {
+                        obj.props.rowSpan = _cur.rowspan;
+                    } else {
+                        obj.props.rowSpan = 1;
+                    }
+
+                    return obj;
+                }
+            }, {
                 title: '订单性质',
                 width: 100,
                 align: 'center',
@@ -93,25 +115,18 @@ class Index extends React.Component {
                 dataIndex: 'signRate',
                 key: 'signRate'
             }, {
-                title: '退回单数',
+                title: '货物成本',
                 width: 100,
                 align: 'right',
-                dataIndex: 'rejectedNum',
-                key: 'rejectedNum'
-            }, {
-                title: '退回金额',
-                width: 100,
-                align: 'right',
-                dataIndex: 'rejectedAmount',
-                key: 'rejectedAmount',
+                dataIndex: 'costAmount',
+                key: 'costAmount',
                 render: (text, record, index) => (
                     <span>{Util.shiftThousands(text)}</span>
                 )
             }];
 
-
         this.state = {
-            loading: true,
+            loading: false,
             submitLoading: false,
             periodLoading: false,
             dataSource: [],
@@ -123,27 +138,17 @@ class Index extends React.Component {
     }
 
     componentDidMount = () => {
-        const values = this.props.form.getFieldsValue();
-        let params = {
-            deliverBeginDate: values.deliverDate[0].format("YYYY-MM-DD"),
-            deliverEndDate: values.deliverDate[1].format("YYYY-MM-DD")
-        };
-        if (sessionStorage.type !== '3') params.phone = values.phone;
-
-        this.queryList(params, () => {
-            this.setState({loading: false});
-        })
     }
 
     queryList = (param, endLoading) => {
-        axios.post('order/personalOrder', JSON.stringify(param)).then(res => res.data).then(data => {
+        axios.post('order/regionOrderNature', JSON.stringify(param)).then(res => res.data).then(data => {
             if (data.success) {
                 if (data.backData) {
                     const dataSource = data.backData;
                     const totalLineList = [];
                     dataSource.map((item, index) => {
                         item.key = index;
-                        if (item.orderNature === '合计' || item.region === '总计') {
+                        if (item.region === '总计') {
                             totalLineList.push({
                                 title: item.region,
                                 index,
@@ -154,7 +159,7 @@ class Index extends React.Component {
                     totalLineList.map((item, index) => {
                         if (index === 0) {
                             item.startIndex = 0;
-                            item.rowspan = item.index + 1;
+                            item.rowspan = item.index;
                         } else {
                             item.startIndex = totalLineList[index - 1].index + 1;
                             item.rowspan = item.index - totalLineList[index - 1].index;
@@ -188,9 +193,9 @@ class Index extends React.Component {
                 const values = this.props.form.getFieldsValue();
                 let params = {
                     deliverBeginDate: values.deliverDate[0].format("YYYY-MM-DD"),
-                    deliverEndDate: values.deliverDate[1].format("YYYY-MM-DD")
+                    deliverEndDate: values.deliverDate[1].format("YYYY-MM-DD"),
+                    orderNature: values.orderNature
                 };
-                if (sessionStorage.type !== '3') params.phone = values.phone;
 
                 this.queryList(params, () => {
                     this.setState({submitLoading: false});
@@ -204,7 +209,7 @@ class Index extends React.Component {
         const {dataSource, loading, submitLoading} = this.state;
 
         const values = getFieldsValue();
-        let title = values.deliverDate && `时间段:${values.deliverDate[0].format("YYYYMMDD")}-${values.deliverDate[1].format("YYYYMMDD")}的个人出单情况`;
+        let title = values.deliverDate && `时间段:${values.deliverDate[0].format("YYYYMMDD")}-${values.deliverDate[1].format("YYYYMMDD")}的各区不同性质订单汇总`;
 
         return (
             <div className="zui-content report">
@@ -212,10 +217,10 @@ class Index extends React.Component {
                     <div className="breadcrumb-block">
                         <Breadcrumb>
                             <Breadcrumb.Item>报表管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>个人统计报表</Breadcrumb.Item>
+                            <Breadcrumb.Item>不同性质订单汇总</Breadcrumb.Item>
                         </Breadcrumb>
                     </div>
-                    <h1 className='title'>个人统计报表</h1>
+                    <h1 className='title'>不同性质订单汇总</h1>
                 </div>
                 <div className='pageContent'>
                     <div className='ibox-content'>
@@ -235,15 +240,13 @@ class Index extends React.Component {
                                                     <RangePicker format={dateFormat} allowClear={false}/>
                                                 )}
                                             </FormItem>
-                                            {
-                                                sessionStorage.type !== '3' ? (
-                                                    <FormItem label="电话">
-                                                        {getFieldDecorator('phone')(
-                                                            <Input/>
-                                                        )}
-                                                    </FormItem>
-                                                ) : null
-                                            }
+                                            <FormItem label="订单性质">
+                                                {getFieldDecorator('orderNature', {
+                                                    rules: [{required: true, message: '订单性质不能为空'}]
+                                                })(
+                                                    <Input/>
+                                                )}
+                                            </FormItem>
                                             <FormItem>
                                                 <Button
                                                     type="primary"
@@ -279,10 +282,10 @@ class Index extends React.Component {
     }
 }
 
-const ReportList = Form.create()(Index);
+const ReportDiffNature = Form.create()(Index);
 
 Index.contextTypes = {
     router: PropTypes.object
 }
 
-export default ReportList;
+export default ReportDiffNature;
