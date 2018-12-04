@@ -108,6 +108,10 @@ const ReportDiffNature = Loadable({
     loader: () => import("../modules/report/component/reportDiffNature"),
     loading: Loading
 });
+const ReportResource = Loadable({
+    loader: () => import("../modules/report/component/reportResource"),
+    loading: Loading
+});
 
 /* 个人设置 */
 const SettingList = Loadable({
@@ -179,6 +183,7 @@ class PageRouter extends React.Component {
                             <Route path="chart" component={ReportHChart}/>
                             <Route path="personal" component={ReportPersonal}/>
                             <Route path="diffnature" component={ReportDiffNature}/>
+                            <Route path="resource" component={ReportResource}/>
                         </Route>
                         {/* 个人设置 */}
                         <Route path="setting" component={App}>

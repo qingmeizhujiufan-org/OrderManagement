@@ -281,10 +281,10 @@ class Index extends React.Component {
     }
 }
 
-const ReportList = Form.create()(Index);
+const ReportResource = Form.create()(Index);
 
 Index.contextTypes = {
     router: PropTypes.object
 }
 
-export default ReportList;
+export default ReportResource;

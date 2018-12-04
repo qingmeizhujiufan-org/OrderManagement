@@ -39,6 +39,10 @@ const Menu = [
                 key: '2_4',
                 link: '/frame/report/diffnature',
                 label: '不同性质订单汇总'
+            }, {
+                key: '2_5',
+                link: '/frame/report/resource',
+                label: '资源统计报表'
             }
         ]
     }, {
