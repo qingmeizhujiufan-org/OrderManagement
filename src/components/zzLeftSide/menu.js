@@ -26,23 +26,27 @@ const Menu = [
             {
                 key: '2_1',
                 link: '/frame/report/list',
-                label: '报表'
+                label: '各区订单统计'
             }, {
                 key: '2_2',
-                link: '/frame/report/chart',
-                label: '图表'
+                link: '/frame/report/diffnatureCount',
+                label: '不同性质订单统计'
             }, {
                 key: '2_3',
-                link: '/frame/report/personal',
-                label: '个人统计报表'
+                link: '/frame/report/chart',
+                label: '各区累计总金额'
             }, {
                 key: '2_4',
+                link: '/frame/report/personal',
+                label: '个人统计'
+            }, {
+                key: '2_5',
                 link: '/frame/report/diffnature',
                 label: '不同性质订单汇总'
             }, {
-                key: '2_5',
+                key: '2_6',
                 link: '/frame/report/resource',
-                label: '资源统计报表'
+                label: '资源统计'
             }
         ]
     }, {

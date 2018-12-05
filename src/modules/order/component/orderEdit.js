@@ -240,6 +240,7 @@ class Index extends React.Component {
                 unit: item.productUnit,
                 barCode: item.productBarCode,
                 orderId: item.orderId,
+                costPrice: item.productCostPrice,
                 wareHouse: item.productWarehouse,
                 voState: item.voState
             }

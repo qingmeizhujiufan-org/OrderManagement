@@ -96,6 +96,10 @@ const ReportList = Loadable({
     loader: () => import("../modules/report/component/reportList"),
     loading: Loading
 });
+const ReportDiffNatureCount = Loadable({
+    loader: () => import("../modules/report/component/reportDiffNatureCount"),
+    loading: Loading
+});
 const ReportHChart = Loadable({
     loader: () => import("../modules/report/component/reportHChart"),
     loading: Loading
@@ -180,6 +184,7 @@ class PageRouter extends React.Component {
                         <Route path="report" component={App}>
                             <IndexRoute component={ReportList}/>
                             <Route path="list" component={ReportList}/>
+                            <Route path="diffnaturecount" component={ReportDiffNatureCount}/>
                             <Route path="chart" component={ReportHChart}/>
                             <Route path="personal" component={ReportPersonal}/>
                             <Route path="diffnature" component={ReportDiffNature}/>
